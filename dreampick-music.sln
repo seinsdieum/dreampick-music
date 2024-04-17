@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dreampick-music", "dreampick-music\dreampick-music.csproj", "{7E1FABA3-E700-4A99-990E-6A6AE1B2F33F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfControlLibrary1", "WpfControlLibrary1\WpfControlLibrary1.csproj", "{D0DCD1BC-5DF5-4322-9061-230B1E691CBA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7E1FABA3-E700-4A99-990E-6A6AE1B2F33F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E1FABA3-E700-4A99-990E-6A6AE1B2F33F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E1FABA3-E700-4A99-990E-6A6AE1B2F33F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E1FABA3-E700-4A99-990E-6A6AE1B2F33F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0DCD1BC-5DF5-4322-9061-230B1E691CBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0DCD1BC-5DF5-4322-9061-230B1E691CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0DCD1BC-5DF5-4322-9061-230B1E691CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0DCD1BC-5DF5-4322-9061-230B1E691CBA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

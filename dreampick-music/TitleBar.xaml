@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="dreampick_music.TitleBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:dreampick_music"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Border Background="{DynamicResource TitleBarBrush}" Padding="{StaticResource Padding}">
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel  >
+                <Label Margin="10,10,0,0" Style="{DynamicResource Name}">dreampick</Label>
+            </StackPanel>
+            <Border VerticalAlignment="Top" Grid.Column="1" MouseDown="UIElement_OnMouseDown" Style="{DynamicResource DragButton}">
+                <Rectangle ></Rectangle>
+            </Border>
+            <Border Grid.Column="2"  CornerRadius="{DynamicResource Radius}" DockPanel.Dock="Right">
+                <Grid HorizontalAlignment="Right" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{DynamicResource ControlButton}"
+                            Padding="{DynamicResource Padding}" Grid.Column="2" Foreground="{DynamicResource ForeBrush}" Click="CloseButton_Click">✕</Button>
+                    <Button Style="{DynamicResource ControlButton}"  Padding="{DynamicResource Padding}" Grid.Column="0" Foreground="{DynamicResource ForeBrush}"  Click="HideButton_Click">-</Button>
+                    <Button Style="{DynamicResource ControlButton}"  Padding="{DynamicResource Padding}" Grid.Column="1" Foreground="{DynamicResource ForeBrush}"  Click="MaximizeButton_Click">▢</Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

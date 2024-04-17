@@ -1,0 +1,56 @@
+﻿<Window WindowStyle="None"  x:Class="dreampick_music.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:dreampick_music"
+        mc:Ignorable="d"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="650" Width="1000">
+        
+        <Border BorderBrush="{DynamicResource SecondBrush}" BorderThickness="2" CornerRadius="25" Background="{DynamicResource BackBrush}">
+                <Grid>
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <local:TitleBar></local:TitleBar>
+                <Border Grid.Row="1" Padding="{DynamicResource Padding}">
+                
+                        <Grid>
+                                <Grid.RowDefinitions>
+                                        <RowDefinition ></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                
+                                <StackPanel Margin="0,0,10,0" Grid.Row="0" Grid.Column="0">
+                                        <Button IsEnabled="True" Style="{DynamicResource ForeButton}">Каталог</Button>
+                                        <Button Style="{DynamicResource ForeButton}">Лента</Button>
+                                        <Button Style="{DynamicResource ForeButton}">Настройки</Button>
+                                </StackPanel>
+                                <Border Margin="0,0,0,10" Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch" Background="{DynamicResource ThirdBrush}" Padding="{DynamicResource Padding}" BorderBrush="{DynamicResource SecondBrush}" BorderThickness="1" CornerRadius="{DynamicResource Radius}">
+                                        <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" >
+                                                <Frame   Name="ContentFrame" Source="Settings.xaml" />
+                                        </ScrollViewer>
+                                </Border>
+                                <StackPanel Grid.Row="1" Grid.Column="0">
+                        
+                                </StackPanel>
+                
+                                <StackPanel Grid.Row="1" Grid.Column="1">
+                                        <local:Container>
+                                                <Label>Mdaa</Label>
+                                        </local:Container>
+                                </StackPanel> 
+                        </Grid>
+                </Border>
+        </Grid>
+        </Border>
+</Window>

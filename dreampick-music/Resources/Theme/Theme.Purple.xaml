@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="BackBrush" Color="#1c141c"></SolidColorBrush>
+    <SolidColorBrush x:Key="SecondBrush" Color="#382838"></SolidColorBrush>
+    <SolidColorBrush x:Key="ThirdBrush" Color="#241c24"></SolidColorBrush>
+    <SolidColorBrush x:Key="ForeBrush" Color="#ffdcff"></SolidColorBrush>
+    <SolidColorBrush x:Key="DarkenForeBrush" Color="#382838"></SolidColorBrush>
+    <LinearGradientBrush x:Key="TitleBarBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+
+    </LinearGradientBrush>
+</ResourceDictionary>
