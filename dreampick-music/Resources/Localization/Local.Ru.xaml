@@ -34,6 +34,8 @@
     
     <system:String x:Key="LFavorite" >Мои треки</system:String>
     <system:String x:Key="LPlaylists" >Плейлисты</system:String>
+    <system:String x:Key="LSubscribers" >Подписчики: </system:String>
+    <system:String x:Key="LSubscribes" >Подписки: </system:String>
     
     <system:String x:Key="LPossibleFav" >Может понравиться вам</system:String>
     <system:String x:Key="LPost" >Пост</system:String>

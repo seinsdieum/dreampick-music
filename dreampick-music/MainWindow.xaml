@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:dreampick_music"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:utilities="clr-namespace:dreampick_music.Utilities"
         mc:Ignorable="d"
         AllowsTransparency="True"
         Background="Transparent"
@@ -13,14 +14,16 @@
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="650" Width="1000"
         MinHeight="500"
+        Name="Wndw"
         MinWidth="600">
 
     <Window.DataContext>
-        <local:MainVm></local:MainVm>
+        <local:MainVm x:Name="VmContext"></local:MainVm>
     </Window.DataContext>
     <Window.Resources>
         <local:DoubleTimeConverter x:Key="DoubleTimeConverter" />
         <local:SongStateIconConverter x:Key="SongStateIconConverter" />
+        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <MediaElement
@@ -167,34 +170,34 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
-                                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
                                                 <Image
                                                     Margin="10,5" Height="{DynamicResource Header1}"
                                                     Source="{Binding IconSource}">
                                                 </Image>
-                                                <Label Content="{Binding Name}"></Label>
-                                            </StackPanel>
+                                                <Label Visibility="{Binding TabsCollapsed, ElementName=VmContext, Converter={StaticResource VisibilityConverter} }" Content="{Binding Name}"></Label>
+                                            </WrapPanel>
                                         </local:CommandControl>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
                         </StackPanel>
-                        <Border Margin="0,0,0,10" Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch"
+                        <Border Margin="0,0,0,10" Grid.Row="0" Grid.Column="1"
                                 Background="{DynamicResource ThirdBrush}" Padding="{DynamicResource Padding}"
                                 BorderBrush="{DynamicResource SecondBrush}" BorderThickness="1"
                                 CornerRadius="{DynamicResource Radius}">
-                            <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                                <Frame NavigationUIVisibility="Hidden"  Source="{Binding PageSource}" />
+                            <ScrollViewer Name="ScrollViewer"  CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                                <Frame SourceUpdated="FrameSourceUpdated" Loaded="PageFrameLoaded" NavigationUIVisibility="Hidden"  />
                             </ScrollViewer>
                         </Border>
-                        <Border Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
+                        <!--<Border Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
                                 Margin="0,0,10,0" Grid.Row="1" Background="{DynamicResource SecondBrush}">
                             <StackPanel>
                                 <Label Margin="{DynamicResource BottomPadding}" Content="{DynamicResource LYou}"></Label>
 
-                                <Label Content="Александр Селицкий"></Label>
+                                <Label  Content="Александр Селицкий"></Label>
                             </StackPanel>
-                        </Border>
+                        </Border>-->
 
                         <Border Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
                                 Grid.Row="1" Grid.Column="1" Background="{DynamicResource SecondBrush}">

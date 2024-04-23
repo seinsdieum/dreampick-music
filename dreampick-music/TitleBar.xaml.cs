@@ -50,6 +50,10 @@ public partial class TitleBar : UserControl
 
     private void Icon_MouseDown(object sender, MouseButtonEventArgs e)
     {
+        if (App.Current.MainWindow.DataContext is MainVm vm)
+        {
+            vm.TabsCollapsed = !vm.TabsCollapsed;
+        }
     }
 
     private void NewClose_LeftMouseDown(object sender, MouseButtonEventArgs e)

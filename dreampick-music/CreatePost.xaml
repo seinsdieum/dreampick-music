@@ -5,6 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:dreampick_music"
       mc:Ignorable="d"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Top"
       Title="CreatePost" Height="450" Width="800">
     <Page.DataContext>
         <local:CreatePostVm />

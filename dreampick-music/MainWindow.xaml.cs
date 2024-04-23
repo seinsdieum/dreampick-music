@@ -246,5 +246,27 @@ namespace dreampick_music
             TrackSlider.Value = 0;
         }
 
+        private void PageFrameLoaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is Frame frame && DataContext is MainVm vm)
+            {
+                vm.FrameNavigation = frame.NavigationService;
+            }
+        }
+
+        private void FrameSourceUpdated(object? sender, DataTransferEventArgs e)
+        {
+            var t = new DispatcherTimer();
+
+            t.Interval = new TimeSpan(0, 0, 0, 0, 400);
+            
+            t.Tick += new EventHandler((o, args) =>
+            {
+                ScrollViewer.UpdateLayout();
+                ScrollViewer.ScrollToVerticalOffset(0);
+                t.Stop();
+            });
+            t.Start();
+        }
     }
 }

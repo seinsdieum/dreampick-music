@@ -27,6 +27,12 @@ public class Track
         get;
         set;
     }
+    
+    public Playlist LocalQueue
+    {
+        get;
+        set;
+    }
 
     public Track()
     {

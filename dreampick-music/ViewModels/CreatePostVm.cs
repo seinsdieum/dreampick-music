@@ -9,8 +9,6 @@ using dreampick_music.Models;
 
 namespace dreampick_music;
 
-
-
 public class CreatePostVm : HistoryVm
 {
     public string fieldText = "";
@@ -25,7 +23,7 @@ public class CreatePostVm : HistoryVm
     [UndoRedo]
     public ObservableCollection<string> Tags
     {
-        get { return tags;}
+        get { return tags; }
         set { Set(ref tags, value); }
     }
 
@@ -33,20 +31,12 @@ public class CreatePostVm : HistoryVm
     public string FieldText
     {
         get { return fieldText; }
-        set
-        {
-            Set(ref fieldText, value);
-        }
+        set { Set(ref fieldText, value); }
     }
-    public ButtonCommand AddTagsCommand 
+
+    public ButtonCommand AddTagsCommand
     {
-        get
-        {
-            return new ButtonCommand((o =>
-            {
-                Tags.Add("lalala");
-            }));
-        }
+        get { return new ButtonCommand((o => { Tags.Add("lalala"); })); }
     }
 
 
@@ -58,7 +48,10 @@ public class CreatePostVm : HistoryVm
             {
                 var post = new Post(Utils.GenerateRandomString(4), FieldText);
                 
-                Posts.AddPost(post);
+                
+                
+                
+                PlatformDAO.Instance.AddPost(post);
                 FieldText = "";
             });
         }
@@ -72,12 +65,10 @@ public class CreatePostVm : HistoryVm
     }
 }
 
-
-
-
-
 [AttributeUsage(AttributeTargets.Property)]
-class UndoRedoAttribute : Attribute { }
+class UndoRedoAttribute : Attribute
+{
+}
 
 public abstract class HistoryVm : INotifyPropertyChanged
 {
@@ -135,12 +126,11 @@ public abstract class HistoryVm : INotifyPropertyChanged
 
     static void SaveHistory(object obj, string propertyName, object value)
     {
-        
         if (obj.GetType()
                 .GetProperty(propertyName)
                 .GetCustomAttributes(typeof(UndoRedoAttribute), true)
                 .Length == 0) return;
-        
+
         if (isUndoProcess)
         {
             redoHistory.Push((obj, propertyName, value));

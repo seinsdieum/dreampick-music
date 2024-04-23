@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata;
+using System.Windows.Media.Imaging;
 
 namespace dreampick_music.Models;
 
@@ -12,7 +13,7 @@ public class Artist : Person
         set { password = value; }
     }
 
-    public Blob HeaderImage { get; set; }
+    public BitmapImage HeaderImage { get; set; }
 
     public Artist()
     {

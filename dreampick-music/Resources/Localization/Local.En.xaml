@@ -44,6 +44,8 @@
     
     <system:String x:Key="LFavorite" >Favorite tracks</system:String>
     <system:String x:Key="LPlaylists" >Playlists</system:String>
+    <system:String x:Key="LSubscribers" >Subscribers: </system:String>
+    <system:String x:Key="LSubscribes" >Subscribes: </system:String>
     
     <system:String x:Key="LPossibleFav" >You may like these</system:String>
     <system:String x:Key="LPost" >Post</system:String>

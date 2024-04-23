@@ -16,7 +16,7 @@
                 <ColumnDefinition Width="{DynamicResource BarLayout}"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel  Orientation="Horizontal"  Visibility="{DynamicResource SetNewTitleBar}">
-                <Image Margin="10,10,10,0" Height="{DynamicResource Icon}" Source="{DynamicResource ImgApp}"/>
+                <Image Cursor="Hand" MouseDown="Icon_MouseDown" Margin="10,10, 0,0" Height="{DynamicResource Icon}" Source="{DynamicResource ImgApp}"/>
                 <Label Margin="10,10,0,0" Style="{DynamicResource Name}">dreampick</Label>
             </StackPanel>
             <StackPanel Style="{DynamicResource StackRootVisible}" Orientation="Horizontal" Visibility="{DynamicResource SetNewTitleBar}" HorizontalAlignment="Center" Grid.Column="1">
@@ -25,9 +25,9 @@
                 <Border Cursor="Hand"  VerticalAlignment="Top" MouseRightButtonDown="NewClose_OnMouseRightButtonDown" MouseLeftButtonDown="NewClose_LeftMouseDown" Style="{DynamicResource CloseDragButton}"> </Border>
             </StackPanel>
             <DockPanel Grid.Column="1">
-                <Border Cursor="Hand" Background="Transparent"  Visibility="{DynamicResource SetDefaultTitleBar}" MouseDown="UIElement_OnMouseDown">
+                <Border Background="Transparent"  Visibility="{DynamicResource SetDefaultTitleBar}" MouseDown="UIElement_OnMouseDown">
                     <StackPanel Margin="10,10,0,0" VerticalAlignment="Center" Orientation="Horizontal">
-                        <Image MouseDown="Icon_MouseDown" Height="{DynamicResource Icon}" Source="{DynamicResource ImgApp}"/>
+                        <Image Margin="0,0,10,0" Cursor="Hand" MouseDown="Icon_MouseDown" Height="{DynamicResource Icon}" Source="{DynamicResource ImgApp}"/>
                         <Label Style="{DynamicResource Name}">dreampick</Label>
                     </StackPanel>
                 </Border>

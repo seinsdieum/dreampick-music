@@ -14,21 +14,32 @@ public class FeedVm : INotifyPropertyChanged
     {
         get
         {
-            return new ObservableCollection<Post>(Models.Posts.LoadPosts());
+            return new ObservableCollection<Post>(Models.PlatformDAO.Instance.LoadPosts());
         }
         set
         {
             OnPropertyChanged(nameof(Posts));
         }
     }
+
+    public ButtonCommand NavigateUserCommand
+    {
+        get
+        {
+            return new ButtonCommand(o =>
+            {
+                if (o is string id && App.Current.MainWindow.DataContext is MainVm vm)
+                {
+                    vm.FrameNavigation.Navigate(new Person(id));
+                }
+            });
+        }
+    }
     
 
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-    public FeedVm()
-    {
-    }
+    
     
 
     public void OnPropertyChanged(string prop)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Reflection.Metadata;
+using System.Windows.Media.Imaging;
 
 namespace dreampick_music.Models;
 
@@ -14,7 +15,7 @@ public class Playlist
 
     public string Description { get; set; }
 
-    public Blob Image { get; set; }
+    public BitmapImage Image { get; set; }
 
     public Person Author;
 
