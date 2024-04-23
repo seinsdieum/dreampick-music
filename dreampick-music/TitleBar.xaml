@@ -3,24 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              xmlns:local="clr-namespace:dreampick_music"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Border Background="{DynamicResource TitleBarBrush}" Padding="{StaticResource Padding}">
+    <Grid>
+        <Border Background="{DynamicResource TitleBarBrush}" Padding="{StaticResource Padding}">
         <Grid >
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{DynamicResource BarLayout}"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="{DynamicResource BarLayout}"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <StackPanel  >
+            <StackPanel  Orientation="Horizontal"  Visibility="{DynamicResource SetNewTitleBar}">
+                <Image Margin="10,10,10,0" Height="{DynamicResource Icon}" Source="{DynamicResource ImgApp}"/>
                 <Label Margin="10,10,0,0" Style="{DynamicResource Name}">dreampick</Label>
             </StackPanel>
-            <Border VerticalAlignment="Top" Grid.Column="1" MouseDown="UIElement_OnMouseDown" Style="{DynamicResource DragButton}">
-                <Rectangle ></Rectangle>
-            </Border>
-            <Border Grid.Column="2"  CornerRadius="{DynamicResource Radius}" DockPanel.Dock="Right">
-                <Grid HorizontalAlignment="Right" >
+            <StackPanel Style="{DynamicResource StackRootVisible}" Orientation="Horizontal" Visibility="{DynamicResource SetNewTitleBar}" HorizontalAlignment="Center" Grid.Column="1">
+                <Border Cursor="Hand" VerticalAlignment="Top" Grid.Column="1" MouseDown="UIElement_OnMouseDown" Style="{DynamicResource DragButton}">
+                </Border>
+                <Border Cursor="Hand"  VerticalAlignment="Top" MouseRightButtonDown="NewClose_OnMouseRightButtonDown" MouseLeftButtonDown="NewClose_LeftMouseDown" Style="{DynamicResource CloseDragButton}"> </Border>
+            </StackPanel>
+            <DockPanel Grid.Column="1">
+                <Border Cursor="Hand" Background="Transparent"  Visibility="{DynamicResource SetDefaultTitleBar}" MouseDown="UIElement_OnMouseDown">
+                    <StackPanel Margin="10,10,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <Image MouseDown="Icon_MouseDown" Height="{DynamicResource Icon}" Source="{DynamicResource ImgApp}"/>
+                        <Label Style="{DynamicResource Name}">dreampick</Label>
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+            <Border Style="{DynamicResource BorderRoot}" VerticalAlignment="Top" Visibility="{DynamicResource SetDefaultTitleBar}" Grid.Column="2"  CornerRadius="{DynamicResource Radius}" DockPanel.Dock="Right">
+                <Grid  HorizontalAlignment="Right" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -34,4 +47,5 @@
             </Border>
         </Grid>
     </Border>
+    </Grid>
 </UserControl>

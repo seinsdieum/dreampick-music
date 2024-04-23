@@ -1,0 +1,18 @@
+﻿using System.ComponentModel;
+
+namespace dreampick_music;
+
+public class CollectionVm : INotifyPropertyChanged
+{
+    
+    
+    
+    
+    
+    public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+    public void OnPropertyChanged(string prop)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+    }
+}

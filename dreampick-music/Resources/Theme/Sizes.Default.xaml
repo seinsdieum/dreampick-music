@@ -2,16 +2,22 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
     <system:Double x:Key="Header1">26</system:Double>
+    <system:Double x:Key="Icon">45</system:Double>
     <system:Double x:Key="Header2">18</system:Double>
     <system:Double x:Key="Paragraph">14</system:Double>
     
     <CornerRadius x:Key="Radius">15</CornerRadius>
     <Thickness x:Key="Padding">10</Thickness>
+    <Thickness x:Key="PaddingBottomLarge">0,0,0,15</Thickness>
     <Thickness x:Key="PaddingInner">5</Thickness>
-    <Thickness x:Key="LeftLayoutPaddingInner">0,0,5,5</Thickness>
-    <Thickness x:Key="LeftLayoutPadding">0,0,10,10</Thickness>
+    <Thickness x:Key="RightBottomPaddingInner">0,0,5,5</Thickness>
+    <Thickness x:Key="RightBottomPadding">0,0,10,10</Thickness>
+    <Thickness x:Key="BottomPadding">0,0,0,10</Thickness>
     
     <FontWeight x:Key="HeaderWeight">800</FontWeight>
     <FontWeight x:Key="ParagraphWeight">600</FontWeight>
     <FontWeight x:Key="NameWeight">999</FontWeight>
+    <FontFamily x:Key="AppFont">Inter</FontFamily>
+    <FontFamily x:Key="TitleFont">Inter</FontFamily>
+    
 </ResourceDictionary>

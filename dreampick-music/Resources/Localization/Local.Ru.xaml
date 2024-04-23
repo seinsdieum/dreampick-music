@@ -2,5 +2,39 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
     <system:String x:Key="LHello" >Привет</system:String>
+    <system:String x:Key="LBye" >Привет</system:String>
+    <system:String x:Key="LYou" >Вы</system:String>
+    
+    
+    <system:String x:Key="LWriteSometh" >Напишите что-нибудь...</system:String>
 
+
+    
+    <system:String x:Key="LCollection" >Коллекция</system:String>
+    <system:String x:Key="LFeed" >Лента</system:String>
+    <system:String x:Key="LCreatePost" >Создать пост</system:String>
+    <system:String x:Key="LAccount" >Аккаунт</system:String>
+    <system:String x:Key="LSettings" >Настройки</system:String>
+    <system:String x:Key="LPublishAudio" >Опубликовать аудиозапись</system:String>
+    
+    <system:String x:Key="LTheme" >Цвет темы</system:String>
+    <system:String x:Key="LLight" >Светлый</system:String>
+    <system:String x:Key="LDark" >Темный</system:String>
+    <system:String x:Key="LGreen" >Природа</system:String>
+    <system:String x:Key="LPurple" >Безграничность</system:String>
+
+    <system:String x:Key="LTitlebar" >Заголовок</system:String>
+    <system:String x:Key="LDefault" >Стандартный</system:String>
+    <system:String x:Key="LNew" >Новый</system:String>
+    
+    <system:String x:Key="LLanguage" >Язык</system:String>
+    <system:String x:Key="LRussian" >Русский</system:String>
+    <system:String x:Key="LEnglish" >Английский</system:String>
+    
+    
+    <system:String x:Key="LFavorite" >Мои треки</system:String>
+    <system:String x:Key="LPlaylists" >Плейлисты</system:String>
+    
+    <system:String x:Key="LPossibleFav" >Может понравиться вам</system:String>
+    <system:String x:Key="LPost" >Пост</system:String>
 </ResourceDictionary>

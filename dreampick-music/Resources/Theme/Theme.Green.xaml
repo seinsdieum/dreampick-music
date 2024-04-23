@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Color x:Key="BackColor">#b4ffb4</Color>
+    <Color x:Key="CloseColor">#e81123</Color>
+    <Color x:Key="SecondColor"> #f0fff0</Color>
+    <Color x:Key="ThirdColor">#d2ffd2</Color>
+    <Color x:Key="ForeColor">#0a0f0a</Color>
+    <Color x:Key="DarkenForeColor">#78b478</Color>
+    
+    <Color x:Key="HightlightColor" R="0" G="0" B="0" A="20"></Color>
+
+    
+    <SolidColorBrush x:Key="BackBrush" Color="#b4ffb4"></SolidColorBrush>
+    <SolidColorBrush x:Key="SecondBrush" Color="#f0fff0"></SolidColorBrush>
+    <SolidColorBrush x:Key="ThirdBrush" Color="#d2ffd2"></SolidColorBrush>
+    <SolidColorBrush x:Key="CloseBrush" Color="#e81123"></SolidColorBrush>
+
+    <SolidColorBrush x:Key="ForeBrush" Color="#0a0f0a"></SolidColorBrush>
+    <SolidColorBrush x:Key="DarkenForeBrush" Color="#78b478"></SolidColorBrush>
+    <LinearGradientBrush x:Key="TitleBarBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+
+    </LinearGradientBrush>
+</ResourceDictionary>

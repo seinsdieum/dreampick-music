@@ -9,8 +9,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Resources\Controls\" />
       <Folder Include="Utilities\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+      <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+      <PackageReference Include="SharpVectors" Version="1.8.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\Card.svg" />
+      <Resource Include="Assets\Card.svg" />
+      <None Remove="Assets\AppIcon.svg" />
+      <Resource Include="Assets\AppIcon.svg" />
+      <None Remove="TestAudio\track.mp3" />
+      <Content Include="TestAudio\track.mp3" />
+      <None Remove="Assets\Icons\play_arrow_FILL1_wght400_GRAD0_opsz24.svg" />
+      <Resource Include="Assets\Icons\Play.svg" />
     </ItemGroup>
 
 </Project>

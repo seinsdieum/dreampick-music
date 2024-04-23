@@ -1,0 +1,25 @@
+﻿<Page x:Class="dreampick_music.CreatePost"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:dreampick_music"
+      mc:Ignorable="d"
+      Title="CreatePost" Height="450" Width="800">
+    <Page.DataContext>
+        <local:CreatePostVm />
+    </Page.DataContext>
+    <StackPanel Style="{DynamicResource StackRoot}">
+        <Label Margin="{DynamicResource BottomPadding}" Style="{DynamicResource H1}"
+               Content="{DynamicResource LCreatePost}">
+        </Label>
+
+        <TextBox Style="{DynamicResource TextBoxTransparent}" TextWrapping="Wrap" Text="{Binding FieldText}"></TextBox>
+        <Button Background="{DynamicResource SecondBrush}" Width="100" Command="{Binding UndoCommand}">Undo</Button>
+        <Button Background="{DynamicResource SecondBrush}" Width="100" Command="{Binding RedoCommand}">Redo</Button>
+        <Button Background="{DynamicResource SecondBrush}" Width="100" Command="{Binding PublishCommand}">Publish</Button>
+        
+        <Label Style="{DynamicResource H2}" Margin="{DynamicResource BottomPadding}" Content="{DynamicResource LTheme}"></Label>
+
+    </StackPanel>
+</Page>

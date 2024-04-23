@@ -6,21 +6,64 @@
       xmlns:local="clr-namespace:dreampick_music"
       mc:Ignorable="d"
       Title="Settings" >
-        <StackPanel>
-            <Label Margin="0,0,0,10" Style="{DynamicResource H1}">Настройки</Label>
-            <local:Container Margin="0,0,0,10" Title="Цвет темы">
-                <StackPanel>
-                    <RadioButton>Стандартный</RadioButton>
-                    <RadioButton>Зеленый</RadioButton>
-                    <RadioButton>Фиолетовый</RadioButton>
-                    <RadioButton>Синий</RadioButton>
-                </StackPanel>
-            </local:Container>
-            <local:Container Title="Тип тайтл-бара">
-                <StackPanel>
-                    <RadioButton>Обычный</RadioButton>
-                    <RadioButton>Обновленный</RadioButton>
-                </StackPanel>
-            </local:Container>
+    <Page.DataContext>
+        <local:SettingsVm/>
+    </Page.DataContext>
+    <StackPanel Style="{DynamicResource StackRoot}">
+        <Label Content="{DynamicResource LSettings}" Margin="{DynamicResource BottomPadding}" Style="{DynamicResource H1}"></Label>
+        
+        
+        <Border Margin="{DynamicResource BottomPadding}" CornerRadius="{DynamicResource Radius}" Background="{DynamicResource SecondBrush}" Padding="{DynamicResource Padding}" >
+            <StackPanel>
+                <Label Style="{DynamicResource H2}" Margin="{DynamicResource BottomPadding}" Content="{DynamicResource LTheme}"></Label>
+                <ListView Style="{DynamicResource ChoiceView}" ItemsSource="{Binding ThemeTabs}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
+                                    <StackPanel>
+                                        <Label  Content="{Binding Name}"></Label>
+                                    </StackPanel>
+                                </local:CommandControl>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+            </StackPanel>
+        </Border>
+        
+        
+        <Border Margin="{DynamicResource BottomPadding}" CornerRadius="{DynamicResource Radius}" Background="{DynamicResource SecondBrush}" Padding="{DynamicResource Padding}" >
+            <StackPanel>
+                <Label Style="{DynamicResource H2}" Margin="{DynamicResource BottomPadding}" Content="{DynamicResource LTitlebar}"></Label>
+                <ListView Style="{DynamicResource ChoiceView}" ItemsSource="{Binding TitlebarTabs}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
+                                <StackPanel>
+                                    <Label  Content="{Binding Name}"></Label>
+                                </StackPanel>
+                            </local:CommandControl>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Border>
+        
+        
+        <Border CornerRadius="{DynamicResource Radius}" Background="{DynamicResource SecondBrush}" Padding="{DynamicResource Padding}" >
+            <StackPanel>
+                <Label Style="{DynamicResource H2}" Margin="{DynamicResource BottomPadding}" Content="{DynamicResource LLanguage}"></Label>
+                <ListView Style="{DynamicResource ChoiceView}" ItemsSource="{Binding LocalizationTabs}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
+                                <StackPanel>
+                                    <Label  Content="{Binding Name}"></Label>
+                                </StackPanel>
+                            </local:CommandControl>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Border>
         </StackPanel>
 </Page>

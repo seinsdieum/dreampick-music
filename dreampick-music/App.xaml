@@ -14,7 +14,9 @@
                 <ResourceDictionary Source="Resources/Localization/Local.En.xaml"/>
                 <ResourceDictionary Source="Resources/Style/Default.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Resources/Theme/Sizes.Default.xaml"></ResourceDictionary>
-                
+                <ResourceDictionary Source="Resources/Style/TitleBar.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Resources/Controls/Icons.xaml"></ResourceDictionary>
+
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

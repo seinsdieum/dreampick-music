@@ -1,0 +1,32 @@
+﻿<Page x:Class="dreampick_music.Feed"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:dreampick_music"
+      mc:Ignorable="d"
+      Title="Feed">
+    <Page.DataContext>
+        <local:FeedVm />
+    </Page.DataContext>
+    <StackPanel Style="{DynamicResource StackRoot}">
+        <Label Content="{DynamicResource LFeed}" Margin="{DynamicResource BottomPadding}" Style="{DynamicResource H1}"></Label>
+
+        <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Posts}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}" Background="{DynamicResource SecondBrush}">
+                        <StackPanel>
+                            <Label Content="{Binding Description}"></Label>
+                            <Label Foreground="{DynamicResource DarkenForeBrush}" Content="{Binding PostAuthor.Name}"></Label>
+                            <Label Foreground="{DynamicResource DarkenForeBrush}" Content="{Binding PublicationDate}"></Label>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+
+    </StackPanel>
+
+</Page>

@@ -2,4 +2,51 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
     <system:String x:Key="LHello" >Hello</system:String>
+    <system:String x:Key="LBye" >Bye</system:String>
+    <system:String x:Key="LYou" >You</system:String>
+    
+    <system:String x:Key="LValid" >Valid</system:String>
+    <system:String x:Key="LWriteSometh" >Write something...</system:String>
+    
+    
+
+    
+    
+    <system:String x:Key="LCollection" >Collection</system:String>
+    <system:String x:Key="LFeed" >Feed</system:String>
+    <system:String x:Key="LCreatePost" >Create post</system:String>
+    <system:String x:Key="LAccount" >Account</system:String>
+    <system:String x:Key="LSettings" >Settings</system:String>
+    <system:String x:Key="LPublishAudio" >Publish audio</system:String>
+
+    
+    <system:String x:Key="LTheme" >Theme Color</system:String>
+    <system:String x:Key="LLight" >Light</system:String>
+    <system:String x:Key="LDark" >Dark</system:String>
+    <system:String x:Key="LGreen" >Nature</system:String>
+    <system:String x:Key="LPurple" >No limits</system:String>
+    
+    
+
+    <system:String x:Key="LTitlebar" >Titlebar</system:String>
+    <system:String x:Key="LDefault" >Default</system:String>
+    <system:String x:Key="LNew" >New</system:String>
+    
+    
+    <system:String x:Key="LLanguage" >Language</system:String>
+    <system:String x:Key="LRussian" >Russian</system:String>
+    <system:String x:Key="LEnglish" >English</system:String>
+    
+    
+    <system:String x:Key="LMissing" >MISSING</system:String>
+
+
+    
+    <system:String x:Key="LFavorite" >Favorite tracks</system:String>
+    <system:String x:Key="LPlaylists" >Playlists</system:String>
+    
+    <system:String x:Key="LPossibleFav" >You may like these</system:String>
+    <system:String x:Key="LPost" >Post</system:String>
+
+
 </ResourceDictionary>

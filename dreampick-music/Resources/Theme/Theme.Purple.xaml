@@ -1,10 +1,24 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <SolidColorBrush x:Key="BackBrush" Color="#1c141c"></SolidColorBrush>
-    <SolidColorBrush x:Key="SecondBrush" Color="#382838"></SolidColorBrush>
-    <SolidColorBrush x:Key="ThirdBrush" Color="#241c24"></SolidColorBrush>
-    <SolidColorBrush x:Key="ForeBrush" Color="#ffdcff"></SolidColorBrush>
-    <SolidColorBrush x:Key="DarkenForeBrush" Color="#382838"></SolidColorBrush>
+    
+    <Color x:Key="BackColor">#d2d2ff</Color>
+    <Color x:Key="CloseColor">#e81123</Color>
+    <Color x:Key="SecondColor"> #f0f0ff</Color>
+    <Color x:Key="ThirdColor">#dcdcff</Color>
+    <Color x:Key="ForeColor">#0a0a0f</Color>
+    <Color x:Key="DarkenForeColor">#7878b4</Color>
+    
+    <Color x:Key="HightlightColor" R="0" G="0" B="0" A="20"></Color>
+
+    
+    
+    <SolidColorBrush x:Key="BackBrush" Color="#d2d2ff"></SolidColorBrush>
+    <SolidColorBrush x:Key="SecondBrush" Color="#f0f0ff"></SolidColorBrush>
+    <SolidColorBrush x:Key="ThirdBrush" Color="#dcdcff"></SolidColorBrush>
+    <SolidColorBrush x:Key="ForeBrush" Color="#0a0a0f"></SolidColorBrush>
+    <SolidColorBrush x:Key="DarkenForeBrush" Color="#7878b4"></SolidColorBrush>
+    <SolidColorBrush x:Key="CloseBrush" Color="#e81123"></SolidColorBrush>
+
     <LinearGradientBrush x:Key="TitleBarBrush" StartPoint="0.5,0" EndPoint="0.5,1">
 
     </LinearGradientBrush>

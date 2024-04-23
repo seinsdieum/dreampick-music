@@ -1,0 +1,113 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    <DrawingImage x:Key="ImgPlay">
+        <DrawingImage.Drawing>
+            <DrawingGroup >
+
+                <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}" Geometry="F1 M960,960z M0,0z M320,-273L320,-687Q320,-704 332,-715.5 344,-727 360,-727 365,-727 370.5,-725.5 376,-724 381,-721L707,-514Q716,-508 720.5,-499 725,-490 725,-480 725,-470 720.5,-461 716,-452 707,-446L381,-239Q376,-236 370.5,-234.5 365,-233 360,-233 344,-233 332,-244.5 320,-256 320,-273z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="ImgPause">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}"
+                                 Geometry="F1 M960,960z M0,0z M640,-200Q607,-200 583.5,-223.5 560,-247 560,-280L560,-680Q560,-713 583.5,-736.5 607,-760 640,-760 673,-760 696.5,-736.5 720,-713 720,-680L720,-280Q720,-247 696.5,-223.5 673,-200 640,-200z M320,-200Q287,-200 263.5,-223.5 240,-247 240,-280L240,-680Q240,-713 263.5,-736.5 287,-760 320,-760 353,-760 376.5,-736.5 400,-713 400,-680L400,-280Q400,-247 376.5,-223.5 353,-200 320,-200z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="ImgTrack">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource ForeBrush}"
+                                 Geometry="F1 M960,960z M0,0z M400,-120Q334,-120 287,-167 240,-214 240,-280 240,-346 287,-393 334,-440 400,-440 423,-440 442.5,-434.5 462,-429 480,-418L480,-800Q480,-817 491.5,-828.5 503,-840 520,-840L680,-840Q697,-840 708.5,-828.5 720,-817 720,-800L720,-720Q720,-703 708.5,-691.5 697,-680 680,-680L560,-680 560,-280Q560,-214 513,-167 466,-120 400,-120z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="ImgPrev">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}"
+                                 Geometry="F1 M960,960z M0,0z M220,-280L220,-680Q220,-697 231.5,-708.5 243,-720 260,-720 277,-720 288.5,-708.5 300,-697 300,-680L300,-280Q300,-263 288.5,-251.5 277,-240 260,-240 243,-240 231.5,-251.5 220,-263 220,-280z M678,-281L430,-447Q421,-453 416.5,-461.5 412,-470 412,-480 412,-490 416.5,-498.5 421,-507 430,-513L678,-679Q683,-683 689,-684 695,-685 700,-685 716,-685 728,-674 740,-663 740,-645L740,-315Q740,-297 728,-286 716,-275 700,-275 695,-275 689,-276 683,-277 678,-281z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="ImgNext">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}"
+                                 Geometry="F1 M960,960z M0,0z M660,-280L660,-680Q660,-697 671.5,-708.5 683,-720 700,-720 717,-720 728.5,-708.5 740,-697 740,-680L740,-280Q740,-263 728.5,-251.5 717,-240 700,-240 683,-240 671.5,-251.5 660,-263 660,-280z M220,-315L220,-645Q220,-663 232,-674 244,-685 260,-685 265,-685 271,-684 277,-683 282,-679L530,-513Q539,-507 543.5,-498.5 548,-490 548,-480 548,-470 543.5,-461.5 539,-453 530,-447L282,-281Q277,-277 271,-276 265,-275 260,-275 244,-275 232,-286 220,-297 220,-315z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="ImgQueue">
+        <DrawingImage.Drawing>
+            <DrawingGroup >
+                <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}"
+                                 Geometry="F1 M960,960z M0,0z M640,-160Q590,-160 555,-195 520,-230 520,-280 520,-330 555,-365 590,-400 640,-400 651,-400 661,-398.5 671,-397 680,-392L680,-680Q680,-697 691.5,-708.5 703,-720 720,-720L840,-720Q857,-720 868.5,-708.5 880,-697 880,-680 880,-663 868.5,-651.5 857,-640 840,-640L760,-640 760,-280Q760,-230 725,-195 690,-160 640,-160z M160,-320Q143,-320 131.5,-331.5 120,-343 120,-360 120,-377 131.5,-388.5 143,-400 160,-400L400,-400Q417,-400 428.5,-388.5 440,-377 440,-360 440,-343 428.5,-331.5 417,-320 400,-320L160,-320z M160,-480Q143,-480 131.5,-491.5 120,-503 120,-520 120,-537 131.5,-548.5 143,-560 160,-560L560,-560Q577,-560 588.5,-548.5 600,-537 600,-520 600,-503 588.5,-491.5 577,-480 560,-480L160,-480z M160,-640Q143,-640 131.5,-651.5 120,-663 120,-680 120,-697 131.5,-708.5 143,-720 160,-720L560,-720Q577,-720 588.5,-708.5 600,-697 600,-680 600,-663 588.5,-651.5 577,-640 560,-640L160,-640z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="ImgRepeat">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource ForeBrush}"
+                                 Geometry="F1 M960,960z M0,0z M274,-200L308,-166Q320,-154 319.5,-138 319,-122 308,-110 296,-98 279.5,-97.5 263,-97 251,-109L148,-212Q142,-218 139.5,-225 137,-232 137,-240 137,-248 139.5,-255 142,-262 148,-268L251,-371Q263,-383 279.5,-382.5 296,-382 308,-370 319,-358 319.5,-342 320,-326 308,-314L274,-280 680,-280 680,-400Q680,-417 691.5,-428.5 703,-440 720,-440 737,-440 748.5,-428.5 760,-417 760,-400L760,-280Q760,-247 736.5,-223.5 713,-200 680,-200L274,-200z M686,-680L280,-680 280,-560Q280,-543 268.5,-531.5 257,-520 240,-520 223,-520 211.5,-531.5 200,-543 200,-560L200,-680Q200,-713 223.5,-736.5 247,-760 280,-760L686,-760 652,-794Q640,-806 640.5,-822 641,-838 652,-850 664,-862 680.5,-862.5 697,-863 709,-851L812,-748Q818,-742 820.5,-735 823,-728 823,-720 823,-712 820.5,-705 818,-698 812,-692L709,-589Q697,-577 680.5,-577.5 664,-578 652,-590 641,-602 640.5,-618 640,-634 652,-646L686,-680z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="ImgMix">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,-960 V0 H960 V0 H-960 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0" Y="960" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="{DynamicResource ForeBrush}"
+                                 Geometry="F1 M960,960z M0,0z M600,-160Q583,-160 571.5,-171.5 560,-183 560,-200 560,-217 571.5,-228.5 583,-240 600,-240L664,-240 565,-339Q553,-351 553.5,-367.5 554,-384 566,-396 578,-408 594.5,-408 611,-408 623,-396L720,-298 720,-360Q720,-377 731.5,-388.5 743,-400 760,-400 777,-400 788.5,-388.5 800,-377 800,-360L800,-200Q800,-183 788.5,-171.5 777,-160 760,-160L600,-160z M172,-172Q161,-183 161,-200 161,-217 172,-228L664,-720 600,-720Q583,-720 571.5,-731.5 560,-743 560,-760 560,-777 571.5,-788.5 583,-800 600,-800L760,-800Q777,-800 788.5,-788.5 800,-777 800,-760L800,-600Q800,-583 788.5,-571.5 777,-560 760,-560 743,-560 731.5,-571.5 720,-583 720,-600L720,-664 228,-172Q217,-161 200,-161 183,-161 172,-172z M171,-732Q160,-743 160,-760 160,-777 171,-788 182,-799 198.5,-799 215,-799 227,-788L395,-621Q406,-610 406.5,-593.5 407,-577 395,-565 384,-554 367,-554 350,-554 339,-565L171,-732z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+
+    <DrawingImage x:Key="ImgApp">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V300 H300 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,0,300,300" />
+                    </DrawingGroup.ClipGeometry>
+                    <DrawingGroup Opacity="1">
+                        <GeometryDrawing>
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="{DynamicResource ForeColor}" Opacity="0.05" />
+                            </GeometryDrawing.Brush>
+                            <GeometryDrawing.Geometry>
+                                <EllipseGeometry RadiusX="150" RadiusY="150" Center="150,150" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing
+                            Geometry="F0 M300,300z M0,0z M300,150C300,177.322 292.695,202.937 279.933,225 254.012,180.191 205.577,150.035 150.096,150 205.577,149.965 254.012,119.809 279.933,75 280.602,76.1573 281.257,77.3244 281.896,78.5011 293.442,99.7551 300,124.112 300,150z M20.0673,75C20.0553,75.0208 20.0432,75.0417 20.0312,75.0625 9.70748,92.929 2.96203,113.122 0.774433,134.663 0.262333,139.706 0,144.822 0,150 0,154.154 0.168836,158.268 0.500019,162.336 2.34721,185.028 9.24492,206.291 20.0673,225 45.9881,180.191 94.4231,150.035 149.904,150 94.4231,149.965 45.9881,119.809 20.0673,75z">
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="{DynamicResource ForeColor}" Opacity="1" />
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+                        <GeometryDrawing
+                            Geometry="F0 M300,300z M0,0z M75,279.933C119.835,253.997 150,205.521 150,150 150,94.4788 119.835,46.003 75,20.0673 30.1649,46.003 0,94.4788 0,150 0,205.521 30.1649,253.997 75,279.933z">
+                            <GeometryDrawing.Brush>
+                                <SolidColorBrush Color="{DynamicResource ForeColor}" Opacity="0.05" />
+                            </GeometryDrawing.Brush>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+</ResourceDictionary>

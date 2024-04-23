@@ -1,56 +1,365 @@
-﻿<Window WindowStyle="None"  x:Class="dreampick_music.MainWindow"
+﻿<Window WindowStyle="None" x:Class="dreampick_music.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:dreampick_music"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="650" Width="1000">
-        
-        <Border BorderBrush="{DynamicResource SecondBrush}" BorderThickness="2" CornerRadius="25" Background="{DynamicResource BackBrush}">
-                <Grid>
+        Title="MainWindow" Height="650" Width="1000"
+        MinHeight="500"
+        MinWidth="600">
+
+    <Window.DataContext>
+        <local:MainVm></local:MainVm>
+    </Window.DataContext>
+    <Window.Resources>
+        <local:DoubleTimeConverter x:Key="DoubleTimeConverter" />
+        <local:SongStateIconConverter x:Key="SongStateIconConverter" />
+    </Window.Resources>
+    <Grid>
+        <MediaElement
+            Name="AudioPlayer"
+            Volume="{Binding SongVolume}"
+            LoadedBehavior="{Binding SongState}"
+
+            Source="{Binding TracksQueueVm.CurrentTrack.Source}">
+            <i:Interaction.Triggers>
+                <i:PropertyChangedTrigger Changed="SongValue_OnChange"
+                                          Binding="{Binding LoadedBehavior, ElementName=AudioPlayer}">
+                </i:PropertyChangedTrigger>
+                <i:EventTrigger EventName="MediaEnded">
+                    <i:InvokeCommandAction
+                        Command="{Binding NextCommand}">
+                    </i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </MediaElement>
+
+
+        <Border Style="{DynamicResource WindowBorder}" Background="{DynamicResource SecondBrush}" CornerRadius="25"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource SecondBrush}">
+            <Grid>
+                <Rectangle x:Name="ResizeN" Fill="{DynamicResource SecondBrush}" VerticalAlignment="Top"
+                           Height="20" Margin="25,0,25,0" MouseEnter="DisplayResizeCursor"
+                           MouseLeave="ResetCursor" PreviewMouseLeftButtonDown="Resize" />
+                <Rectangle x:Name="ResizeE" Fill="{DynamicResource SecondBrush}" HorizontalAlignment="Right"
+                           Width="20" Margin="0,25,0,25" MouseEnter="DisplayResizeCursor"
+                           MouseLeave="ResetCursor" PreviewMouseLeftButtonDown="Resize" />
+                <Rectangle x:Name="ResizeS" Fill="{DynamicResource SecondBrush}" VerticalAlignment="Bottom"
+                           Height="20" Margin="25,0,25,0" MouseEnter="DisplayResizeCursor"
+                           MouseLeave="ResetCursor" PreviewMouseLeftButtonDown="Resize" />
+                <Rectangle x:Name="ResizeW" Fill="{DynamicResource SecondBrush}" HorizontalAlignment="Left"
+                           Width="20" Margin="0,25,0,25" MouseEnter="DisplayResizeCursor"
+                           MouseLeave="ResetCursor" PreviewMouseLeftButtonDown="Resize" />
+            </Grid>
+        </Border>
+
+        <Path x:Name="ResizeNW" VerticalAlignment="Top" HorizontalAlignment="Left"
+              Stroke="Transparent" StrokeThickness="4" Margin="0" MouseEnter="DisplayResizeCursor"
+              MouseLeave="ResetCursor" PreviewMouseLeftButtonDown="Resize">
+            <Path.Data>
+                <PathGeometry>
+                    <PathGeometry.Figures>
+                        <PathFigureCollection>
+                            <PathFigure StartPoint="0,10">
+                                <PathFigure.Segments>
+                                    <PathSegmentCollection>
+                                        <LineSegment Point="0,0" />
+                                        <LineSegment Point="10,0" />
+                                    </PathSegmentCollection>
+                                </PathFigure.Segments>
+                            </PathFigure>
+                        </PathFigureCollection>
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+        <Path x:Name="ResizeNE" VerticalAlignment="Top" HorizontalAlignment="Right"
+              Stroke="Transparent" StrokeThickness="4" Margin="0,0,-2,0" MouseEnter="DisplayResizeCursor"
+              MouseLeave="ResetCursor" PreviewMouseLeftButtonDown="Resize">
+            <Path.Data>
+                <PathGeometry>
+                    <PathGeometry.Figures>
+                        <PathFigureCollection>
+                            <PathFigure StartPoint="0,0">
+                                <PathFigure.Segments>
+                                    <PathSegmentCollection>
+                                        <LineSegment Point="10,0" />
+                                        <LineSegment Point="10,10" />
+                                    </PathSegmentCollection>
+                                </PathFigure.Segments>
+                            </PathFigure>
+                        </PathFigureCollection>
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+        <Path x:Name="ResizeSE" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+              Stroke="Transparent" StrokeThickness="4" Margin="0,0,-2,-2" MouseEnter="DisplayResizeCursor"
+              MouseLeave="ResetCursor" PreviewMouseLeftButtonDown="Resize">
+            <Path.Data>
+                <PathGeometry>
+                    <PathGeometry.Figures>
+                        <PathFigureCollection>
+                            <PathFigure StartPoint="10,0">
+                                <PathFigure.Segments>
+                                    <PathSegmentCollection>
+                                        <LineSegment Point="10,10" />
+                                        <LineSegment Point="0,10" />
+                                    </PathSegmentCollection>
+                                </PathFigure.Segments>
+                            </PathFigure>
+                        </PathFigureCollection>
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+        <Path x:Name="ResizeSW" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+              Stroke="Transparent" StrokeThickness="4" Margin="0,0,0,-2" MouseEnter="DisplayResizeCursor"
+              MouseLeave="ResetCursor" PreviewMouseLeftButtonDown="Resize">
+            <Path.Data>
+                <PathGeometry>
+                    <PathGeometry.Figures>
+                        <PathFigureCollection>
+                            <PathFigure StartPoint="0,0">
+                                <PathFigure.Segments>
+                                    <PathSegmentCollection>
+                                        <LineSegment Point="0,10" />
+                                        <LineSegment Point="10,10" />
+                                    </PathSegmentCollection>
+                                </PathFigure.Segments>
+                            </PathFigure>
+                        </PathFigureCollection>
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+
+
+        <Border Margin="4" ClipToBounds="True" CornerRadius="25" Background="{DynamicResource BackBrush}">
+            <Grid>
                 <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <local:TitleBar></local:TitleBar>
                 <Border Grid.Row="1" Padding="{DynamicResource Padding}">
-                
-                        <Grid>
-                                <Grid.RowDefinitions>
-                                        <RowDefinition ></RowDefinition>
-                                        <RowDefinition Height="Auto"></RowDefinition>
-                                </Grid.RowDefinitions>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Margin="0,0,10,0" Grid.Row="0" Grid.Column="0">
+                            <ListView Style="{DynamicResource ChoiceView}" ItemsSource="{Binding AppTabs}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
+                                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                <Image
+                                                    Margin="10,5" Height="{DynamicResource Header1}"
+                                                    Source="{Binding IconSource}">
+                                                </Image>
+                                                <Label Content="{Binding Name}"></Label>
+                                            </StackPanel>
+                                        </local:CommandControl>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                        <Border Margin="0,0,0,10" Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch"
+                                Background="{DynamicResource ThirdBrush}" Padding="{DynamicResource Padding}"
+                                BorderBrush="{DynamicResource SecondBrush}" BorderThickness="1"
+                                CornerRadius="{DynamicResource Radius}">
+                            <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                                <Frame NavigationUIVisibility="Hidden"  Source="{Binding PageSource}" />
+                            </ScrollViewer>
+                        </Border>
+                        <Border Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
+                                Margin="0,0,10,0" Grid.Row="1" Background="{DynamicResource SecondBrush}">
+                            <StackPanel>
+                                <Label Margin="{DynamicResource BottomPadding}" Content="{DynamicResource LYou}"></Label>
+
+                                <Label Content="Александр Селицкий"></Label>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
+                                Grid.Row="1" Grid.Column="1" Background="{DynamicResource SecondBrush}">
+                            <Grid>
+
                                 <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                
-                                <StackPanel Margin="0,0,10,0" Grid.Row="0" Grid.Column="0">
-                                        <Button IsEnabled="True" Style="{DynamicResource ForeButton}">Каталог</Button>
-                                        <Button Style="{DynamicResource ForeButton}">Лента</Button>
-                                        <Button Style="{DynamicResource ForeButton}">Настройки</Button>
+
+                                <StackPanel Grid.Column="0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <DockPanel VerticalAlignment="Center" Margin="{DynamicResource BottomPadding}"
+                                                   Grid.Column="0">
+                                            <Border VerticalAlignment="Center" Margin="0,0,10,0"
+                                                    Height="{DynamicResource Icon}" Width="{DynamicResource Icon}"
+                                                    Background="{DynamicResource ThirdBrush}"
+                                                    CornerRadius="5">
+
+                                                <Image Height="{DynamicResource Icon}" Width="{DynamicResource Icon}"
+                                                       Source="{Binding TracksQueueVm.CurrentTrack.Album.Image}" />
+                                            </Border>
+                                            <StackPanel>
+                                                <Label
+                                                    Content="{Binding TracksQueueVm.CurrentTrack.Name}">
+                                                </Label>
+                                                <Label Content="{Binding TracksQueueVm.CurrentTrack.Artist.Name}"></Label>
+                                            </StackPanel>
+                                        </DockPanel>
+
+                                        <Grid VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Image
+                                                Stretch="UniformToFill"
+                                                Width="30" Height="30"
+                                                Margin="0,0,0,-15"
+                                                Source="{DynamicResource ImgPrev }"
+                                                Grid.Column="0">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="MouseDown">
+                                                        <i:InvokeCommandAction Command="{Binding PrevCommand}"></i:InvokeCommandAction>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </Image>
+                                            <Grid Margin="10,0,10,0" VerticalAlignment="Center" Grid.Column="1">
+                                                <Ellipse Fill="{DynamicResource BackBrush}" Width="40" Height="40">
+                                                </Ellipse>
+                                                <Image
+                                                    Width="35" Height="35"
+                                                    Margin="0,0,0,-15"
+                                                    Stretch="UniformToFill"
+                                                    VerticalAlignment="Center"
+                                                    Source="{Binding SongState, Converter={StaticResource SongStateIconConverter} }">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="MouseDown">
+                                                            <i:InvokeCommandAction Command="{Binding PlayCommand}"></i:InvokeCommandAction>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Image>
+                                            </Grid>
+                                            <Image
+                                                Width="30" Height="30"
+                                                Margin="0,0,0,-15"
+                                                Stretch="UniformToFill"
+                                                Source="{DynamicResource ImgNext }"
+                                                Grid.Column="2">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="MouseDown">
+                                                        <i:InvokeCommandAction Command="{Binding NextCommand}"></i:InvokeCommandAction>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </Image>
+
+                                        </Grid>
+                                        <DockPanel HorizontalAlignment="Right" Grid.Column="2">
+                                            <Grid Margin="10,0,10,0" VerticalAlignment="Center">
+                                                <Ellipse Fill="{DynamicResource BackBrush}" Width="37" Height="37">
+                                                </Ellipse>
+                                                <Image
+                                                    Width="30" Height="30"
+                                                    Stretch="UniformToFill"
+                                                    VerticalAlignment="Center"
+                                                    Margin="0,0,0,-15"
+                                                    Source="{DynamicResource ImgQueue }">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="MouseDown">
+                                                            <i:InvokeCommandAction Command="{Binding PlayCommand}"></i:InvokeCommandAction>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Image>
+                                            </Grid>
+                                            
+                                            <Grid Margin="10,0,10,0" VerticalAlignment="Center">
+                                                <Ellipse Fill="{DynamicResource BackBrush}" Width="37" Height="37">
+                                                </Ellipse>
+                                                <Image
+                                                    Width="30" Height="30"
+                                                    Margin="0,0,0,-5"
+
+                                                    Stretch="UniformToFill"
+                                                    VerticalAlignment="Center"
+                                                    Source="{DynamicResource ImgRepeat }">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="MouseDown">
+                                                            <i:InvokeCommandAction Command="{Binding PlayCommand}"></i:InvokeCommandAction>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </Image>
+                                            </Grid>
+                                            
+                                            
+                                           
+
+                                            <!--<Slider Grid.Column="4" VerticalAlignment="Stretch" Orientation="Vertical"
+                                                    Name="VolumeSlider"
+                                                    IsMoveToPointEnabled="True" Interval="1" Minimum="0" Maximum="1"
+                                                    Value="{Binding SongVolume}">
+                                            </Slider>-->
+                                        </DockPanel>
+                                    </Grid>
+
+                                    <Grid VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Width="60" Grid.Column="0"
+                                               Content="{Binding Value, ElementName= TrackSlider, Converter={StaticResource DoubleTimeConverter}}">
+                                        </Label>
+                                        <Slider IsSelectionRangeEnabled="True"
+                                                Grid.Column="1" IsMoveToPointEnabled="True"
+                                                Height="30" Name="TrackSlider"
+                                                Minimum="0"
+                                                Maximum="0"
+                                                Value="0"
+                                                Margin="0,2,0,0"
+                                                VerticalAlignment="Center"
+                                                Thumb.DragDelta="TrackSlider_OnValueChanged"
+                                                Thumb.DragCompleted="TrackSlider_OnLastValueChanged"
+                                                MouseLeftButtonUp="TrackSlider_OnMouseReleased">
+                                        </Slider>
+                                        <Label HorizontalContentAlignment="Right" Width="60"
+                                               HorizontalAlignment="Right" Grid.Column="2"
+                                               Content="{Binding  Maximum, ElementName= TrackSlider, Converter={StaticResource DoubleTimeConverter}}">
+                                        </Label>
+                                    </Grid>
                                 </StackPanel>
-                                <Border Margin="0,0,0,10" Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch" Background="{DynamicResource ThirdBrush}" Padding="{DynamicResource Padding}" BorderBrush="{DynamicResource SecondBrush}" BorderThickness="1" CornerRadius="{DynamicResource Radius}">
-                                        <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" >
-                                                <Frame   Name="ContentFrame" Source="Settings.xaml" />
-                                        </ScrollViewer>
-                                </Border>
-                                <StackPanel Grid.Row="1" Grid.Column="0">
-                        
-                                </StackPanel>
-                
-                                <StackPanel Grid.Row="1" Grid.Column="1">
-                                        <local:Container>
-                                                <Label>Mdaa</Label>
-                                        </local:Container>
-                                </StackPanel> 
-                        </Grid>
+
+
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Border>
-        </Grid>
+            </Grid>
         </Border>
+    </Grid>
 </Window>
