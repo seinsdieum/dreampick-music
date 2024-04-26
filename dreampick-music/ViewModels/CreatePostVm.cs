@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using dreampick_music.Models;
 
@@ -13,6 +14,21 @@ public class CreatePostVm : HistoryVm
 {
     public string fieldText = "";
 
+
+    private NotifyTaskCompletion<bool> uploadSuccess;
+
+    public NotifyTaskCompletion<bool> UploadSuccess
+    {
+        get
+        {
+            return uploadSuccess;
+        }
+        set
+        {
+            uploadSuccess = value;
+            OnPropertyChanged(nameof(UploadSuccess));
+        }
+    }
 
     private ObservableCollection<string> tags = new ObservableCollection<string>()
     {
@@ -46,16 +62,50 @@ public class CreatePostVm : HistoryVm
         {
             return new ButtonCommand(o =>
             {
-                var post = new Post(Utils.GenerateRandomString(4), FieldText);
-                
-                
-                
-                
-                PlatformDAO.Instance.AddPost(post);
+                var post = new Post(Utils.GenerateRandomString(5), FieldText);
+
+
+
+
+                UploadSuccess = new NotifyTaskCompletion<bool>(PlatformDAO.Instance.AddPost(post));
+
                 FieldText = "";
             });
         }
     }
+    
+    
+    public ButtonCommand LostFocusCommand
+    {
+        get
+        {
+            return new ButtonCommand((o =>
+            {
+                if (FieldText == "")
+                {
+                    FieldText = Utils.GetLocalizedName("LWriteSometh");
+                }
+            }));
+        }
+    }
+    
+    
+    public ButtonCommand GotFocusCommand
+    {
+        get
+        {
+            return new ButtonCommand((o =>
+            {
+                if (FieldText == Utils.GetLocalizedName("LWriteSometh"))
+                {
+                    FieldText = "";
+                }
+
+                
+            }));
+        }
+    }
+    
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 

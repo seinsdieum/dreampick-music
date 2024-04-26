@@ -23,7 +23,7 @@ public class Utils
         var rand = new Random();
         for (int i = 1; i <= length; i++)
         {
-            str += (char)rand.Next(255);
+            str += (char)rand.Next(70,120);
         }
 
         return str;
@@ -36,5 +36,19 @@ public class Utils
         bitmapImage.StreamSource = new MemoryStream(imageBytes);
         bitmapImage.EndInit();
         return bitmapImage;
+    }
+
+    public static byte[] GetByteArrayFromImage(BitmapImage image)
+    {
+        byte[] data;
+        JpegBitmapEncoder encoder = new();
+        encoder.Frames.Add(BitmapFrame.Create(image));
+        using (var stream = new MemoryStream())
+        {
+            encoder.Save(stream);
+            data = stream.ToArray();
+        }
+
+        return data;
     }
 }

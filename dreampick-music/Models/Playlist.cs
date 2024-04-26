@@ -17,15 +17,16 @@ public class Playlist
 
     public BitmapImage Image { get; set; }
 
-    public Person Author;
+    public Person Author
+    {
+        get;
+        set;
+    }
 
-    public ObservableCollection<Track> Tracks { get; set; }
+    public ObservableCollection<Track> Tracks { get; set; } = new ObservableCollection<Track>();
 
     public Playlist()
     {
-        Tracks = new ObservableCollection<Track>();
-        ID = new Random().Next(1000).ToString();
-        Name = "NONAME";
     }
 
 

@@ -126,6 +126,7 @@ public class SettingsVm: INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    
 
     private string localThemeName;
     public string LocalThemeName

@@ -26,7 +26,10 @@ namespace dreampick_music
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const int WmSyscommand = 0x112;
+
+        #region WindowHandlers
+
+                private const int WmSyscommand = 0x112;
         private HwndSource _hwndSource;
 
         private enum ResizeDirection
@@ -129,7 +132,8 @@ namespace dreampick_music
                     break;
             }
         }
-        
+
+        #endregion
         
         
         public MainWindow()
@@ -137,18 +141,15 @@ namespace dreampick_music
             SourceInitialized += Window1_SourceInitialized;
 
             InitializeComponent();
-            var a = DataContext as MainVm;
 
             timer = new DispatcherTimer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = new TimeSpan(0, 0, 0, 0,2);
         }
-        
-        
-        /// <summary>
-        /// Song code
-        /// </summary>
 
+
+
+        #region MediaPlayerEvents
 
         private DispatcherTimer timer;
 
@@ -237,36 +238,15 @@ namespace dreampick_music
 
             CodeFactor = 1.0;
         }
-        
 
-        private void AudioPlayer_OnMediaEnded(object sender, RoutedEventArgs e)
-        {
-            /*AudioPlayer.Source = new Uri("D:/Work/Downloads/Smokepurpp feat. Lil Pump - Off My Chest.mp3",
-                UriKind.Absolute);*/
-            TrackSlider.Value = 0;
-        }
+        #endregion
 
         private void PageFrameLoaded(object sender, RoutedEventArgs e)
         {
-            if (sender is Frame frame && DataContext is MainVm vm)
+            if (sender is Frame frame)
             {
-                vm.FrameNavigation = frame.NavigationService;
+                NavigationVm.Instance.Navigation = frame.NavigationService;
             }
-        }
-
-        private void FrameSourceUpdated(object? sender, DataTransferEventArgs e)
-        {
-            var t = new DispatcherTimer();
-
-            t.Interval = new TimeSpan(0, 0, 0, 0, 400);
-            
-            t.Tick += new EventHandler((o, args) =>
-            {
-                ScrollViewer.UpdateLayout();
-                ScrollViewer.ScrollToVerticalOffset(0);
-                t.Stop();
-            });
-            t.Start();
         }
     }
 }

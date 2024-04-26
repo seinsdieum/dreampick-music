@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace dreampick_music;
 
@@ -38,7 +40,7 @@ public class SingleChoice
 {
 
 
-    private Uri iconSource;
+    private string iconName;
     private Visibility userAccessibility;
     private string localName;
     private Action choice;
@@ -63,13 +65,24 @@ public class SingleChoice
         }
     }
 
-    public Uri IconSource => iconSource;
+    public DrawingImage IconSource
+    {
+        get
+        {
+            return (DrawingImage)App.Current.Resources[iconName];
+        }
+    }
 
 
-    public SingleChoice(string localName, Action choiceAction, Uri iconSource = null, Visibility userAccessibility = Visibility.Visible)
+    public SingleChoice(string localName, Action choiceAction, string IconSourceName = "", Visibility userAccessibility = Visibility.Visible)
     {
         this.localName = localName;
-        this.iconSource = iconSource;
+
+        if (!string.IsNullOrEmpty(IconSourceName) && App.Current.Resources[IconSourceName] is DrawingImage image)
+        {
+            iconName = IconSourceName;
+        } 
+        
         this.userAccessibility = userAccessibility;
         choice = choiceAction;
     }

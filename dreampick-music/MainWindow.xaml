@@ -23,7 +23,7 @@
     <Window.Resources>
         <local:DoubleTimeConverter x:Key="DoubleTimeConverter" />
         <local:SongStateIconConverter x:Key="SongStateIconConverter" />
-        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter"/>
+        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
     </Window.Resources>
     <Grid>
         <MediaElement
@@ -43,7 +43,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </MediaElement>
-
+        
 
         <Border Style="{DynamicResource WindowBorder}" Background="{DynamicResource SecondBrush}" CornerRadius="25"
                 BorderThickness="1"
@@ -153,6 +153,8 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <local:TitleBar></local:TitleBar>
+                
+                
                 <Border Grid.Row="1" Padding="{DynamicResource Padding}">
 
                     <Grid>
@@ -171,11 +173,24 @@
                                     <DataTemplate>
                                         <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
                                             <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                                <Image
-                                                    Margin="10,5" Height="{DynamicResource Header1}"
-                                                    Source="{Binding IconSource}">
-                                                </Image>
-                                                <Label Visibility="{Binding TabsCollapsed, ElementName=VmContext, Converter={StaticResource VisibilityConverter} }" Content="{Binding Name}"></Label>
+                                                <Border Margin="10,10,0,10">
+                                                    <Image Cursor="Hand" Stretch="UniformToFill"
+                                                           Width="{DynamicResource Icon}"
+                                                           Height="{DynamicResource Icon}"
+                                                           Source="{Binding IconSource}"
+                                                           Margin="-10,0,0,-25">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseDown">
+                                                                <i:InvokeCommandAction Command="{Binding BackCommand}"></i:InvokeCommandAction>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                    </Image>
+                                                </Border>
+                                                <Label
+                                                    VerticalAlignment="Center"
+                                                    Visibility="{Binding TabsCollapsed, ElementName=VmContext, Converter={StaticResource VisibilityConverter} }"
+                                                    Content="{Binding Name}">
+                                                </Label>
                                             </WrapPanel>
                                         </local:CommandControl>
                                     </DataTemplate>
@@ -186,9 +201,8 @@
                                 Background="{DynamicResource ThirdBrush}" Padding="{DynamicResource Padding}"
                                 BorderBrush="{DynamicResource SecondBrush}" BorderThickness="1"
                                 CornerRadius="{DynamicResource Radius}">
-                            <ScrollViewer Name="ScrollViewer"  CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                                <Frame SourceUpdated="FrameSourceUpdated" Loaded="PageFrameLoaded" NavigationUIVisibility="Hidden"  />
-                            </ScrollViewer>
+                            <Frame Loaded="PageFrameLoaded"
+                                   NavigationUIVisibility="Hidden" />
                         </Border>
                         <!--<Border Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
                                 Margin="0,0,10,0" Grid.Row="1" Background="{DynamicResource SecondBrush}">
@@ -229,7 +243,7 @@
                                                 <Label
                                                     Content="{Binding TracksQueueVm.CurrentTrack.Name}">
                                                 </Label>
-                                                <Label Content="{Binding TracksQueueVm.CurrentTrack.Artist.Name}"></Label>
+                                                <Label Content="{Binding TracksQueueVm.CurrentTrack.Album.Author.Name}"></Label>
                                             </StackPanel>
                                         </DockPanel>
 
@@ -298,7 +312,7 @@
                                                     </i:Interaction.Triggers>
                                                 </Image>
                                             </Grid>
-                                            
+
                                             <Grid Margin="10,0,10,0" VerticalAlignment="Center">
                                                 <Ellipse Fill="{DynamicResource BackBrush}" Width="37" Height="37">
                                                 </Ellipse>
@@ -316,9 +330,7 @@
                                                     </i:Interaction.Triggers>
                                                 </Image>
                                             </Grid>
-                                            
-                                            
-                                           
+
 
                                             <!--<Slider Grid.Column="4" VerticalAlignment="Stretch" Orientation="Vertical"
                                                     Name="VolumeSlider"
@@ -362,6 +374,8 @@
                         </Border>
                     </Grid>
                 </Border>
+                
+
             </Grid>
         </Border>
     </Grid>

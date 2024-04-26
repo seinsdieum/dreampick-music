@@ -17,7 +17,7 @@
     <system:String x:Key="LCreatePost" >Create post</system:String>
     <system:String x:Key="LAccount" >Account</system:String>
     <system:String x:Key="LSettings" >Settings</system:String>
-    <system:String x:Key="LPublishAudio" >Publish audio</system:String>
+    <system:String x:Key="LPublishAudio" >Publish Album</system:String>
 
     
     <system:String x:Key="LTheme" >Theme Color</system:String>
@@ -46,8 +46,15 @@
     <system:String x:Key="LPlaylists" >Playlists</system:String>
     <system:String x:Key="LSubscribers" >Subscribers: </system:String>
     <system:String x:Key="LSubscribes" >Subscribes: </system:String>
+    <system:String x:Key="LAlbum" >Album</system:String>
+    <system:String x:Key="LLatestNew" >Latest</system:String>
     
-    <system:String x:Key="LPossibleFav" >You may like these</system:String>
+    
+    
+    
+    <system:String x:Key="LImageFile" >Image file </system:String>
+    
+    <system:String x:Key="LPossibleFav" >You may like it</system:String>
     <system:String x:Key="LPost" >Post</system:String>
 
 

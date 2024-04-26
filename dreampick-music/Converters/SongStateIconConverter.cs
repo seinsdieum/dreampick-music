@@ -12,7 +12,7 @@ public class SongStateIconConverter : IValueConverter
     {
         MediaState item = value is MediaState ? (MediaState)value : MediaState.Pause;
 
-        return item == MediaState.Play ? ((App)Application.Current).Resources["ImgPause"] : ((App)Application.Current).Resources["ImgPlay"];
+        return item == MediaState.Play ? App.Current.Resources["ImgPause"] : App.Current.Resources["ImgPlay"];
     }
      
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

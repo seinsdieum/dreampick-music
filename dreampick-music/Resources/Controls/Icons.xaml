@@ -3,9 +3,10 @@
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
     <DrawingImage x:Key="ImgPlay">
         <DrawingImage.Drawing>
-            <DrawingGroup >
+            <DrawingGroup>
 
-                <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}" Geometry="F1 M960,960z M0,0z M320,-273L320,-687Q320,-704 332,-715.5 344,-727 360,-727 365,-727 370.5,-725.5 376,-724 381,-721L707,-514Q716,-508 720.5,-499 725,-490 725,-480 725,-470 720.5,-461 716,-452 707,-446L381,-239Q376,-236 370.5,-234.5 365,-233 360,-233 344,-233 332,-244.5 320,-256 320,-273z" />
+                <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}"
+                                 Geometry="F1 M960,960z M0,0z M320,-273L320,-687Q320,-704 332,-715.5 344,-727 360,-727 365,-727 370.5,-725.5 376,-724 381,-721L707,-514Q716,-508 720.5,-499 725,-490 725,-480 725,-470 720.5,-461 716,-452 707,-446L381,-239Q376,-236 370.5,-234.5 365,-233 360,-233 344,-233 332,-244.5 320,-256 320,-273z" />
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
@@ -48,7 +49,7 @@
 
     <DrawingImage x:Key="ImgQueue">
         <DrawingImage.Drawing>
-            <DrawingGroup >
+            <DrawingGroup>
                 <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}"
                                  Geometry="F1 M960,960z M0,0z M640,-160Q590,-160 555,-195 520,-230 520,-280 520,-330 555,-365 590,-400 640,-400 651,-400 661,-398.5 671,-397 680,-392L680,-680Q680,-697 691.5,-708.5 703,-720 720,-720L840,-720Q857,-720 868.5,-708.5 880,-697 880,-680 880,-663 868.5,-651.5 857,-640 840,-640L760,-640 760,-280Q760,-230 725,-195 690,-160 640,-160z M160,-320Q143,-320 131.5,-331.5 120,-343 120,-360 120,-377 131.5,-388.5 143,-400 160,-400L400,-400Q417,-400 428.5,-388.5 440,-377 440,-360 440,-343 428.5,-331.5 417,-320 400,-320L160,-320z M160,-480Q143,-480 131.5,-491.5 120,-503 120,-520 120,-537 131.5,-548.5 143,-560 160,-560L560,-560Q577,-560 588.5,-548.5 600,-537 600,-520 600,-503 588.5,-491.5 577,-480 560,-480L160,-480z M160,-640Q143,-640 131.5,-651.5 120,-663 120,-680 120,-697 131.5,-708.5 143,-720 160,-720L560,-720Q577,-720 588.5,-708.5 600,-697 600,-680 600,-663 588.5,-651.5 577,-640 560,-640L160,-640z" />
             </DrawingGroup>
@@ -110,4 +111,107 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+
+
+    <DrawingImage x:Key="LoadingSpinner">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V100 H100 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="0.866025403784439,0.5,-0.5,0.866025403784439,31.6987298107781,-18.3012701892219">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="0.5,0.866025403784439,-0.866025403784439,0.5,68.3012701892219,-18.3012701892219">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1" Transform="6.12303176911189E-17,1,-1,6.12303176911189E-17,100,0">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="-0.5,0.866025403784439,-0.866025403784439,-0.5,118.301270189222,31.6987298107781">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="-0.866025403784439,0.5,-0.5,-0.866025403784439,118.301270189222,68.3012701892219">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1" Transform="-1,1.22460635382238E-16,-1.22460635382238E-16,-1,100,100">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="-0.866025403784439,-0.5,0.5,-0.866025403784439,68.3012701892219,118.301270189222">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="-0.5,-0.866025403784438,0.866025403784438,-0.5,31.6987298107781,118.301270189222">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="-1.83690953073357E-16,-1,1,-1.83690953073357E-16,7.105427357601E-15,100">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="0.5,-0.866025403784439,0.866025403784439,0.5,-18.3012701892219,68.3012701892219">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1"
+                              Transform="0.866025403784438,-0.5,0.5,0.866025403784438,-18.3012701892219,31.6987298107781">
+                    <GeometryDrawing Brush="{DynamicResource DarkenForeBrush}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="49.5,24,1,12" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+
 </ResourceDictionary>

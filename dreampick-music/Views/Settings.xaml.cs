@@ -14,6 +14,6 @@ public partial class Settings : Page
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
-        
+        MessageBox.Show("message!");
     }
 }

@@ -1,34 +1,29 @@
 ﻿using System;
+using System.IO;
+using System.Net;
 
 namespace dreampick_music.Models;
 
 public class Track
 {
-    public Uri Source
+    public string ID { get; set; }
+    public Uri Source { get; set; }
+
+    public string Name { get; set; }
+
+    public double Duration
     {
         get;
         set;
     }
     
-    public string Name
-    {
-        get;
-        set;
-    }
 
-    public Artist Artist
-    {
-        get;
-        set;
-    }
 
-    public Playlist Album
-    {
-        get;
-        set;
-    }
-    
-    public Playlist LocalQueue
+    public Playlist Album { get; set; }
+
+    public Playlist LocalQueue { get; set; }
+
+    public string Lyrics
     {
         get;
         set;
@@ -36,7 +31,5 @@ public class Track
 
     public Track()
     {
-        Artist = new Artist();
-        Artist.Name = "undefined";
     }
 }

@@ -2,11 +2,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection.Metadata;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using dreampick_music.Models;
+using dreampick_music.Views;
 
 namespace dreampick_music;
 
@@ -17,32 +19,24 @@ public class MainVm : INotifyPropertyChanged
     private double songVolume = 0.5;
     private double songValue = 5;
 
-    private NavigationService frameNavigation;
+
+    private CollectionPage collectionPage;
+    private Feed feedPage;
+    private Settings settingsPage;
+    private CreatePost createPostPage;
+    private PublishAudio publishAudio;
+    private ArtistAlbums artistAlbums;
 
 
     private bool tabsCollapsed = true;
 
     public bool TabsCollapsed
     {
-        get
-        {
-            return tabsCollapsed;
-        }
+        get { return tabsCollapsed; }
         set
         {
-            tabsCollapsed = value; OnPropertyChanged(nameof(TabsCollapsed));
-        }
-    }
-    
-
-    public NavigationService FrameNavigation
-    {
-        get { return frameNavigation; }
-        set
-        {
-            frameNavigation = value;
-            OnPropertyChanged(nameof(FrameNavigation));
-            frameNavigation.Navigate(new Feed());
+            tabsCollapsed = value;
+            OnPropertyChanged(nameof(TabsCollapsed));
         }
     }
 
@@ -141,21 +135,56 @@ public class MainVm : INotifyPropertyChanged
         {
             return new ObservableCollection<SingleChoice>()
             {
-                new SingleChoice("LCollection", (() => { }),
-                    new Uri("Assets/AppIcon.svg", UriKind.Relative)),
+                new SingleChoice("LCollection", (() =>
+                    {
+
+                        if (NavigationVm.Instance.Navigation is NavigationService service)
+                            service.Navigate(collectionPage ??= new CollectionPage());
+                    }),
+                    "ImgQueue"),
                 new SingleChoice("LFeed", () =>
                     {
-                        if (frameNavigation is not null) frameNavigation.Navigate(new Feed());
+                        if (NavigationVm.Instance.Navigation is NavigationService service)
+                        {
+                            service.Navigate(feedPage ??= new Feed());
+                        }
                     },
-                    new Uri("Assets/AppIcon.svg", UriKind.Relative)),
-                new SingleChoice("LCreatePost", () => { if (frameNavigation is not null) frameNavigation.Navigate(new CreatePost()); },
-                    new Uri("Assets/AppIcon.svg", UriKind.Relative)),
-                new SingleChoice("LAccount", () => { if (frameNavigation is not null) frameNavigation.Navigate(new Feed()); },
-                    new Uri("Assets/AppIcon.svg", UriKind.Relative)),
-                new SingleChoice("LSettings", () => { if (frameNavigation is not null) frameNavigation.Navigate(new Settings()); },
-                    new Uri("Assets/AppIcon.svg", UriKind.Relative)),
-                new SingleChoice("LAccount", () => { if (frameNavigation is not null) frameNavigation.Navigate(new Person("sdfsd")); },
-                    new Uri("Assets/AppIcon.svg", UriKind.Relative)),
+                    "ImgQueue"),
+                new SingleChoice("LCreatePost", () =>
+                    {
+                        if (NavigationVm.Instance.Navigation is NavigationService service)
+                            service.Navigate(createPostPage ??= new CreatePost());
+                    },
+                    "ImgQueue"),
+                new SingleChoice("LAccount", () =>
+                    {
+                        if (NavigationVm.Instance.Navigation is NavigationService service) ;
+                    },
+                    "ImgQueue"),
+                new SingleChoice("LSettings", () =>
+                    {
+                        if (NavigationVm.Instance.Navigation is NavigationService service)
+                            service.Navigate(settingsPage ??= new Settings());
+                    },
+                    "ImgQueue"),
+                new SingleChoice("LPublishAudio", () =>
+                    {
+                        if (NavigationVm.Instance.Navigation is NavigationService service)
+                            service.Navigate(publishAudio ??= new PublishAudio());
+                    },
+                    "ImgQueue"),
+                new SingleChoice("LAlbum", () =>
+                    {
+                        if (NavigationVm.Instance.Navigation is NavigationService service)
+                            service.Navigate(new AlbumPage("PksnTV]lGc"));
+                    },
+                    "ImgQueue"),
+                new SingleChoice("LMissing", () =>
+                    {
+                        if (NavigationVm.Instance.Navigation is NavigationService service)
+                            service.Navigate(artistAlbums ??= new ArtistAlbums("sdfsd"));
+                    },
+                    "ImgPlay"),
             };
         }
     }
@@ -187,11 +216,12 @@ public class MainVm : INotifyPropertyChanged
         var testTrack1 = new Track();
         var testTrack2 = new Track();
 
-        var album1 = new Playlist();
-        album1.Type = PlaylistType.ALBUM;
-        album1.Name = "Suchka";
-
-        var img = new Blob();
+        var album1 = new Playlist()
+        {
+            Type = PlaylistType.ALBUM,
+            Name = "Suchka",
+            Author = artist1
+        };
 
 
         artist1.Name = "KA$HDAMI";
@@ -200,15 +230,15 @@ public class MainVm : INotifyPropertyChanged
 
         testTrack1.Name = "Reparations!";
         testTrack1.Source = new Uri("D:/Tracks/124.mp3", UriKind.Absolute);
-        testTrack1.Artist = artist1;
+        testTrack1.Album = album1;
 
         testTrack2.Name = "Tricky Disco";
         testTrack2.Source = new Uri("D:/Tracks/123.mp3", UriKind.Absolute);
-        testTrack2.Artist = artist2;
+        testTrack2.Album = album1;
 
 
         var vm = new PlayingQueueVm();
-        vm.Queue = new Playlist();
+        vm.Queue = album1;
         vm.Queue.Tracks.Add(testTrack1);
         vm.Queue.Tracks.Add(testTrack2);
         TracksQueueVm = vm;

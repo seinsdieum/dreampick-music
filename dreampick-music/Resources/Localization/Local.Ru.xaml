@@ -15,7 +15,7 @@
     <system:String x:Key="LCreatePost" >Создать пост</system:String>
     <system:String x:Key="LAccount" >Аккаунт</system:String>
     <system:String x:Key="LSettings" >Настройки</system:String>
-    <system:String x:Key="LPublishAudio" >Опубликовать аудиозапись</system:String>
+    <system:String x:Key="LPublishAudio" >Опубликовать альбом</system:String>
     
     <system:String x:Key="LTheme" >Цвет темы</system:String>
     <system:String x:Key="LLight" >Светлый</system:String>
@@ -31,11 +31,16 @@
     <system:String x:Key="LRussian" >Русский</system:String>
     <system:String x:Key="LEnglish" >Английский</system:String>
     
+    <system:String x:Key="LImageFile" >Файл изображения</system:String>
+
     
     <system:String x:Key="LFavorite" >Мои треки</system:String>
     <system:String x:Key="LPlaylists" >Плейлисты</system:String>
     <system:String x:Key="LSubscribers" >Подписчики: </system:String>
     <system:String x:Key="LSubscribes" >Подписки: </system:String>
+    <system:String x:Key="LAlbum" >Альбом</system:String>
+    <system:String x:Key="LLatestNew" >Новинки</system:String>
+
     
     <system:String x:Key="LPossibleFav" >Может понравиться вам</system:String>
     <system:String x:Key="LPost" >Пост</system:String>

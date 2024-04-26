@@ -11,6 +11,7 @@
     <Color x:Key="HightlightColor" R="255" G="255" B="255" A="20"></Color>
     
     
+    
     <SolidColorBrush x:Key="BackBrush" Color="#0a0a0a"></SolidColorBrush>
     <SolidColorBrush x:Key="CloseBrush" Color="#e81123"></SolidColorBrush>
     <SolidColorBrush x:Key="SecondBrush" Color="#1e1e1e"></SolidColorBrush>
@@ -19,6 +20,23 @@
     <SolidColorBrush x:Key="DarkenForeBrush" Color="#f0f0f0"></SolidColorBrush>
     <LinearGradientBrush x:Key="TitleBarBrush" StartPoint="0,0" EndPoint="0.5,1.0">
 
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush
+        x:Key="DarkenBottomGradient"
+        StartPoint="0,0"
+        EndPoint="0,1">
+        <GradientStop  Offset="0">
+            <GradientStop.Color>
+                <Color R="0" G="0" B="0" A="0"></Color>
+            </GradientStop.Color>
+        </GradientStop>
+        <GradientStop  Offset="0.333">
+            <GradientStop.Color>
+                <Color R="0" G="0" B="0" A="0"></Color>
+            </GradientStop.Color>
+        </GradientStop>
+        <GradientStop Color="#dd000000" Offset="1"/>
     </LinearGradientBrush>
 
 </ResourceDictionary>

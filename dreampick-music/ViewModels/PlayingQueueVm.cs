@@ -11,17 +11,23 @@ public class PlayingQueueVm : INotifyPropertyChanged
 
     public Playlist Queue
     {
-        get
-        {
-            return queue;
-        }
+        get { return queue; }
         set
         {
-            queue = value; OnPropertyChanged(nameof(Queue));
+            queue = value;
+            OnPropertyChanged(nameof(Queue));
         }
     }
 
 
+    public int TrackIndex
+    {
+        get => trackIndex;
+        set
+        {
+            trackIndex = value; OnPropertyChanged(nameof(TrackIndex));
+        }
+    }
 
 
     public Track CurrentTrack
@@ -38,8 +44,8 @@ public class PlayingQueueVm : INotifyPropertyChanged
             }
         }
     }
-    
-    public ButtonCommand NextTrackCommand 
+
+    public ButtonCommand NextTrackCommand
     {
         get
         {
@@ -58,8 +64,8 @@ public class PlayingQueueVm : INotifyPropertyChanged
             });
         }
     }
-    
-    public ButtonCommand PrevTrackCommand 
+
+    public ButtonCommand PrevTrackCommand
     {
         get
         {
@@ -81,11 +87,9 @@ public class PlayingQueueVm : INotifyPropertyChanged
 
     public PlayingQueueVm()
     {
-        
     }
-    
-    
-    
+
+
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
     public void OnPropertyChanged(string prop)

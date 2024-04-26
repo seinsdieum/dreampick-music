@@ -1,0 +1,70 @@
+﻿<Page x:Class="dreampick_music.PublishAudio"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:dreampick_music"
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:fa="http://schemas.fontawesome.io/icons/"
+      xmlns:utilities="clr-namespace:dreampick_music.Utilities"
+      mc:Ignorable="d"
+      Title="PublishAudio">
+    <Page.DataContext>
+        <local:PublishAudioVm x:Name="VmContext"></local:PublishAudioVm>
+    </Page.DataContext>
+    <Page.Resources>
+        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
+    </Page.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="5,0,0,5" Style="{DynamicResource StackRoot}">
+            <Label Content="{DynamicResource LPublishAudio}" Style="{DynamicResource H1}" Margin="0,0,0,10"></Label>
+            <TextBox Foreground="{DynamicResource ForeBrush}" Background="{DynamicResource BackBrush}" Text="{Binding AlbumName}"></TextBox>
+            
+            <Image Width="100" Height="100" Source="{Binding ImageSource }"></Image>
+            <Button Command="{Binding LoadImageCommand}">add image</Button>
+            <Button Command="{Binding AddTrackCommand}">add track</Button>
+            <Button Command="{Binding PublishCommand}">publish</Button>
+            
+
+            <ListView Name="QueueView" Style="{DynamicResource PostView}" ItemsSource="{Binding Tracks}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                                Background="{DynamicResource SecondBrush}">
+
+                            <StackPanel>
+                                <Grid Margin="0,0,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <fa:FontAwesome Cursor="Hand"  Margin="0,0,0,0" FontSize="{DynamicResource Header1}"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{DynamicResource DarkenForeBrush}" Icon="Play">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseDown">
+                                                <i:InvokeCommandAction CommandParameter="{Binding  TrackId}" Command="{Binding PlayQueueCommand,  ElementName=VmContext}"></i:InvokeCommandAction>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers> 
+                                    </fa:FontAwesome>
+                                    
+                                    
+                                    
+                                    <TextBox VerticalAlignment="Center" Grid.Column="1"
+                                           Foreground="{DynamicResource DarkenForeBrush}" 
+                                           Text="{Binding Name}">
+                                    </TextBox>
+                                    <Button Grid.Column="2" Command="{Binding LoadSourceCommand}">load source</Button>
+                                </Grid>
+                                
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+        
+    </ScrollViewer>
+</Page>
