@@ -144,7 +144,13 @@ namespace dreampick_music
 
             timer = new DispatcherTimer();
             timer.Tick += new EventHandler(timer_Tick);
-            timer.Interval = new TimeSpan(0, 0, 0, 0,2);
+            timer.Interval = new TimeSpan(0, 0, 0, 0,100);
+            
+            
+            if(AudioPlayer is not null) AudioPlayer.MediaOpened += ((o, args) =>
+            {
+                if(TrackSlider is not null) TrackSlider.Maximum = AudioPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+            }) ;
         }
 
 
@@ -156,13 +162,13 @@ namespace dreampick_music
         private void timer_Tick(object sender, EventArgs e)
         {
             codeFactor = 0;
+            ChangeTrackPositionSelection();
             if (System.Windows.Input.Mouse.LeftButton != MouseButtonState.Pressed &&
                 TrackSlider != null && AudioPlayer != null) TrackSlider.Value = AudioPlayer.Position.TotalSeconds;
-            
-            ChangeTrackPositionSelection();
+
         }
 
-        private TimeSpan trackPosition = TimeSpan.FromSeconds(6);
+        private TimeSpan trackPosition = TimeSpan.FromSeconds(0);
 
         public TimeSpan TrackPosition
         {
@@ -173,7 +179,6 @@ namespace dreampick_music
         {
             if (AudioPlayer is { LoadedBehavior: MediaState.Play })
             {
-                if(AudioPlayer.NaturalDuration.HasTimeSpan) TrackSlider.Maximum = AudioPlayer.NaturalDuration.TimeSpan.TotalSeconds;
 
                 if (timer != null) timer.Start();
                 else

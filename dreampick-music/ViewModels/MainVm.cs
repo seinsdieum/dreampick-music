@@ -14,11 +14,10 @@ namespace dreampick_music;
 
 public class MainVm : INotifyPropertyChanged
 {
-    private MediaState songState = MediaState.Pause;
 
-    private double songVolume = 0.5;
-    private double songValue = 5;
 
+
+    #region Navigation Tabs
 
     private CollectionPage collectionPage;
     private Feed feedPage;
@@ -37,92 +36,6 @@ public class MainVm : INotifyPropertyChanged
         {
             tabsCollapsed = value;
             OnPropertyChanged(nameof(TabsCollapsed));
-        }
-    }
-
-
-    private PlayingQueueVm tracksQueueVm = new PlayingQueueVm();
-
-    public PlayingQueueVm TracksQueueVm
-    {
-        get { return tracksQueueVm; }
-        set
-        {
-            tracksQueueVm = value;
-            OnPropertyChanged(nameof(TracksQueueVm));
-        }
-    }
-
-    public double SongVolume
-    {
-        get { return songVolume; }
-        set
-        {
-            songVolume = value;
-            OnPropertyChanged(nameof(SongVolume));
-        }
-    }
-
-    public MediaState SongState
-    {
-        get { return songState; }
-        set
-        {
-            songState = value;
-            OnPropertyChanged(nameof(SongState));
-        }
-    }
-
-    public ButtonCommand PlayCommand
-    {
-        get
-        {
-            return new ButtonCommand(o =>
-            {
-                SongState = songState == MediaState.Play ? MediaState.Pause : MediaState.Play;
-            });
-        }
-    }
-
-    public ButtonCommand NextCommand
-    {
-        get
-        {
-            return new ButtonCommand(o =>
-            {
-                var state = songState;
-                SongState = MediaState.Pause;
-                TracksQueueVm.NextTrackCommand.Execute(o);
-                var timer = new DispatcherTimer();
-                timer.Interval = new TimeSpan(0, 0, 0, 0, 600);
-                timer.Tick += ((sender, args) =>
-                {
-                    SongState = state;
-                    timer.Stop();
-                });
-                timer.Start();
-            });
-        }
-    }
-
-    public ButtonCommand PrevCommand
-    {
-        get
-        {
-            return new ButtonCommand(o =>
-            {
-                var state = songState;
-                SongState = MediaState.Pause;
-                TracksQueueVm.PrevTrackCommand.Execute(o);
-                var timer = new DispatcherTimer();
-                timer.Interval = new TimeSpan(0, 0, 0, 0, 600);
-                timer.Tick += ((sender, args) =>
-                {
-                    SongState = state;
-                    timer.Stop();
-                });
-                timer.Start();
-            });
         }
     }
 
@@ -201,10 +114,88 @@ public class MainVm : INotifyPropertyChanged
         }
     }
 
+    #endregion
+
 
     public MainVm()
     {
         TestTrackVm();
+    }
+
+
+
+    #region Audio Player
+    
+    public PlayerVm Player => PlayerVm.Instance;
+
+    private MediaState songState = MediaState.Pause;
+
+    private double songVolume = 0.5;
+    private double songValue = 5;
+
+    private PlayingQueueVm tracksQueueVm = new PlayingQueueVm();
+
+    public PlayingQueueVm TracksQueueVm
+    {
+        get { return tracksQueueVm; }
+        set
+        {
+            tracksQueueVm = value;
+            OnPropertyChanged(nameof(TracksQueueVm));
+        }
+    }
+
+    public double SongVolume
+    {
+        get { return songVolume; }
+        set
+        {
+            songVolume = value;
+            OnPropertyChanged(nameof(SongVolume));
+        }
+    }
+
+    public MediaState SongState
+    {
+        get { return songState; }
+        set
+        {
+            songState = value;
+            OnPropertyChanged(nameof(SongState));
+        }
+    }
+
+    public ButtonCommand PlayCommand
+    {
+        get
+        {
+            return new ButtonCommand(o =>
+            {
+                SongState = songState == MediaState.Play ? MediaState.Pause : MediaState.Play;
+            });
+        }
+    }
+
+    public ButtonCommand NextCommand
+    {
+        get
+        {
+            return new ButtonCommand(o =>
+            {
+                TracksQueueVm.NextTrackCommand.Execute(o);
+            });
+        }
+    }
+
+    public ButtonCommand PrevCommand
+    {
+        get
+        {
+            return new ButtonCommand(o =>
+            {
+                TracksQueueVm.PrevTrackCommand.Execute(o);
+            });
+        }
     }
 
 
@@ -244,10 +235,16 @@ public class MainVm : INotifyPropertyChanged
         TracksQueueVm = vm;
     }
 
+    #endregion
+
+    #region NotifyProperty Members
+
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
     public void OnPropertyChanged(string prop)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
+
+    #endregion
 }
