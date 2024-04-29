@@ -102,18 +102,6 @@ public class MainVm : INotifyPropertyChanged
         }
     }
 
-    private Uri pageSource = new Uri("Settings.xaml", UriKind.Relative);
-
-    public Uri PageSource
-    {
-        get { return pageSource; }
-        set
-        {
-            pageSource = value;
-            OnPropertyChanged(nameof(PageSource));
-        }
-    }
-
     #endregion
 
 
@@ -127,77 +115,6 @@ public class MainVm : INotifyPropertyChanged
     #region Audio Player
     
     public PlayerVm Player => PlayerVm.Instance;
-
-    private MediaState songState = MediaState.Pause;
-
-    private double songVolume = 0.5;
-    private double songValue = 5;
-
-    private PlayingQueueVm tracksQueueVm = new PlayingQueueVm();
-
-    public PlayingQueueVm TracksQueueVm
-    {
-        get { return tracksQueueVm; }
-        set
-        {
-            tracksQueueVm = value;
-            OnPropertyChanged(nameof(TracksQueueVm));
-        }
-    }
-
-    public double SongVolume
-    {
-        get { return songVolume; }
-        set
-        {
-            songVolume = value;
-            OnPropertyChanged(nameof(SongVolume));
-        }
-    }
-
-    public MediaState SongState
-    {
-        get { return songState; }
-        set
-        {
-            songState = value;
-            OnPropertyChanged(nameof(SongState));
-        }
-    }
-
-    public ButtonCommand PlayCommand
-    {
-        get
-        {
-            return new ButtonCommand(o =>
-            {
-                SongState = songState == MediaState.Play ? MediaState.Pause : MediaState.Play;
-            });
-        }
-    }
-
-    public ButtonCommand NextCommand
-    {
-        get
-        {
-            return new ButtonCommand(o =>
-            {
-                TracksQueueVm.NextTrackCommand.Execute(o);
-            });
-        }
-    }
-
-    public ButtonCommand PrevCommand
-    {
-        get
-        {
-            return new ButtonCommand(o =>
-            {
-                TracksQueueVm.PrevTrackCommand.Execute(o);
-            });
-        }
-    }
-
 
     public void TestTrackVm()
     {
@@ -227,12 +144,10 @@ public class MainVm : INotifyPropertyChanged
         testTrack2.Source = new Uri("D:/Tracks/123.mp3", UriKind.Absolute);
         testTrack2.Album = album1;
 
-
-        var vm = new PlayingQueueVm();
-        vm.Queue = album1;
-        vm.Queue.Tracks.Add(testTrack1);
-        vm.Queue.Tracks.Add(testTrack2);
-        TracksQueueVm = vm;
+        album1.Tracks.Add(testTrack1);
+        album1.Tracks.Add(testTrack2);
+        
+        Player.Queue = album1;
     }
 
     #endregion

@@ -64,14 +64,9 @@ public class AlbumPageVm : INotifyPropertyChanged
 
     public ButtonCommand PlayAlbumCommand => new ButtonCommand((o =>
     {
-        if (_mainVm is MainVm vm && o is string id)
-        {
-            vm.TracksQueueVm = new PlayingQueueVm()
-            {
-                TrackIndex = AudioPlayerModel.Instance.GetQueueIndex(album.Result, id),
-                Queue = album.Result
-            };
-        }
+        if (o is not string id) return;
+        PlayerVm.Instance.PlayNewQueue(album.Result, id);
+
     }));
 
     private void DestroyObjects()

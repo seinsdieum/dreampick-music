@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:dreampick_music"
-        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:utilities="clr-namespace:dreampick_music.Utilities"
         mc:Ignorable="d"
@@ -28,17 +27,17 @@
     <Grid>
         <MediaElement
             Name="AudioPlayer"
-            Volume="{Binding SongVolume}"
-            LoadedBehavior="{Binding SongState}"
+            Volume="{Binding Player.SongVolume}"
+            LoadedBehavior="{Binding Player.SongState}"
 
-            Source="{Binding TracksQueueVm.CurrentTrack.Source}">
+            Source="{Binding Player.CurrentTrack.Source}">
             <i:Interaction.Triggers>
                 <i:PropertyChangedTrigger Changed="SongValue_OnChange"
                                           Binding="{Binding LoadedBehavior, ElementName=AudioPlayer}">
                 </i:PropertyChangedTrigger>
                 <i:EventTrigger EventName="MediaEnded">
                     <i:InvokeCommandAction
-                        Command="{Binding NextCommand}">
+                        Command="{Binding Player.NextTrackCommand}">
                     </i:InvokeCommandAction>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
@@ -180,11 +179,6 @@
                                                            Height="{DynamicResource Icon}"
                                                            Source="{Binding IconSource}"
                                                            Margin="-10,0,0,-25">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="MouseDown">
-                                                                <i:InvokeCommandAction Command="{Binding BackCommand}"></i:InvokeCommandAction>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
                                                     </Image>
                                                 </Border>
                                                 <Label
@@ -238,13 +232,13 @@
                                                     CornerRadius="5">
 
                                                 <Image Height="{DynamicResource Icon}" Width="{DynamicResource Icon}"
-                                                       Source="{Binding TracksQueueVm.CurrentTrack.Album.Image}" />
+                                                       Source="{Binding Player.CurrentTrack.Album.Image}" />
                                             </Border>
                                             <StackPanel>
                                                 <Label
-                                                    Content="{Binding TracksQueueVm.CurrentTrack.Name}">
+                                                    Content="{Binding Player.CurrentTrack.Name}">
                                                 </Label>
-                                                <Label Content="{Binding TracksQueueVm.CurrentTrack.Album.Author.Name}"></Label>
+                                                <Label Content="{Binding Player.CurrentTrack.Album.Author.Name}"></Label>
                                             </StackPanel>
                                         </DockPanel>
 
@@ -262,7 +256,7 @@
                                                 Grid.Column="0">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseDown">
-                                                        <i:InvokeCommandAction Command="{Binding PrevCommand}"></i:InvokeCommandAction>
+                                                        <i:InvokeCommandAction Command="{Binding Player.PrevTrackCommand}"></i:InvokeCommandAction>
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
                                             </Image>
@@ -274,10 +268,10 @@
                                                     Margin="0,0,0,-15"
                                                     Stretch="UniformToFill"
                                                     VerticalAlignment="Center"
-                                                    Source="{Binding SongState, Converter={StaticResource SongStateIconConverter} }">
+                                                    Source="{Binding Player.SongState, Converter={StaticResource SongStateIconConverter} }">
                                                     <i:Interaction.Triggers>
                                                         <i:EventTrigger EventName="MouseDown">
-                                                            <i:InvokeCommandAction Command="{Binding PlayCommand}"></i:InvokeCommandAction>
+                                                            <i:InvokeCommandAction Command="{Binding Player.PlayTrackCommand}"></i:InvokeCommandAction>
                                                         </i:EventTrigger>
                                                     </i:Interaction.Triggers>
                                                 </Image>
@@ -290,7 +284,7 @@
                                                 Grid.Column="2">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseDown">
-                                                        <i:InvokeCommandAction Command="{Binding NextCommand}"></i:InvokeCommandAction>
+                                                        <i:InvokeCommandAction Command="{Binding Player.NextTrackCommand}"></i:InvokeCommandAction>
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
                                             </Image>
@@ -306,11 +300,6 @@
                                                     VerticalAlignment="Center"
                                                     Margin="0,0,0,-15"
                                                     Source="{DynamicResource ImgQueue }">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="MouseDown">
-                                                            <i:InvokeCommandAction Command="{Binding PlayCommand}"></i:InvokeCommandAction>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
                                                 </Image>
                                             </Grid>
 
@@ -324,11 +313,6 @@
                                                     Stretch="UniformToFill"
                                                     VerticalAlignment="Center"
                                                     Source="{DynamicResource ImgRepeat }">
-                                                    <i:Interaction.Triggers>
-                                                        <i:EventTrigger EventName="MouseDown">
-                                                            <i:InvokeCommandAction Command="{Binding PlayCommand}"></i:InvokeCommandAction>
-                                                        </i:EventTrigger>
-                                                    </i:Interaction.Triggers>
                                                 </Image>
                                             </Grid>
 
@@ -340,7 +324,6 @@
                                             </Slider>-->
                                         </DockPanel>
                                     </Grid>
-                                    <Label Content="{Binding Player.CurrentTrack.Name}"></Label>
 
                                     <Grid VerticalAlignment="Center">
                                         <Grid.ColumnDefinitions>

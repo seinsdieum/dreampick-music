@@ -100,6 +100,11 @@ public class PlayerVm : INotifyPropertyChanged
             }
         }
     });
+    
+    public ButtonCommand PlayTrackCommand => new ButtonCommand(o =>
+    {
+        SongState = songState == MediaState.Play ? MediaState.Pause : MediaState.Play;
+    });
 
     public ButtonCommand PrevTrackCommand => new ButtonCommand(o =>
     {
@@ -138,6 +143,26 @@ public class PlayerVm : INotifyPropertyChanged
     {
         Queue = AudioPlayerModel.Instance.RandomizePlaylist(queue);
     });
+
+
+    public void PlayNewQueue(Playlist queuePlay, string trackId)
+    {
+        if (queuePlay.Tracks.Count <= 0) return;
+        
+        Queue = queuePlay;
+        CurrentIndex = AudioPlayerModel.Instance.GetQueueIndex(queuePlay, trackId);
+        SongState = MediaState.Play;
+    }
+    
+    public void PlayNewQueue(Playlist queuePlay, int index = 0)
+    {
+        if (queuePlay.Tracks.Count <= 0) return;
+
+        index = index > queuePlay.Tracks.Count - 1 ? 0 : index;
+        Queue = queuePlay;
+        CurrentIndex = index;
+        SongState = MediaState.Play;
+    }
     
     
     

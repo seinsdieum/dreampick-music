@@ -54,7 +54,7 @@ public class PublishAudioVm : HistoryVm
     {
         var dialog = new OpenFileDialog();
         dialog.DefaultExt = ".jpg";
-        dialog.Filter = "Image files (.jpg), (.png)|*.jpg;*.png";
+        dialog.Filter = "Image files |*.jpg;*.png";
         var result = dialog.ShowDialog();
         if (result != true) return;
 
@@ -71,15 +71,9 @@ public class PublishAudioVm : HistoryVm
 
     public ButtonCommand PlayQueueCommand => new ButtonCommand((o =>
     {
-        if (o is not string idd) return;
+        if (o is not string id) return;
         var tracksPlaylist = CreatePlaylist();
-        if (mainVm is not MainVm vm) return;
-        vm.TracksQueueVm = new PlayingQueueVm()
-        {
-            Queue = tracksPlaylist,
-            TrackIndex = AudioPlayerModel.Instance.GetQueueIndex(tracksPlaylist, idd)
-        };
-        vm.SongState = MediaState.Play;
+        PlayerVm.Instance.PlayNewQueue(tracksPlaylist, id);
     }));
 
 
