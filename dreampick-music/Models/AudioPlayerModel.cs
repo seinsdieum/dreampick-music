@@ -60,16 +60,5 @@ public class AudioPlayerModel
             
         };
     }
-
-    public PlayingQueueVm GenerateQueue(Playlist playlist, int index)
-    {
-        var queue = new PlayingQueueVm()
-        {
-            Queue = playlist,
-            TrackIndex = index,
-        };
-        
-        return queue;
-    }
     
 }

@@ -116,7 +116,6 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <!--TODO animations-->
                 <Setter Property="Background" Value="{DynamicResource ThirdBrush}"></Setter>
 
             </Trigger>

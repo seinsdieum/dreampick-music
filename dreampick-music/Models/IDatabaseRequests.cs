@@ -7,7 +7,6 @@ namespace dreampick_music.Models;
 
 public interface IDatabaseRequests
 {
-    // TODO to async all
     Task<bool> AddPost(Post post);
     Task<ObservableCollection<Post>> LoadPostsAsync();
     Task<ObservableCollection<Post>> LoadUserPostsAsync(string id);

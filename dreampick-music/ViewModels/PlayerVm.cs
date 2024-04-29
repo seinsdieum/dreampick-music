@@ -4,21 +4,21 @@ using dreampick_music.Models;
 
 namespace dreampick_music;
 
-public enum AudioRepeatType {
+public enum AudioRepeatType
+{
     NO_REPEAT = 1,
     REPEAT_QUEUE,
     REPEAT_TRACK,
 }
 
+//TODO implement song modes
 public class PlayerVm : INotifyPropertyChanged
 {
-    
     private MediaState songState = MediaState.Pause;
 
     private double songVolume = 0.5;
-    
-    
-    
+
+
     private Playlist queue = new Playlist();
     private bool TrackIsAvailable => Queue.HasTrack(currentIndex);
 
@@ -35,8 +35,8 @@ public class PlayerVm : INotifyPropertyChanged
             OnPropertyChanged(nameof(Queue));
         }
     }
-    
-    
+
+
     public double SongVolume
     {
         get { return songVolume; }
@@ -59,10 +59,7 @@ public class PlayerVm : INotifyPropertyChanged
 
     public AudioRepeatType AudioRepeat
     {
-        set
-        {
-            repeatType = value;
-        }
+        set { repeatType = value; }
     }
 
     private int currentIndex = 0;
@@ -78,33 +75,30 @@ public class PlayerVm : INotifyPropertyChanged
 
 
     public Track CurrentTrack => Queue.Tracks[currentIndex];
-    
-    
-    
+
+
     public ButtonCommand NextTrackCommand => new ButtonCommand(o =>
     {
         var delta = currentIndex + 1;
 
         if (repeatType == AudioRepeatType.REPEAT_TRACK)
         {
-            
+            CurrentIndex = -1;
+            CurrentIndex = delta - 1;
         }
         else
         {
             if (queue.HasTrack(delta)) CurrentIndex = delta;
-            else if(repeatType == AudioRepeatType.REPEAT_QUEUE) CurrentIndex = 0;
+            else if (repeatType == AudioRepeatType.REPEAT_QUEUE) CurrentIndex = 0;
             else
             {
                 CurrentIndex = 0;
-                
+                SongState = MediaState.Pause;
             }
         }
     });
-    
-    public ButtonCommand PlayTrackCommand => new ButtonCommand(o =>
-    {
-        SongState = songState == MediaState.Play ? MediaState.Pause : MediaState.Play;
-    });
+
+    public ButtonCommand PlayTrackCommand => new ButtonCommand(o => { SwitchSongState(); });
 
     public ButtonCommand PrevTrackCommand => new ButtonCommand(o =>
     {
@@ -112,22 +106,20 @@ public class PlayerVm : INotifyPropertyChanged
 
         if (repeatType == AudioRepeatType.REPEAT_TRACK)
         {
-            
+            CurrentIndex = -1;
+            CurrentIndex = delta + 1;
         }
         else
         {
             if (queue.HasTrack(delta)) CurrentIndex = delta;
-            else if(repeatType == AudioRepeatType.REPEAT_QUEUE) CurrentIndex = 0;
+            else if (repeatType == AudioRepeatType.REPEAT_QUEUE) CurrentIndex = 0;
             else
             {
-                CurrentIndex = 0;
-                
+                SongState = MediaState.Pause;
             }
         }
     });
 
-
-    
 
     public ButtonCommand ToggleRepeatCommand => new ButtonCommand(o =>
     {
@@ -147,15 +139,29 @@ public class PlayerVm : INotifyPropertyChanged
 
     public void PlayNewQueue(Playlist queuePlay, string trackId)
     {
+        if (Queue.ID == queuePlay.ID)
+        {
+            SwitchSongState();
+            return;
+        }
+
+
         if (queuePlay.Tracks.Count <= 0) return;
-        
+
         Queue = queuePlay;
         CurrentIndex = AudioPlayerModel.Instance.GetQueueIndex(queuePlay, trackId);
         SongState = MediaState.Play;
     }
-    
+
     public void PlayNewQueue(Playlist queuePlay, int index = 0)
     {
+        if (Queue.ID == queuePlay.ID)
+        {
+            SwitchSongState();
+            return;
+        }
+        
+        
         if (queuePlay.Tracks.Count <= 0) return;
 
         index = index > queuePlay.Tracks.Count - 1 ? 0 : index;
@@ -163,17 +169,19 @@ public class PlayerVm : INotifyPropertyChanged
         CurrentIndex = index;
         SongState = MediaState.Play;
     }
-    
-    
-    
-    
+
+    private void SwitchSongState()
+    {
+        SongState = songState == MediaState.Play ? MediaState.Pause : MediaState.Play;
+    }
+
+
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
     public void OnPropertyChanged(string prop)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
+
     public static PlayerVm Instance = new PlayerVm();
-
-
 }
