@@ -25,15 +25,6 @@ public class Config
 
     public string DbString => dbString;
 
-    public List<string> PageSources = new List<string>()
-    {
-        "Settings.xaml",
-        "CollectionPage.xaml",
-        "AccountPage.xaml",
-        "Feed.xaml",
-        "AuthPage.xaml",
-    };
-
     public List<string> DictionarySources = new List<string>()
     {
         "Resources/Theme/Theme.Default.xaml",
@@ -42,23 +33,9 @@ public class Config
         "Resources/Theme/Sizes.Default.xaml",
         "Resources/Style/TitleBar.xaml",
         "Resources/Controls/Icons.xaml",
+        "Resources/Converters/Converters.xaml",
     };
 
-    public ObservableCollection<SingleChoice> AppTabs
-    {
-        get
-        {
-            return new ObservableCollection<SingleChoice>()
-            {
-                /*new SingleChoice("LCollection", FrameController.CollectionPage(app.MainWindow.)),
-                new SingleChoice("LFeed", FrameController.FeedPage(frame)),
-                new SingleChoice("LAccount", FrameController.AccountPage(frame)),
-                new SingleChoice("LSettings", FrameController.Settings(frame)),*/
-            };
-        }
-    }
-
-    public ObservableCollection<SingleChoice> ThemeTabs;
     
     
     
@@ -92,17 +69,7 @@ public class Config
         else DictionarySources[4] = "Resources/Style/TitleBar.New.xaml";
         RefreshDictionaries();
     }
-
-    public void InitializeAppTabs(Frame frame)
-    {
-        /*AppTabs = new ObservableCollection<SingleChoice>()
-        {
-            new SingleChoice("LCollection", FrameController.CollectionPage(frame)),
-            new SingleChoice("LFeed", FrameController.FeedPage(frame)),
-            new SingleChoice("LAccount", FrameController.AccountPage(frame)),
-            new SingleChoice("LSettings", FrameController.Settings(frame)),
-        };*/
-    }
+    
 
     private void RefreshDictionaries()
     {
@@ -111,5 +78,5 @@ public class Config
         {
             app.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(source, UriKind.Relative) });
         }
-     }
+    }
 }

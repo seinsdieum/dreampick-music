@@ -7,6 +7,54 @@
         <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
         <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
     </Style>
+    
+    <Style x:Key="LinkedP" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="FontSize" Value="{DynamicResource Paragraph}"></Setter>
+        <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="Cursor" Value="Hand"></Setter>
+        
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="TextDecorations" Value="Underline"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    
+    <Style x:Key="P" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="FontSize" Value="{DynamicResource Paragraph}"></Setter>
+        <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+        <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+    <Style x:Key="PWrap" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="FontSize" Value="{DynamicResource Paragraph}"></Setter>
+        <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+        <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+    
+    <!--<Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="FontSize" Value="{DynamicResource Paragraph}"></Setter>
+        <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
+    </Style>-->
+    
+    <Style x:Key="InvalidParagraph" TargetType="Label">
+        <Setter Property="Foreground" Value="{DynamicResource CloseBrush}"></Setter>
+        <Setter Property="FontSize" Value="{DynamicResource Paragraph}"></Setter>
+        <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
+    </Style>
 
     <Style x:Key="Input" TargetType="Label">
         <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
@@ -125,6 +173,35 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    <Style x:Key="FieldToggleButton" TargetType="ToggleButton">
+        <Setter Property="Background" Value="{DynamicResource ThirdBrush}"></Setter>
+        <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="0"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid>
+                        <Border Padding="10" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource Radius}"></Border>
+                        <ContentPresenter Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"></ContentPresenter>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource SecondBrush}"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False" >
+                            <Setter Property="Background" Value="{DynamicResource ThirdBrush}"></Setter>
+
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource SecondBrush}"></Setter>
+
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
     <Style x:Key="ControlButton" TargetType="Button">
@@ -154,6 +231,36 @@
         </Style.Triggers>
     </Style>
 
+    
+    <Style TargetType="Button">
+
+        <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="FontSize" Value="{DynamicResource Paragraph}"></Setter>
+        <Setter Property="BorderThickness" Value="0"></Setter>
+        <Setter Property="Background" Value="{DynamicResource ThirdBrush}"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                            Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"></ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource BackBrush}"></Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="Transparent"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource DarkenForeBrush}"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <Style x:Key="BorderRoot" TargetType="Border">
         <Style.Triggers>
@@ -216,6 +323,51 @@
             </EventTrigger>
         </Style.Triggers>
     </Style>
+    
+    
+    <Style x:Key="ThirdBorderRoot" TargetType="Border">
+        
+        
+        <Setter Property="Background" Value="{DynamicResource ThirdBrush}"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation From="0" To="100" Storyboard.TargetProperty="Background.Opacity"
+                                             Duration="0:0:30.500">
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+            
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource SecondBrush}"></Setter>
+                <Setter Property="Label.Foreground" Value="{DynamicResource DarkenForeBrush}"></Setter>
+                <Setter Property="TextBlock.Foreground" Value="{DynamicResource DarkenForeBrush}"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    
+    <Style x:Key="SecondBorderRoot" TargetType="Border">
+        
+        <Setter Property="Background" Value="{DynamicResource SecondBrush}"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation From="0" To="100" Storyboard.TargetProperty="Background.Opacity"
+                                             Duration="0:0:30.500">
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <Style x:Key="TextBoxTransparent" TargetType="TextBox">
         <Setter Property="Padding" Value="{DynamicResource Padding}"></Setter>
@@ -240,7 +392,90 @@
             </MultiTrigger>
         </Style.Triggers>
     </Style>
+    
+    <ControlTemplate x:Key="TextboxTemplate" TargetType="{x:Type TextBoxBase}">
+        <Border Background="{TemplateBinding Background}" 
+                x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource Radius}"> 
+            <ScrollViewer x:Name="PART_ContentHost"/>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource SecondBrush}"></Setter>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource SecondBrush}"></Setter>
+            </Trigger>
+            <Trigger Property="IsFocused" Value="False">
+                <Setter Property="BorderBrush" Value="{DynamicResource ThirdBrush}"></Setter>
+            </Trigger>
+            <Trigger Property="Width" Value="Auto">
+                <Setter Property="MinWidth" Value="100"/>
+            </Trigger>
+            <Trigger Property="Height" Value="Auto">
+                <Setter Property="MinHeight" Value="25"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    
+    <Style TargetType="TextBox">
+        <Setter Property="Background" Value="{DynamicResource ThirdBrush}">
+        </Setter>
+        <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="FontSize" Value="{DynamicResource Paragraph}"></Setter>
+        <Setter Property="Padding" Value="{DynamicResource Padding}"></Setter>
+        <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
+        <Setter Property="CaretBrush" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThirdBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="1"></Setter>
+        <Setter Property="Template" Value="{StaticResource TextboxTemplate}">
+           
+        </Setter>
+    </Style>
 
+    <Style TargetType="PasswordBox">
+        <Setter Property="Background" Value="{DynamicResource ThirdBrush}">
+        </Setter>
+        <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="FontSize" Value="{DynamicResource Paragraph}"></Setter>
+        <Setter Property="Padding" Value="{DynamicResource Padding}"></Setter>
+        <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
+        <Setter Property="CaretBrush" Value="{DynamicResource ForeBrush}"></Setter>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThirdBrush}"></Setter>
+        <Setter Property="BorderThickness" Value="1"></Setter>
+        <Setter Property="Template" >
+           <Setter.Value>
+               
+               
+               <ControlTemplate TargetType="PasswordBox">
+                   <Border Background="{TemplateBinding Background}" 
+                           x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}"
+                           BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{DynamicResource Radius}"> 
+                       <ScrollViewer x:Name="PART_ContentHost"/>
+                   </Border>
+                   <ControlTemplate.Triggers>
+                       <Trigger Property="IsFocused" Value="True">
+                           <Setter Property="BorderBrush" Value="{DynamicResource SecondBrush}"></Setter>
+                       </Trigger>
+                       <Trigger Property="IsMouseOver" Value="True">
+                           <Setter Property="BorderBrush" Value="{DynamicResource SecondBrush}"></Setter>
+                       </Trigger>
+                       <Trigger Property="IsFocused" Value="False">
+                           <Setter Property="BorderBrush" Value="{DynamicResource ThirdBrush}"></Setter>
+                       </Trigger>
+                       <Trigger Property="Width" Value="Auto">
+                           <Setter Property="MinWidth" Value="100"/>
+                       </Trigger>
+                       <Trigger Property="Height" Value="Auto">
+                           <Setter Property="MinHeight" Value="25"/>
+                       </Trigger>
+                   </ControlTemplate.Triggers>
+               </ControlTemplate>
+               
+           </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style x:Key="ChoiceView" TargetType="ListView">
 

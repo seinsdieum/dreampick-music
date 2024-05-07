@@ -9,7 +9,12 @@ public partial class TitleBar : UserControl
     public TitleBar()
     {
         InitializeComponent();
+        DataContext = this;
     }
+
+
+
+    public AccountVm Account => AccountVm.Instance;
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {

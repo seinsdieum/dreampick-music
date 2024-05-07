@@ -11,9 +11,6 @@
       mc:Ignorable="d"
 
       Title="Person">
-    <Page.Resources>
-        <utilities:StatementVisibilityConverter  x:Key="VisibilityConverter"/>
-    </Page.Resources>
     <Page.DataContext>
         <local:PersonVm x:Name="VmContext"></local:PersonVm>
     </Page.DataContext>
@@ -47,7 +44,7 @@
                     <Grid Margin="0,0,10,0">
                         
                         
-                        <Border Visibility="{Binding User.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+                        <Border Visibility="{Binding User.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}" Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
                             <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
                                             FontSize="150" Icon="CircleOutlineNotch"
                                             VerticalAlignment="Center"
@@ -56,7 +53,7 @@
                             </fa:FontAwesome>
                         </Border>
                         
-                        <Border Visibility="{Binding User.IsCompleted, Converter={StaticResource VisibilityConverter}}" Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+                        <Border Visibility="{Binding User.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}" Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
                             <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
                                             FontSize="150" Icon="User"
                                             VerticalAlignment="Center"

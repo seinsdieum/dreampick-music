@@ -1,0 +1,291 @@
+﻿<Page x:Class="dreampick_music.Views.AccountPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:dreampick_music.Views"
+      xmlns:dreampickMusic="clr-namespace:dreampick_music"
+      xmlns:fa="http://schemas.fontawesome.io/icons/"
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:components="clr-namespace:PasswordBoxMVVM.Components"
+      mc:Ignorable="d"
+      Title="AccountPage">
+    <Page.DataContext>
+        <dreampickMusic:AccountPageVm x:Name="VmContext"></dreampickMusic:AccountPageVm>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="5,0,15,0" Style="{DynamicResource StackRoot}">
+            <StackPanel>
+
+                <!-- region BackLabel -->
+
+                <DockPanel Margin="0,0,0,15">
+
+                    <fa:FontAwesome Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                    FontSize="{DynamicResource Header1}" Icon="ArrowLeft"
+                                    Margin="0,0,10,0"
+                                    VerticalAlignment="Center">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="MouseDown">
+                                <b:InvokeCommandAction Command="{Binding BackCommand}"></b:InvokeCommandAction>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </fa:FontAwesome>
+
+                    <Label Style="{DynamicResource H1}" Content="{DynamicResource LYou}"></Label>
+
+                </DockPanel>
+
+                <!-- region BackLabel -->
+
+                <DockPanel Margin="{DynamicResource BottomPadding}">
+                    <Grid Margin="0,0,10,0">
+
+
+                        <!--<Border
+                            Visibility="{Binding Account.AccountPerson.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}"
+                            Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+                            <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
+                                            FontSize="150" Icon="CircleOutlineNotch"
+                                            VerticalAlignment="Center"
+                                            Spin="True"
+                                            HorizontalAlignment="Center">
+                            </fa:FontAwesome>
+                        </Border>
+
+                        <Border
+                            Visibility="{Binding Account.AccountPerson.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}"
+                            Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+                            <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
+                                            FontSize="150" Icon="User"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+                            </fa:FontAwesome>
+                        </Border>-->
+                        <Image HorizontalAlignment="Left" Width="200" Height="200"
+                               Source="{Binding ChangeAvatar}">
+                            <Image.OpacityMask>
+                                <VisualBrush>
+                                    <VisualBrush.Visual>
+                                        <Border Width="200" Height="200" Background="{DynamicResource BackBrush}"
+                                                CornerRadius="{DynamicResource Radius}" />
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Image.OpacityMask>
+                        </Image>
+                    </Grid>
+                    <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                            Background="{DynamicResource SecondBrush}">
+                        <StackPanel>
+                            <Border Margin="{DynamicResource BottomPadding}" CornerRadius="{DynamicResource Radius}"
+                                    Background="{DynamicResource ThirdBrush}" Padding="{DynamicResource Padding}">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="MouseDown">
+                                        <b:InvokeCommandAction Command="{Binding NavigateSubsctibersCommand}"
+                                                               CommandParameter="{Binding Account.AccountPerson.Result.ID}">
+                                        </b:InvokeCommandAction>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                                <DockPanel>
+                                    <Label Content="{DynamicResource LSubscribers}"></Label>
+                                    <Label Content="{Binding SubscribersCount.Result}"></Label>
+                                </DockPanel>
+                            </Border>
+                            <Border CornerRadius="{DynamicResource Radius}" Background="{DynamicResource ThirdBrush}"
+                                    Padding="{DynamicResource Padding}">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="MouseDown">
+                                        <b:InvokeCommandAction Command="{Binding NavigateSubscriptionsCommand}"
+                                                               CommandParameter="{Binding Account.AccountPerson.Result.ID}">
+                                        </b:InvokeCommandAction>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                                <DockPanel>
+                                    <Label Content="{DynamicResource LSubscribes}"></Label>
+                                    <Label Content="{Binding SubscriptionsCount.Result}"></Label>
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </DockPanel>
+
+
+            </StackPanel>
+
+            <TabControl>
+                <TabItem Header="{DynamicResource LPlaylists}"></TabItem>
+                <TabItem Header="{DynamicResource LFeed}">
+                    <ListView VerticalAlignment="Stretch" Style="{DynamicResource PostView}"
+                              ItemsSource="{Binding UserPosts.Result}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                                        Background="{DynamicResource SecondBrush}">
+
+                                    <StackPanel>
+                                        <Label Margin="{DynamicResource BottomPadding}"
+                                               Content="{Binding Description }">
+                                        </Label>
+                                        <Border Padding="{DynamicResource PaddingInner}"
+                                                Background="{DynamicResource ThirdBrush}" CornerRadius="5">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <Label VerticalAlignment="Center" Grid.Column="0"
+                                                       Foreground="{DynamicResource DarkenForeBrush}"
+                                                       Content="{Binding PostAuthor.Name}">
+                                                </Label>
+                                                <Label Grid.Column="1" Foreground="{DynamicResource DarkenForeBrush}"
+                                                       Content="{Binding PublicationDate}">
+                                                </Label>
+
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </TabItem>
+                <TabItem Header="change data">
+                    <StackPanel Style="{DynamicResource StackRoot}">
+                        <Border Padding="{DynamicResource Padding}" Background="{DynamicResource SecondBrush}"
+                                CornerRadius="{DynamicResource Radius}">
+                            <StackPanel>
+                                <Label Style="{DynamicResource InvalidParagraph}" Margin="{DynamicResource BottomPadding}"
+                                    Visibility="{Binding Account.IsAuthorizedWhenTried, 
+                    Converter={StaticResource StatementVisibilityConverterInversed}}">
+
+                                    changes not saved wrong pass
+                                </Label>
+                                
+                                <Grid Margin="{DynamicResource BottomPadding}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label>avatar</Label>
+                                    
+                                    <Button Margin="0,0,10,0" Grid.Column="1" Command="{Binding LoadAvatarCommand}">load new</Button>
+                                    <Button Grid.Column="2" Command="{Binding ChangeAvatarCommand}">save</Button>
+                                </Grid>
+                                
+                                <Grid Margin="{DynamicResource BottomPadding}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label>name</Label>
+                                    <TextBox Margin="0,0,10,0" Grid.Column="1" Text="{Binding ChangeName}"></TextBox>
+                                    <Button Grid.Column="2" Command="{Binding ChangeNameCommand}">save</Button>
+                                </Grid>
+
+                                <Grid Margin="{DynamicResource BottomPadding}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label>email</Label>
+
+                                    <TextBox Margin="0,0,10,0" Grid.Column="1" Text="{Binding ChangeEmail}"></TextBox>
+                                    <Button Grid.Column="2" Command="{Binding ChangeEmailCommand}">save</Button>
+                                </Grid>
+
+                                <Grid Margin="{DynamicResource BottomPadding}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label>pass</Label>
+
+                                    <Grid Margin="0,0,10,0" Grid.Column="1">
+                                        <TextBox
+                                            Visibility="{Binding ChangePasswordVisible,
+                                            Converter={StaticResource StatementVisibilityConverter}}"
+                                            Grid.Column="1" Text="{Binding ChangePassword}"></TextBox>
+                                        <components:BindablePasswordBox 
+                                            Grid.Column="1"
+                                            Visibility="{Binding ChangePasswordVisible,
+                                            Converter={StaticResource StatementVisibilityConverterInversed}}"
+                                            Password="{Binding ChangePassword}">
+                                        </components:BindablePasswordBox>
+                                        <DockPanel HorizontalAlignment="Right">
+                                            <ToggleButton 
+                                                
+                                                Command="{Binding SetChangePasswordVisible}" Padding="10,5"
+                                                Style="{DynamicResource FieldToggleButton}">
+                                                <ToggleButton.Content>
+                                                    <fa:FontAwesome Icon="Eye"></fa:FontAwesome>
+                                                </ToggleButton.Content>
+                                            </ToggleButton>
+
+                                        </DockPanel>
+                                    </Grid>
+                                    <Button Grid.Column="2" Command="{Binding ChangePasswordCommand}">save</Button>
+                                </Grid>
+
+                                <Grid Margin="{DynamicResource BottomPadding}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label>creator mode</Label>
+
+                                    <StackPanel Grid.Column="1">
+                                        <Button Command="{Binding SwitchArtistModeCommand}"
+                                                Visibility="{Binding Account.IsArtist, Converter={StaticResource StatementVisibilityConverterInversed}}">
+                                            disabled
+                                        </Button>
+                                        <Button Command="{Binding SwitchArtistModeCommand}"
+                                                Visibility="{Binding Account.IsArtist, Converter={StaticResource StatementVisibilityConverter}}">
+                                            enabled
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="{DynamicResource BottomPadding}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label>verify pass</Label>
+                                    <Grid Grid.Column="1">
+                                        <TextBox
+                                            Visibility="{Binding VerifyPasswordVisible,
+                                            Converter={StaticResource StatementVisibilityConverter}}"
+                                            Grid.Column="1" Text="{Binding VerifyPassword}"></TextBox>
+                                        <components:BindablePasswordBox 
+                                            Grid.Column="1"
+                                            Visibility="{Binding VerifyPasswordVisible,
+                                            Converter={StaticResource StatementVisibilityConverterInversed}}"
+                                            Password="{Binding VerifyPassword}">
+                                        </components:BindablePasswordBox>
+                                        <DockPanel HorizontalAlignment="Right">
+                                            <ToggleButton 
+                                                
+                                                Command="{Binding SetVerifyPasswordVisible}" Padding="10,5"
+                                                          Style="{DynamicResource FieldToggleButton}">
+                                                <ToggleButton.Content>
+                                                    <fa:FontAwesome Icon="Eye"></fa:FontAwesome>
+                                                </ToggleButton.Content>
+                                            </ToggleButton>
+
+                                        </DockPanel>
+                                    </Grid>
+                                </Grid>
+
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

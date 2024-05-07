@@ -7,18 +7,14 @@
       xmlns:dreampickMusic="clr-namespace:dreampick_music"
       xmlns:fa="http://schemas.fontawesome.io/icons/"
       xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-      xmlns:utilities="clr-namespace:dreampick_music.Utilities"
       mc:Ignorable="d"
       Title="AlbumPage">
     <Page.DataContext>
         <dreampickMusic:AlbumPageVm x:Name="VmContext" />
     </Page.DataContext>
-    <Page.Resources>
-        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
-    </Page.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Style="{DynamicResource StackRoot}">
-            <DockPanel Margin="0,0,0,15">
+        <StackPanel Margin="5,0,15,0" Style="{DynamicResource StackRoot}">
+            <DockPanel Margin="5,0,0,15">
 
                 <fa:FontAwesome Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                                 FontSize="{DynamicResource Header1}" Icon="ArrowLeft"
@@ -31,66 +27,201 @@
                     </b:Interaction.Triggers>
                 </fa:FontAwesome>
 
-                <Label Style="{DynamicResource H1}" Content="{DynamicResource LAlbum}"></Label>
+                <Label Style="{DynamicResource H1}" Content="album"></Label>
 
             </DockPanel>
+            
+            
+            <StackPanel>
+                
+                
+                <DockPanel Margin="{DynamicResource BottomPadding}">
+                    <Grid Margin="0,0,10,0">
+                        
+                        
+                        <Border Visibility="{Binding Album.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}" Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+                            <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
+                                            FontSize="150" Icon="CircleOutlineNotch"
+                                            VerticalAlignment="Center"
+                                            Spin="True"
+                                            HorizontalAlignment="Center">
+                            </fa:FontAwesome>
+                        </Border>
+                        
+                        <Border Visibility="{Binding Album.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}" Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+                            <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
+                                            FontSize="150" Icon="User"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+                            </fa:FontAwesome>
+                        </Border>
+                        <Image HorizontalAlignment="Left" Width="200" Height="200" Source="{Binding Album.Result.Image}">
+                            <Image.OpacityMask>
+                                <VisualBrush>
+                                    <VisualBrush.Visual>
+                                        <Border Width="200" Height="200" Background="{DynamicResource BackBrush}"
+                                                CornerRadius="{DynamicResource Radius}" />
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Image.OpacityMask>
+                        </Image>
+                    </Grid>
+                    <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                            Background="{DynamicResource SecondBrush}">
+                        <StackPanel>
+                            <DockPanel>
+                                <Label Style="{DynamicResource H2}" Content="{Binding Album.Result.Name}"></Label>
+                                <Label Style="{DynamicResource H2}" Content="{Binding Album.Result.ReleaseDate.Year}"></Label>
+                            </DockPanel>
+                            <Label Foreground="{DynamicResource DarkenForeBrush}" Content="{Binding Album.Result.Author.Name}"></Label>
+                            <Label Foreground="{DynamicResource DarkenForeBrush}" Content="{Binding Album.Result.Description}"></Label>
+                        </StackPanel>
+                    </Border>
+                </DockPanel>
 
-            <TextBlock TextWrapping="Wrap"
-                       Visibility="{Binding Album.IsFaulted, Converter={StaticResource VisibilityConverter}}"
-                       Foreground="{DynamicResource ForeBrush}" Text="{Binding Album.Exception.Message}">
-            </TextBlock>
 
-            <Border Background="{DynamicResource SecondBrush}" Padding="{DynamicResource Padding}"
-                    CornerRadius="{DynamicResource Radius}">
-                <Grid Margin="{DynamicResource Padding}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <!--<Border Margin="0,0,10,0" Background="{DynamicResource ThirdBrush}" CornerRadius="{DynamicResource Radius}">
-                        <fa:FontAwesome Margin="{DynamicResource Padding}"
-                                        Foreground="{DynamicResource DarkenForeBrush}" Icon="Music">
+            </StackPanel>
+            
+            <WrapPanel>
+                <Button Margin="0,0,10,0" Cursor="Hand"
+                        Command="{Binding RelateCommand}"
+                        >
+                    <DockPanel>
+                        <fa:FontAwesome 
+                            Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverterInversed}}"
+                            Margin="0,0,5,0"
+                            Foreground="{DynamicResource ForeBrush}" 
+                            FontSize="{DynamicResource Header2}"
+                            Icon="HeartOutline"
+                            VerticalAlignment="Center"
+                            >
                         </fa:FontAwesome>
-                    </Border>-->
-                    <Image Source="{Binding Album.Result.Image}">
-
-                    </Image>
-                    <StackPanel Margin="20,0,0,0" Grid.Column="1">
-                        <Label Style="{DynamicResource H1}"
-                               Content="{Binding Album.Result.Name}">
-                        </Label>
-                        <DockPanel>
-                            <Label VerticalAlignment="Center" Style="{DynamicResource H2}" Content="{Binding Album.Result.Author.Name}"></Label>
-                        </DockPanel>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Album.Result.Tracks}">
+                        <fa:FontAwesome 
+                            Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverter}}"
+                            Margin="0,0,5,0"
+                            Foreground="{DynamicResource ForeBrush}" 
+                            FontSize="{DynamicResource Header2}"
+                            Icon="Heart"
+                            VerticalAlignment="Center"
+                        >
+                        </fa:FontAwesome>
+                        <Label
+                            Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverterInversed}}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            >add</Label>
+                        <Label
+                            Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverter}}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                        >added</Label>
+                    </DockPanel>
+                </Button>
+            </WrapPanel>
+            
+            
+            <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Tracks.Result}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border CornerRadius="{DynamicResource Radius}"
-                                Background="{DynamicResource SecondBrush}" Padding="{DynamicResource PaddingInner}">
 
-                            <StackPanel>
-                                <DockPanel>
+                        <Border
+                            Style="{Binding IsPlaying, Converter={StaticResource ThirdToSecondColorConverter}, FallbackValue=Transparent}"
+                            CornerRadius="{DynamicResource Radius}"
+                            Padding="{DynamicResource PaddingInner}">
 
-                                    <fa:FontAwesome Margin="15,0,10,0" Cursor="Hand" FontSize="{DynamicResource Header1}"
-                                                    VerticalAlignment="Center"
-                                                    Foreground="{DynamicResource DarkenForeBrush}" Icon="Play">
+
+                            <StackPanel Margin="5,5,5,5">
+
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <DockPanel Margin="0,0,20,0">
+                                        <Grid Cursor="Hand">
+                                            <b:Interaction.Triggers>
+                                                <b:EventTrigger EventName="MouseDown">
+                                                    <b:InvokeCommandAction CommandParameter="{Binding Track.ID }"
+                                                                           Command="{Binding PlayAlbumCommand,  ElementName=VmContext}">
+                                                    </b:InvokeCommandAction>
+                                                </b:EventTrigger>
+                                            </b:Interaction.Triggers>
+
+                                            <Border Width="{DynamicResource Icon}" Height="{DynamicResource Icon}"
+                                                    Background="{DynamicResource BackBrush}" CornerRadius="5">
+                                                <fa:FontAwesome Height="{DynamicResource Header2}"
+                                                                Width="{DynamicResource Header2}" Icon="Music">
+                                                </fa:FontAwesome>
+                                            </Border>
+
+
+                                            <Image Source="{Binding Track.Album.Image}" Width="{DynamicResource Icon}"
+                                                   Height="{DynamicResource Icon}">
+                                                <Image.OpacityMask>
+                                                    <VisualBrush>
+                                                        <VisualBrush.Visual>
+                                                            <Border Width="{DynamicResource Icon}"
+                                                                    Height="{DynamicResource Icon}" Background="Black"
+                                                                    CornerRadius="5">
+                                                            </Border>
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </Image.OpacityMask>
+                                            </Image>
+                                            <StackPanel
+                                                Visibility="{Binding IsPlaying, Converter={StaticResource StatementVisibilityConverter}}"
+                                                Style="{DynamicResource StackRoot}">
+                                                <Border CornerRadius="5" Background="{DynamicResource ThirdBrush}"
+                                                        Width="{DynamicResource Icon}" Height="{DynamicResource Icon}">
+                                                    <fa:FontAwesome
+                                                        FontSize="20"
+                                                        Foreground="{DynamicResource ForeBrush}"
+                                                        VerticalAlignment="Center"
+                                                        Icon="{Binding Player.SongState, Converter={StaticResource SongStateIconConverter}, ElementName=VmContext}">
+                                                    </fa:FontAwesome>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                                            <Label Content="{Binding Track.Name}"></Label>
+                                            <TextBlock Margin="5,0,0,0" Foreground="{DynamicResource DarkenForeBrush}"
+                                                       Style="{DynamicResource LinkedP}"
+                                                       Text="{Binding Track.Album.Author.Name}">
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DockPanel>
+                                    <Grid Margin="0,0,5,0" VerticalAlignment="Center" Grid.Column="3">
                                         <b:Interaction.Triggers>
                                             <b:EventTrigger EventName="MouseDown">
-                                                <b:InvokeCommandAction CommandParameter="{Binding ID }"
-                                                                       Command="{Binding PlayAlbumCommand,  ElementName=VmContext}">
+                                                <b:InvokeCommandAction
+                                                    Command="{Binding SetLike}">
                                                 </b:InvokeCommandAction>
                                             </b:EventTrigger>
                                         </b:Interaction.Triggers>
-                                    </fa:FontAwesome>
-                                    <StackPanel>
-                                        <Label Content="{Binding Name}"></Label>
-                                        <Label Content="{Binding Album.Author.Name}"></Label>
-                                    </StackPanel>
-                                </DockPanel>
+                                        <fa:FontAwesome
+                                            Visibility="{Binding LikeIsSet.Result, Converter={StaticResource StatementVisibilityConverter}}"
+                                            HorizontalAlignment="Right"
+                                            FontSize="{DynamicResource Header1}"
+                                            Foreground="{DynamicResource DarkenForeBrush}"
+                                            Icon="Heart">
+
+                                        </fa:FontAwesome>
+                                        <fa:FontAwesome
+                                            Visibility="{Binding LikeIsSet.Result, Converter={StaticResource StatementVisibilityConverterInversed}}"
+                                            HorizontalAlignment="Right"
+                                            FontSize="{DynamicResource Header1}"
+                                            Foreground="{DynamicResource DarkenForeBrush}"
+                                            Icon="HeartOutline">
+                                        </fa:FontAwesome>
+                                    </Grid>
+
+
+                                </Grid>
 
                             </StackPanel>
                         </Border>

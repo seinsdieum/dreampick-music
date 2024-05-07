@@ -10,7 +10,6 @@ public partial class AlbumPage : Page
         if (DataContext is AlbumPageVm vm)
         {
             vm.AlbumId = id;
-            if (App.Current.MainWindow.DataContext is MainVm mainVm) vm.MainVm = mainVm;
         }
     }
 }

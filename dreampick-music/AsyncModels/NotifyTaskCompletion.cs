@@ -1,4 +1,6 @@
-﻿namespace dreampick_music;
+﻿using System.Windows.Forms;
+
+namespace dreampick_music;
 
 using System;
 using System.ComponentModel;
@@ -21,33 +23,35 @@ public sealed class NotifyTaskCompletion<TResult> : INotifyPropertyChanged
         {
             await task;
         }
-        catch
+        catch (Exception e)
         {
+            MessageBox.Show($"{e.Message}");
         }
 
         var propertyChanged = PropertyChanged;
-        if (propertyChanged == null)
-            return;
-        propertyChanged(this, new PropertyChangedEventArgs("Status"));
-        propertyChanged(this, new PropertyChangedEventArgs("IsCompleted"));
-        propertyChanged(this, new PropertyChangedEventArgs("IsNotCompleted"));
+        if (propertyChanged is null) return;
+        
+        propertyChanged(this, new PropertyChangedEventArgs(nameof(Status)));
+        propertyChanged(this, new PropertyChangedEventArgs(nameof(IsCompleted)));
+        propertyChanged(this, new PropertyChangedEventArgs(nameof(IsNotCompleted)));
+        
         if (task.IsCanceled)
         {
-            propertyChanged(this, new PropertyChangedEventArgs("IsCanceled"));
+            propertyChanged(this, new PropertyChangedEventArgs(nameof(IsCanceled)));
         }
         else if (task.IsFaulted)
         {
-            propertyChanged(this, new PropertyChangedEventArgs("IsFaulted"));
-            propertyChanged(this, new PropertyChangedEventArgs("Exception"));
+            propertyChanged(this, new PropertyChangedEventArgs(nameof(IsFaulted)));
+            propertyChanged(this, new PropertyChangedEventArgs(nameof(Exception)));
             propertyChanged(this,
-                new PropertyChangedEventArgs("InnerException"));
-            propertyChanged(this, new PropertyChangedEventArgs("ErrorMessage"));
+                new PropertyChangedEventArgs(nameof(InnerException)));
+            propertyChanged(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
         }
         else
         {
             propertyChanged(this,
-                new PropertyChangedEventArgs("IsSuccessfullyCompleted"));
-            propertyChanged(this, new PropertyChangedEventArgs("Result"));
+                new PropertyChangedEventArgs(nameof(IsSuccessfullyCompleted)));
+            propertyChanged(this, new PropertyChangedEventArgs(nameof(Result)));
         }
     }
 
@@ -77,8 +81,7 @@ public sealed class NotifyTaskCompletion<TResult> : INotifyPropertyChanged
     {
         get
         {
-            return Task.Status ==
-                   TaskStatus.RanToCompletion;
+            return Task.Status == TaskStatus.RanToCompletion;
         }
     }
 

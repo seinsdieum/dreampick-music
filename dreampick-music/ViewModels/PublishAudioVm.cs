@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using dreampick_music.DB;
 using dreampick_music.Models;
 using Microsoft.VisualBasic.Devices;
 using Microsoft.Win32;
@@ -25,11 +26,19 @@ public class PublishAudioVm : HistoryVm
 
     private string albumName;
 
+    private string albumDescription;
+
     [UndoRedo]
     public string AlbumName
     {
         get => albumName;
         set => Set(ref albumName, value);
+    }
+
+    public string AlbumDescription
+    {
+        get => albumDescription;
+        set => Set(ref albumDescription, value);
     }
 
     private ObservableCollection<TrackVm> tracks = new ObservableCollection<TrackVm>();
@@ -75,6 +84,29 @@ public class PublishAudioVm : HistoryVm
         var tracksPlaylist = CreatePlaylist();
         PlayerVm.Instance.PlayNewQueue(tracksPlaylist, id);
     }));
+    
+    public ButtonCommand RemoveTrackCommand => new ButtonCommand(o =>
+    {
+        if (o is string id)
+        {
+            Tracks.Remove(Tracks.Single(track => track.TrackId == id));
+        }
+    });
+    
+    public ButtonCommand PublishCommand => new ButtonCommand((o =>
+    {
+        PublishPlaylist();
+    }));
+
+    public ButtonCommand BackCommand => new ButtonCommand((o =>
+    {
+        NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
+    }));
+
+    private void DestroyObjects()
+    {
+        // TODO implement
+    }
 
 
     private List<Track> VmToTracks(Playlist tracksPlaylist)
@@ -87,6 +119,7 @@ public class PublishAudioVm : HistoryVm
                 Source = track.Source,
                 Album = tracksPlaylist,
                 ID = track.TrackId,
+                ReleaseDate = DateTime.Now
             }).ToList();
     }
     
@@ -100,6 +133,7 @@ public class PublishAudioVm : HistoryVm
                 Source = track.Source,
                 Album = tracksPlaylist,
                 ID = track.TrackId,
+                ReleaseDate = DateTime.Now
             }).ToList();
 
         hasProblems = (t.Count < tracks.Count);
@@ -115,12 +149,9 @@ public class PublishAudioVm : HistoryVm
             Name = AlbumName,
             Type = PlaylistType.ALBUM,
             Image = ImageSource is null ? null : new BitmapImage(ImageSource),
-            // TODO account binding
-            Author = new Artist()
-            {
-                Name = "alexellipse",
-                ID = "sdfsd",
-            }
+            Author = AccountVm.Instance.AccountPerson.Result,
+            Description = AlbumDescription,
+            ReleaseDate = DateTime.Now,
         };
         playlist.Tracks = new ObservableCollection<Track>(VmToTracks(playlist));
         return playlist;
@@ -134,13 +165,10 @@ public class PublishAudioVm : HistoryVm
             Name = AlbumName,
             Type = PlaylistType.ALBUM,
             Image = ImageSource is null ? null : new BitmapImage(ImageSource),
+            Description = AlbumDescription,
+            ReleaseDate = DateTime.Now,
 
-            // TODO account binding
-            Author = new Artist()
-            {
-                Name = "alexellipse",
-                ID = "sdfsd",
-            }
+            Author = AccountVm.Instance.AccountPerson.Result
         };
         playlist.Tracks = new ObservableCollection<Track>(VmToTracks(playlist, out hasProblems));
         return playlist;
@@ -153,20 +181,11 @@ public class PublishAudioVm : HistoryVm
         
         if(hasProblems) return;
         
-        _ = PlatformDAO.Instance.AddPlaylist(playlist);
-    }
-
-    private void RefreshFields()
-    {
+        _ = PlaylistDAO.Instance.AddAsync(playlist);
         
+        NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
+
     }
-
-
-    public ButtonCommand PublishCommand => new ButtonCommand((o =>
-    {
-        PublishPlaylist();
-    }));
-
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 

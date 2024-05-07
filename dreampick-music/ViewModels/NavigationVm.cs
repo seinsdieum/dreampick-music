@@ -32,6 +32,7 @@ public class NavigationVm : INotifyPropertyChanged
             clearContentAction.Invoke();
             navigation.Content = "";
             navigation.GoBack();
+            
         }
     }
 

@@ -14,6 +14,8 @@ public class Playlist
     public string Name { get; set; }
 
     public string Description { get; set; }
+    
+    public DateTime ReleaseDate { get; set; }
 
     public BitmapImage Image { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Navigation;
+using dreampick_music.DB;
 using dreampick_music.Models;
 using dreampick_music.Views;
 
@@ -31,11 +32,32 @@ public class CollectionVm : INotifyPropertyChanged
         }
     }));
 
+    public ButtonCommand RefreshCommand => new ButtonCommand((o =>
+    {
+        RefreshContent();
+    }));
+
+    public ButtonCommand NavigateLikedTracksCommand => new ButtonCommand(o =>
+    {
+        NavigationVm.Instance.Navigate(new TrackCollectionPage(TrackCollectionType.LikedTracks, ""));
+    });
+    
+    public ButtonCommand NavigateLikedPlaylistsCommand => new ButtonCommand(o =>
+    {
+        NavigationVm.Instance.Navigate(new PlaylistCollection(PlaylistCollectionType.Related, ""));
+    });
+    
+
+    private void RefreshContent()
+    {
+        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlaylistDAO.Instance.LastCollection());
+    }
+
 
 
     public CollectionVm()
     {
-        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlatformDAO.Instance.LoadAlbumsInfoAsync());
+        RefreshContent();
     }
     
     

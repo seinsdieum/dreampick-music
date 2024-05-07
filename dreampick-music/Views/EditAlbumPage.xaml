@@ -13,17 +13,14 @@
     <Page.DataContext>
         <dreampickMusic:EditAlbumVm x:Name="VmContext"></dreampickMusic:EditAlbumVm>
     </Page.DataContext>
-    <Page.Resources>
-        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
-    </Page.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="5,0,0,5" Style="{DynamicResource StackRoot}">
             <Label Content="editalbum" Style="{DynamicResource H1}" Margin="0,0,0,10"></Label>
             <TextBox Foreground="{DynamicResource ForeBrush}" Background="{DynamicResource BackBrush}" Text="{Binding AlbumName}"></TextBox>
             
             <Image Width="100" Height="100" Source="{Binding ImageSource }"></Image>
-            <Button Command="{Binding LoadImageCommand}">add image</Button>
-            <Button Command="{Binding AddTrackCommand}">add track</Button>
+            <Button Command="{Binding LoadImageCommand}">load cover</Button>
             <Button Command="{Binding PublishCommand}">publish</Button>
             
 
@@ -58,7 +55,6 @@
                                            Foreground="{DynamicResource DarkenForeBrush}" 
                                            Text="{Binding Name}">
                                     </TextBox>
-                                    <Button Grid.Column="2" Command="{Binding LoadSourceCommand}">load source</Button>
                                     <Button Grid.Column="2" CommandParameter="{Binding TrackId}" Command="{Binding RemoveTrackCommand, ElementName=VmContext}">remove</Button>
                                 </Grid>
                                 

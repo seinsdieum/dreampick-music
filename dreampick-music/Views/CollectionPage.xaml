@@ -10,63 +10,115 @@
       mc:Ignorable="d"
       Title="CollectionPage">
     <Page.DataContext>
-        <dreampickMusic:CollectionVm x:Name="VmContext"/>
+        <dreampickMusic:CollectionVm x:Name="VmContext" />
     </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Style="{DynamicResource StackRoot}">
+        <StackPanel Margin="5,0,15,0" Style="{DynamicResource StackRoot}">
             <DockPanel Margin="0,0,0,15">
-                    
-                <fa:FontAwesome Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                <Label Margin="0,0,10,0" HorizontalAlignment="Left" Style="{DynamicResource H1}"
+                       Content="{DynamicResource LCollection}">
+                </Label>
+
+                <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                                 FontSize="{DynamicResource Header1}" Icon="Refresh"
                                 Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                >
+                                VerticalAlignment="Center">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="MouseDown">
-                            <b:InvokeCommandAction ></b:InvokeCommandAction>
+                            <b:InvokeCommandAction Command="{Binding RefreshCommand}"></b:InvokeCommandAction>
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
                 </fa:FontAwesome>
-
-                <Label Style="{DynamicResource H1}" Content="{DynamicResource LCollection}"></Label>
-
             </DockPanel>
-            
-            
+            <Border Margin="{DynamicResource BottomPadding}" Background="{DynamicResource SecondBrush}" CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Margin="0,0,10,0" Command="{Binding NavigateLikedTracksCommand}">
+                        <DockPanel Margin="0,10">
+                            <fa:FontAwesome HorizontalAlignment="Left" VerticalAlignment="Center"
+                                            FontSize="{DynamicResource Header2}"
+                                            Foreground="{DynamicResource DarkenForeBrush}" Icon="Music">
+                            </fa:FontAwesome>
+                            <TextBlock Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
+                                       TextTrimming="CharacterEllipsis" Foreground="{DynamicResource DarkenForeBrush}"
+                                       VerticalAlignment="Center">
+                                tracks
+                            </TextBlock>
+                        </DockPanel>
+                    </Button>
+                    <Button Margin="0,0,10,0" Grid.Column="1" Command="{Binding NavigateLikedPlaylistsCommand}">
+                        <DockPanel Margin="0,10">
+                            <fa:FontAwesome HorizontalAlignment="Left" VerticalAlignment="Center"
+                                            FontSize="{DynamicResource Header2}"
+                                            Foreground="{DynamicResource DarkenForeBrush}" Icon="List">
+                            </fa:FontAwesome>
+                            <TextBlock Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
+                                       TextTrimming="CharacterEllipsis" Foreground="{DynamicResource DarkenForeBrush}"
+                                       VerticalAlignment="Center">
+                                albums
+                            </TextBlock>
+                        </DockPanel>
+                    </Button>
+                    <Button Grid.Column="2" Command="{Binding NavigateLikedPlaylistsCommand}">
+                        <DockPanel Margin="0,10">
+                            <fa:FontAwesome HorizontalAlignment="Left" VerticalAlignment="Center"
+                                            FontSize="{DynamicResource Header2}"
+                                            Foreground="{DynamicResource DarkenForeBrush}" Icon="Feed">
+                            </fa:FontAwesome>
+                            <TextBlock Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
+                                       TextTrimming="CharacterEllipsis" Foreground="{DynamicResource DarkenForeBrush}"
+                                       VerticalAlignment="Center">
+                                recommended
+                            </TextBlock>
+                        </DockPanel>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Label>last releases</Label>
+
             <ItemsControl ItemsSource="{Binding Albums.Result}" Margin="20">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
                         <Grid Margin="5">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseDown">
-                                    <b:InvokeCommandAction CommandParameter="{Binding ID}" Command="{Binding NavigateAlbumCommand , ElementName=VmContext}"></b:InvokeCommandAction>
+                                    <b:InvokeCommandAction CommandParameter="{Binding ID}"
+                                                           Command="{Binding NavigateAlbumCommand , ElementName=VmContext}">
+                                    </b:InvokeCommandAction>
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                             <Grid.OpacityMask>
                                 <VisualBrush>
                                     <VisualBrush.Visual>
-                                        <Border Width="200" Height="200" CornerRadius="{DynamicResource Radius}" Background="Black"></Border>
+                                        <Border Width="200" Height="200" CornerRadius="{DynamicResource Radius}"
+                                                Background="Black">
+                                        </Border>
                                     </VisualBrush.Visual>
                                 </VisualBrush>
                             </Grid.OpacityMask>
-                                
+
                             <Image Source="{Binding Image}" Width="200" Height="200"></Image>
-                            <Border  Width="200" Height="200" Background="{DynamicResource DarkenBottomGradient}"></Border>
+                            <Border Width="200" Height="200" Background="{DynamicResource DarkenBottomGradient}"></Border>
                             <Border Padding="{DynamicResource Padding}">
                                 <StackPanel VerticalAlignment="Bottom">
-                                    <Label Foreground="White"  Content="{Binding Name}"></Label>
-                                    <Label Foreground="White"  Content="{Binding Author.Name}"></Label>
+                                    <Label Foreground="White" Content="{Binding Name}"></Label>
+                                    <Label Foreground="White" Content="{Binding Author.Name}"></Label>
                                 </StackPanel>
                             </Border>
                         </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
 
         </StackPanel>
     </ScrollViewer>

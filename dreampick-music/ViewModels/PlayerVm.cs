@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 using dreampick_music.Models;
 
@@ -11,7 +14,6 @@ public enum AudioRepeatType
     REPEAT_TRACK,
 }
 
-//TODO implement song modes
 public class PlayerVm : INotifyPropertyChanged
 {
     private MediaState songState = MediaState.Pause;
@@ -21,6 +23,7 @@ public class PlayerVm : INotifyPropertyChanged
 
     private Playlist queue = new Playlist();
     private bool TrackIsAvailable => Queue.HasTrack(currentIndex);
+    private int currentIndex = 0;
 
 
     private bool isShuffled = false;
@@ -59,11 +62,13 @@ public class PlayerVm : INotifyPropertyChanged
 
     public AudioRepeatType AudioRepeat
     {
-        set { repeatType = value; }
+        set
+        {
+            repeatType = value;
+            OnPropertyChanged(nameof(AudioRepeat));
+        }
     }
-
-    private int currentIndex = 0;
-
+    
     public int CurrentIndex
     {
         set
@@ -74,17 +79,42 @@ public class PlayerVm : INotifyPropertyChanged
     }
 
 
-    public Track CurrentTrack => Queue.Tracks[currentIndex];
+    public Track CurrentTrack
+    {
+        get
+        {
+            try
+            {
+                return Queue.Tracks[currentIndex];
+            }
+            catch
+            {
+                return new Track();
+            }
+        }
+    }
 
+    public bool IsShuffled
+    {
+        get => isShuffled;
+        set
+        {
+            isShuffled = value;
+            OnPropertyChanged(nameof(IsShuffled));
+        }
+    }
 
     public ButtonCommand NextTrackCommand => new ButtonCommand(o =>
     {
-        var delta = currentIndex + 1;
+        var rand = new Random();
+        
+        var delta = isShuffled ? rand.Next(0, Queue.Tracks.Count-1)  : currentIndex + 1;
 
         if (repeatType == AudioRepeatType.REPEAT_TRACK)
         {
+            var a = currentIndex;
             CurrentIndex = -1;
-            CurrentIndex = delta - 1;
+            CurrentIndex = a;
         }
         else
         {
@@ -102,12 +132,16 @@ public class PlayerVm : INotifyPropertyChanged
 
     public ButtonCommand PrevTrackCommand => new ButtonCommand(o =>
     {
-        var delta = currentIndex - 1;
+        var rand = new Random();
+        
+        var delta = isShuffled ? rand.Next(0, Queue.Tracks.Count-1)  : currentIndex - 1;
+
 
         if (repeatType == AudioRepeatType.REPEAT_TRACK)
         {
+            var a = currentIndex;
             CurrentIndex = -1;
-            CurrentIndex = delta + 1;
+            CurrentIndex = a;
         }
         else
         {
@@ -133,13 +167,13 @@ public class PlayerVm : INotifyPropertyChanged
 
     public ButtonCommand ShuffleQueueCommand => new ButtonCommand(o =>
     {
-        Queue = AudioPlayerModel.Instance.RandomizePlaylist(queue);
+        IsShuffled = !isShuffled;
     });
 
 
     public void PlayNewQueue(Playlist queuePlay, string trackId)
     {
-        if (Queue.ID == queuePlay.ID)
+        if (Queue.ID == queuePlay.ID && CurrentTrack.ID == trackId)
         {
             SwitchSongState();
             return;

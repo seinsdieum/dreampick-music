@@ -17,7 +17,7 @@
     <SolidColorBrush x:Key="SecondBrush" Color="#1e1e1e"></SolidColorBrush>
     <SolidColorBrush x:Key="ThirdBrush" Color="#141414"></SolidColorBrush>
     <SolidColorBrush x:Key="ForeBrush" Color="#f0f0f0"></SolidColorBrush>
-    <SolidColorBrush x:Key="DarkenForeBrush" Color="#f0f0f0"></SolidColorBrush>
+    <SolidColorBrush x:Key="DarkenForeBrush" Color="#b0b0b0"></SolidColorBrush>
     <LinearGradientBrush x:Key="TitleBarBrush" StartPoint="0,0" EndPoint="0.5,1.0">
 
     </LinearGradientBrush>

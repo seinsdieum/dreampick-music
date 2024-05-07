@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using FontAwesome.WPF;
 
 namespace dreampick_music;
 
@@ -10,9 +11,9 @@ public class SongStateIconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        MediaState item = value is MediaState ? (MediaState)value : MediaState.Pause;
+        var item = value is MediaState state ? state : MediaState.Pause;
 
-        return item == MediaState.Play ? App.Current.Resources["ImgPause"] : App.Current.Resources["ImgPlay"];
+        return item == MediaState.Play ? FontAwesomeIcon.Pause : FontAwesomeIcon.Play;
     }
      
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

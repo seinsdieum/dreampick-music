@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using dreampick_music.Models;
 
 namespace dreampick_music;
 
@@ -51,4 +54,51 @@ public class Utils
 
         return data;
     }
+    
+    
+    public static string HashPassword(string password)
+    {
+        using (var sha256 = new SHA256Managed())
+        {
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            byte[] saltedPassword = new byte[passwordBytes.Length];
+
+            // Concatenate password and salt
+            Buffer.BlockCopy(passwordBytes, 0, saltedPassword, 0, passwordBytes.Length);
+
+            // Hash the concatenated password and salt
+            byte[] hashedBytes = sha256.ComputeHash(saltedPassword);
+
+            // Concatenate the salt and hashed password for storage
+
+            return Convert.ToBase64String(hashedBytes);
+        }
+    }
+    
+    
+    public static Type GetPersonChangeType(PersonPropertyChangeType type)
+    {
+        return type switch
+        {
+            PersonPropertyChangeType.Image => typeof(BitmapImage),
+            PersonPropertyChangeType.HeaderImage => typeof(BitmapImage),
+            PersonPropertyChangeType.Password => typeof(string),
+            PersonPropertyChangeType.IsArtist => typeof(bool),
+            PersonPropertyChangeType.Username => typeof(string),
+            PersonPropertyChangeType.Email => typeof(string),
+            
+            _ => null,
+        };
+    } 
+    
+    /*public byte[] GenerateSalt()
+    {
+        using (var rng = new RNGCryptoServiceProvider())
+        {
+            byte[] salt = new byte[16]; // Adjust the size based on your security requirements
+            rng.GetBytes(salt);
+            return salt;
+        }
+    }*/
+    
 }

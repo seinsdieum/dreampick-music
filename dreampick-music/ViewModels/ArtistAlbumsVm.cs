@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Navigation;
+using dreampick_music.DB;
 using dreampick_music.Models;
 using dreampick_music.Views;
 
@@ -47,12 +48,12 @@ public class ArtistAlbumsVm : INotifyPropertyChanged
 
     private void LoadArtistAlbumRelations()
     {
-        IdList = new NotifyTaskCompletion<List<string>>(PlatformDAO.Instance.GetUserPlaylistRelations(artistId));
+        IdList = new NotifyTaskCompletion<List<string>>(PlaylistDAO.Instance.GetUserPlaylistRelations(artistId));
     }
 
     private void LoadAlbums()
     {
-        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlatformDAO.Instance.GetAlbumsInfo(idList.Result));
+        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlaylistDAO.Instance.GetAlbumsInfo(idList.Result));
     }
 
     public ButtonCommand NavigateAlbumCommand => new ButtonCommand(param =>
@@ -62,6 +63,10 @@ public class ArtistAlbumsVm : INotifyPropertyChanged
         {
             service.Navigate(new EditAlbumPage(id));
         }
+    });
+    public ButtonCommand NavigateAlbumCreationCommand => new ButtonCommand(param =>
+    {
+        NavigationVm.Instance.Navigate(new PublishAudio());;
     });
     
     

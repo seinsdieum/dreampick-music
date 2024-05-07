@@ -1,11 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 using System.Windows.Threading;
+using dreampick_music.DB;
 using dreampick_music.Models;
+using dreampick_music.Views;
 
 namespace dreampick_music;
 
@@ -13,9 +16,9 @@ public class FeedVm : INotifyPropertyChanged
 {
     private bool postsLoaded = false;
 
-    private NotifyTaskCompletion<ObservableCollection<Post>> posts;
+    private NotifyTaskCompletion<ObservableCollection<PostVm>> posts;
 
-    public NotifyTaskCompletion<ObservableCollection<Post>> Posts
+    public NotifyTaskCompletion<ObservableCollection<PostVm>> Posts
     {
         get
         {
@@ -41,11 +44,21 @@ public class FeedVm : INotifyPropertyChanged
         LoadPostsAsync();
     }
 
+    private async Task<ObservableCollection<PostVm>> LoadPostList()
+    {
+        var postsAsync = await PostDAO.Instance.CollectionAsync();
+
+        return new ObservableCollection<PostVm>(
+            postsAsync.Select(p => new PostVm() { Post = p} )
+        );
+
+    }
+
 
     private void LoadPostsAsync()
     {
-        Posts = new NotifyTaskCompletion<ObservableCollection<Post>>(
-            PlatformDAO.Instance.LoadPostsAsync()
+        Posts = new NotifyTaskCompletion<ObservableCollection<PostVm>>(
+            LoadPostList()
         );
     }
     
@@ -60,6 +73,17 @@ public class FeedVm : INotifyPropertyChanged
             });
         }
     }
+
+    public ButtonCommand NavigateToCreationCommand => new ButtonCommand(o =>
+    {
+        NavigationVm.Instance.Navigate(new CreatePost());
+    });
+
+    public ButtonCommand NavigatePostLikesCommand => new ButtonCommand(o =>
+    {
+        if (o is not string id) return;
+        NavigationVm.Instance.Navigate(new UserCollection(id, UserCollectionType.PostLikes));
+    });
     
     
 

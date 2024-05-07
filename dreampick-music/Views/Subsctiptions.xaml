@@ -9,11 +9,8 @@
       xmlns:fa="http://schemas.fontawesome.io/icons/"
       xmlns:utilities="clr-namespace:dreampick_music.Utilities"
       mc:Ignorable="d"
-      Title="Subsctiptions">
+      Title="Subscriptions">
     
-    <Page.Resources>
-        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
-    </Page.Resources>
     
     <Page.DataContext>
         <local:SubscriptionsVm x:Name="VmContext"></local:SubscriptionsVm>
@@ -37,7 +34,7 @@
         </DockPanel>
                 
                 <fa:FontAwesome Margin="0,100,0,0" FontSize="100"
-                                Visibility="{Binding Subscribes.IsNotCompleted, Converter={StaticResource VisibilityConverter}}"
+                                Visibility="{Binding Subscribes.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}"
                                 Foreground="{DynamicResource DarkenForeBrush}" Icon="CircleOutlineNotch" Spin="True">
                 </fa:FontAwesome>
                 

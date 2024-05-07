@@ -1,33 +1,30 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Navigation;
+using dreampick_music.DB;
 using dreampick_music.Models;
 
 namespace dreampick_music;
 
 public class AlbumPageVm : INotifyPropertyChanged
 {
+    
     #region VmContext
-
-    private MainVm _mainVm;
-
-    public MainVm MainVm
+    
+    
+    public ButtonCommand BackCommand => new ButtonCommand((o =>
     {
-        set => _mainVm = value;
+        NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
+    }));
+
+    private void DestroyObjects()
+    {
+        Album = null;
+        albumid = null;
     }
     
-    public ButtonCommand BackCommand
-    {
-        get
-        {
-            return new ButtonCommand((o =>
-            {
-                if (NavigationVm.Instance is NavigationVm vm)
-                {
-                    vm.ClearNavigateBack(DestroyObjects);
-                }
-            }));
-        }
-    }
     
 
     #endregion
@@ -35,6 +32,20 @@ public class AlbumPageVm : INotifyPropertyChanged
     
 
     private string albumid;
+    private NotifyTaskCompletion<ObservableCollection<TrackListenVm>> tracks;
+    private NotifyTaskCompletion<Playlist> album;
+    private NotifyTaskCompletion<bool> isSubscribed;
+
+    public NotifyTaskCompletion<bool> IsSubscribed
+    {
+        get => isSubscribed;
+        set
+        {
+            isSubscribed = value;
+            OnPropertyChanged(nameof(IsSubscribed));
+        }
+    }
+
 
     public string AlbumId
     {
@@ -44,8 +55,21 @@ public class AlbumPageVm : INotifyPropertyChanged
             LoadAlbum();
         }
     }
+    
+    public PlayerVm Player => PlayerVm.Instance;
 
-    private NotifyTaskCompletion<Playlist> album;
+
+
+    public NotifyTaskCompletion<ObservableCollection<TrackListenVm>> Tracks
+    {
+        get => tracks;
+        set
+        {
+            tracks = value;
+            OnPropertyChanged(nameof(Tracks));
+        }
+    }
+
 
     public NotifyTaskCompletion<Playlist> Album
     {
@@ -57,23 +81,51 @@ public class AlbumPageVm : INotifyPropertyChanged
         }
     }
 
+    private async Task<ObservableCollection<TrackListenVm>> GetTracks()
+    {
+        Album = new NotifyTaskCompletion<Playlist>(PlaylistDAO.Instance.GetAsync(albumid));
+
+        var res = await Album.Task;
+
+        IsSubscribed = new NotifyTaskCompletion<bool>(PlaylistDAO.Instance.UserRelated(AccountVm.Instance.AccountPerson.Result.ID,
+            res.ID));
+
+        return new ObservableCollection<TrackListenVm>(
+            res.Tracks.Select(t => new TrackListenVm()
+            {
+                Track = t
+            })
+        );
+
+    }
+
+    private async Task<bool> SwitchUserRelation(bool isSubbed)
+    {
+        if (Album.Result is null || AccountVm.Instance.AccountPerson is null) return false;
+
+        await PlaylistDAO.Instance.RelateUser(AccountVm.Instance.AccountPerson.Result.ID, Album.Result.ID);
+        return !isSubbed;
+    }
+    
+
     private void LoadAlbum()
     {
-        Album = new NotifyTaskCompletion<Playlist>(PlatformDAO.Instance.LoadAlbumAsync(albumid));
+        Tracks = new NotifyTaskCompletion<ObservableCollection<TrackListenVm>>(GetTracks());
     }
 
     public ButtonCommand PlayAlbumCommand => new ButtonCommand((o =>
     {
         if (o is not string id) return;
         PlayerVm.Instance.PlayNewQueue(album.Result, id);
-
+        OnPropertyChanged(nameof(Album));
     }));
 
-    private void DestroyObjects()
+    public ButtonCommand RelateCommand => new ButtonCommand(o =>
     {
-        Album = null;
-        albumid = null;
-    }
+        if (!isSubscribed.IsCompleted) return;
+        var a = isSubscribed;
+        IsSubscribed = new NotifyTaskCompletion<bool>(SwitchUserRelation(isSubscribed.Result));
+    });
 
 
     # region PropertyEvents

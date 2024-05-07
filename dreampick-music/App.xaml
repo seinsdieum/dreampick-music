@@ -3,19 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:dreampick_music"
              
-             StartupUri="MainWindow.xaml">
+             StartupUri="AuthenticationWindow.xaml">
     
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                
                 <ResourceDictionary Source="Resources/Theme/Theme.Default.xaml"/>
-
                 <ResourceDictionary Source="Resources/Localization/Local.En.xaml"/>
                 <ResourceDictionary Source="Resources/Style/Default.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Resources/Theme/Sizes.Default.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Resources/Style/TitleBar.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Resources/Controls/Icons.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Resources/Converters/Converters.xaml"></ResourceDictionary>
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

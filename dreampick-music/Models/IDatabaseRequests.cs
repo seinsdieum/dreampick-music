@@ -8,18 +8,11 @@ namespace dreampick_music.Models;
 public interface IDatabaseRequests
 {
     Task<bool> AddPost(Post post);
-    Task<ObservableCollection<Post>> LoadPostsAsync();
     Task<ObservableCollection<Post>> LoadUserPostsAsync(string id);
     //ObservableCollection<Post> LoadPosts(params Func<bool, bool>[] conditions);
 
-    //  void AddPerson(Person person); TODO
-    //  void ChangePerson(Person newPerson, string id); TODO
     Task<Person> LoadPersonAsync(string id);
-    Task<int> LoadUserSubscribersAsync(string id);
-    Task<int> LoadUserSubscriptionsAsync(string id);
 
-    Task<ObservableCollection<Person>> LoadSubscribersAsync(string id);
-    Task<ObservableCollection<Person>> LoadSubscriptionsAsync(string id);
 
     //  void RemovePerson(string id);
 

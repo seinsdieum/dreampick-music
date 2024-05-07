@@ -10,7 +10,7 @@
         <local:SettingsVm/>
     </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="0,0,10,0" Style="{DynamicResource StackRoot}">
+        <StackPanel Margin="5,0,15,0" Style="{DynamicResource StackRoot}">
         <Label Content="{DynamicResource LSettings}" Margin="{DynamicResource BottomPadding}" Style="{DynamicResource H1}"></Label>
         
         

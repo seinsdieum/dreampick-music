@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Windows.Controls;
+using FontAwesome.WPF;
 
 namespace dreampick_music.Models;
 
@@ -16,20 +18,15 @@ public class Track
         get;
         set;
     }
-    
-
 
     public Playlist Album { get; set; }
+    
+    public DateTime ReleaseDate { get; set; }
 
-    public Playlist LocalQueue { get; set; }
 
     public string Lyrics
     {
         get;
         set;
-    }
-
-    public Track()
-    {
     }
 }

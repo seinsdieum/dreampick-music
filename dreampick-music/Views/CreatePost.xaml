@@ -9,43 +9,107 @@
       xmlns:fa="http://schemas.fontawesome.io/icons/"
       xmlns:utilities="clr-namespace:dreampick_music.Utilities"
       mc:Ignorable="d"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Top"
       Title="CreatePost">
-    
-    <Page.Resources>
-        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
-    </Page.Resources>
-    
+
+
     <Page.DataContext>
         <local:CreatePostVm />
     </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Style="{DynamicResource StackRoot}">
-            <Label Margin="{DynamicResource BottomPadding}" Style="{DynamicResource H1}"
-                   Content="{DynamicResource LCreatePost}">
-            </Label>
+        <StackPanel Margin="5,0,15,0" Style="{DynamicResource StackRoot}">
+            <DockPanel Margin="0,0,0,15">
 
-            <TextBox Name="Field" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                     Style="{DynamicResource TextBoxTransparent}" TextWrapping="Wrap" Text="{Binding FieldText}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="LostFocus">
-                        <i:InvokeCommandAction Command="{Binding LostFocusCommand}"></i:InvokeCommandAction>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="LostFocus">
-                        <i:InvokeCommandAction Command="{Binding GotFocusCommand}"></i:InvokeCommandAction>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </TextBox>
-            
-            
-            <Button Background="{DynamicResource SecondBrush}" Width="100" Command="{Binding UndoCommand}">Undo</Button>
-            <Button Background="{DynamicResource SecondBrush}" Width="100" Command="{Binding RedoCommand}">Redo</Button>
-            <Button Background="{DynamicResource SecondBrush}" Width="100" Command="{Binding PublishCommand}">Publish</Button>
+                <fa:FontAwesome Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                FontSize="{DynamicResource Header1}" Icon="ArrowLeft"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding BackCommand}"></i:InvokeCommandAction>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </fa:FontAwesome>
 
-            <Label Style="{DynamicResource H2}" Margin="{DynamicResource BottomPadding}"
-                   Content="{DynamicResource LTheme}">
-            </Label>
+                <Label Margin="0,0,10,0" HorizontalAlignment="Left" Style="{DynamicResource H1}" Content="{DynamicResource LCreatePost}"></Label>
+                
+                <DockPanel VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <fa:FontAwesome 
+                        HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                        FontSize="{DynamicResource Header1}" Icon="LongArrowLeft"
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                    >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger
+                                EventName="MouseDown">
+                                <i:InvokeCommandAction Command="{Binding UndoCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </fa:FontAwesome>
+                    <fa:FontAwesome 
+                        HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                        FontSize="{DynamicResource Header1}" Icon="LongArrowRight"
+                        VerticalAlignment="Center"
+                    >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger
+                                EventName="MouseDown">
+                                <i:InvokeCommandAction Command="{Binding RedoCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </fa:FontAwesome>
+                </DockPanel>
+            </DockPanel>
+            
+
+            <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}" Background="{DynamicResource SecondBrush}">
+                <StackPanel>
+                    <fa:FontAwesome Margin="0,100,0,0"
+                                    Visibility="{Binding UploadSuccess.IsCompleted, Converter={StaticResource StatementVisibilityConverterInversed}, FallbackValue=Collapsed}"
+                                    Foreground="{DynamicResource DarkenForeBrush}"
+                                    Icon="CircleOutlineNotch"
+                                    FontSize="150"
+                                    Spin="True">
+
+                    </fa:FontAwesome>
+                    
+                    <StackPanel
+                        Visibility="{Binding UploadSuccess.Result, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}"
+                        Margin="0,20,0,0">
+                        <Label>load complete</Label>
+                    </StackPanel>
+                    <StackPanel
+                        Visibility="{Binding UploadSuccess.IsNotCompleted, Converter={StaticResource StatementVisibilityConverterInversed}, FallbackValue=Visible}">
+                        <TextBox Margin="{DynamicResource BottomPadding}" Name="Field" MinHeight="100" TextWrapping="Wrap" Text="{Binding FieldText}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusCommand}"></i:InvokeCommandAction>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusCommand}"></i:InvokeCommandAction>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBox>
+                
+                        <DockPanel>
+                            <Button FontWeight="{DynamicResource HeaderWeight}" Width="80" Margin="0,0,10,0" Command="{Binding PublishCommand}">publish</Button>
+                            <fa:FontAwesome 
+                                HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                FontSize="{DynamicResource Header1}" Icon="Link"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                            >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger
+                                        EventName="MouseDown">
+                                        <i:InvokeCommandAction Command="{Binding RedoCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </fa:FontAwesome>
+                        </DockPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
 
         </StackPanel>
     </ScrollViewer>

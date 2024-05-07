@@ -13,58 +13,164 @@
     <Page.DataContext>
         <local:PublishAudioVm x:Name="VmContext"></local:PublishAudioVm>
     </Page.DataContext>
-    <Page.Resources>
-        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
-    </Page.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="5,0,0,5" Style="{DynamicResource StackRoot}">
-            <Label Content="{DynamicResource LPublishAudio}" Style="{DynamicResource H1}" Margin="0,0,0,10"></Label>
-            <TextBox Foreground="{DynamicResource ForeBrush}" Background="{DynamicResource BackBrush}" Text="{Binding AlbumName}"></TextBox>
-            
-            <Image Width="100" Height="100" Source="{Binding ImageSource }"></Image>
-            <Button Command="{Binding LoadImageCommand}">add image</Button>
-            <Button Command="{Binding AddTrackCommand}">add track</Button>
-            <Button Command="{Binding PublishCommand}">publish</Button>
-            
+            <DockPanel Margin="0,0,0,15">
 
-            <ListView Name="QueueView" Style="{DynamicResource PostView}" ItemsSource="{Binding Tracks}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
-                                Background="{DynamicResource SecondBrush}">
+                <fa:FontAwesome Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                FontSize="{DynamicResource Header1}" Icon="ArrowLeft"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="MouseDown">
+                            <b:InvokeCommandAction Command="{Binding BackCommand}"></b:InvokeCommandAction>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                </fa:FontAwesome>
 
-                            <StackPanel>
-                                <Grid Margin="0,0,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        <ColumnDefinition></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <fa:FontAwesome Cursor="Hand"  Margin="0,0,0,0" FontSize="{DynamicResource Header1}"
-                                                    VerticalAlignment="Center"
-                                                    Foreground="{DynamicResource DarkenForeBrush}" Icon="Play">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="MouseDown">
-                                                <i:InvokeCommandAction CommandParameter="{Binding  TrackId}" Command="{Binding PlayQueueCommand,  ElementName=VmContext}"></i:InvokeCommandAction>
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers> 
-                                    </fa:FontAwesome>
-                                    
-                                    
-                                    
-                                    <TextBox VerticalAlignment="Center" Grid.Column="1"
-                                           Foreground="{DynamicResource DarkenForeBrush}" 
-                                           Text="{Binding Name}">
-                                    </TextBox>
-                                    <Button Grid.Column="2" Command="{Binding LoadSourceCommand}">load source</Button>
-                                </Grid>
-                                
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                <Label Style="{DynamicResource H1}" Content="{DynamicResource LAlbum}"></Label>
+
+            </DockPanel>
+
+
+            <Border CornerRadius="{DynamicResource Radius}" Background="{DynamicResource SecondBrush}" Padding="{DynamicResource Padding}" >
+                <StackPanel>
+                    <DockPanel Margin="{DynamicResource BottomPadding}">
+                        <Grid Margin="0,0,10,0">
+
+                            <Border Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+                                <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
+                                                FontSize="150" Icon="User"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center">
+                                </fa:FontAwesome>
+                            </Border>
+                            <Image HorizontalAlignment="Left" Width="200" Height="200" Source="{Binding ImageSource}">
+                                <Image.OpacityMask>
+                                    <VisualBrush>
+                                        <VisualBrush.Visual>
+                                            <Border Width="200" Height="200" Background="{DynamicResource BackBrush}"
+                                                    CornerRadius="{DynamicResource Radius}" />
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Image.OpacityMask>
+                            </Image>
+                        </Grid>
+                        <StackPanel>
+                            <Grid Margin="{DynamicResource BottomPadding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label VerticalAlignment="Center">name</Label>
+                                <TextBox Grid.Column="1"
+                                    Text="{Binding AlbumName}">
+                                </TextBox>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label>description</Label>
+
+                                <TextBox Grid.Column="1"
+                                         MinHeight="100"
+                                    Text="{Binding AlbumDescription}">
+                                </TextBox>
+                            </Grid>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <ListView Margin="{DynamicResource BottomPadding}" Name="QueueView" Style="{DynamicResource PostView}" ItemsSource="{Binding Tracks}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                                        Background="{DynamicResource SecondBrush}">
+
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Margin="0,0,0,0"
+                                                            FontSize="{DynamicResource Header1}"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="{DynamicResource DarkenForeBrush}" Icon="Play">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="MouseDown">
+                                                        <i:InvokeCommandAction CommandParameter="{Binding  TrackId}"
+                                                                               Command="{Binding PlayQueueCommand,  ElementName=VmContext}">
+                                                        </i:InvokeCommandAction>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </fa:FontAwesome>
+
+
+                                            <TextBox Margin="10,0,20,0" VerticalAlignment="Center" Grid.Column="1"
+                                                     Text="{Binding Name}">
+                                            </TextBox>
+                                            
+                                            <fa:FontAwesome HorizontalAlignment="Right" Grid.Column="2" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                                            FontSize="{DynamicResource Header1}" Icon="FileSoundOutline"
+                                                            Margin="0,0,20,0"
+                                                            VerticalAlignment="Center">
+                                                <b:Interaction.Triggers>
+                                                    <b:EventTrigger EventName="MouseDown">
+                                                        <b:InvokeCommandAction Command="{Binding LoadSourceCommand}"></b:InvokeCommandAction>
+                                                    </b:EventTrigger>
+                                                </b:Interaction.Triggers>
+                                            </fa:FontAwesome>
+                                            
+                                            <fa:FontAwesome HorizontalAlignment="Right" Grid.Column="3" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                                            FontSize="{DynamicResource Header1}" Icon="Trash"
+                                                            Margin="0,0,0,0"
+                                                            VerticalAlignment="Center">
+                                                <b:Interaction.Triggers>
+                                                    <b:EventTrigger EventName="MouseDown">
+                                                        <b:InvokeCommandAction  CommandParameter="{Binding TrackId}"
+                                                            Command="{Binding RemoveTrackCommand, ElementName=VmContext}"></b:InvokeCommandAction>
+                                                    </b:EventTrigger>
+                                                </b:Interaction.Triggers>
+                                            </fa:FontAwesome>
+
+                                        </Grid>
+
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <DockPanel>
+                        <Button FontWeight="{DynamicResource ParagraphWeight}" Width="80" Margin="0,0,20,0" Command="{Binding PublishCommand}">publish</Button>
+
+                        <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                        FontSize="{DynamicResource Header1}" Icon="Image"
+                                        Margin="0,0,20,0"
+                                        VerticalAlignment="Center">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseDown">
+                                    <b:InvokeCommandAction Command="{Binding LoadImageCommand}"></b:InvokeCommandAction>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </fa:FontAwesome>
+                        <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                        FontSize="{DynamicResource Header1}" Icon="Plus"
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseDown">
+                                    <b:InvokeCommandAction Command="{Binding AddTrackCommand}"></b:InvokeCommandAction>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </fa:FontAwesome>
+                    </DockPanel>
+                </StackPanel>
+            </Border>
         </StackPanel>
-        
+
     </ScrollViewer>
 </Page>

@@ -26,7 +26,7 @@ public class CreatePostVm : HistoryVm
         set
         {
             uploadSuccess = value;
-            OnPropertyChanged(nameof(UploadSuccess));
+            NotifyPropertyChanged();
         }
     }
 
@@ -62,14 +62,17 @@ public class CreatePostVm : HistoryVm
         {
             return new ButtonCommand(o =>
             {
-                var post = new Post(Utils.GenerateRandomString(5), FieldText);
+                if (!string.IsNullOrEmpty(FieldText))
+                {
+                    var post = new Post(Utils.GenerateRandomString(10), FieldText)
+                    {
+                        PostAuthor = AccountVm.Instance.AccountPerson.Result
+                    };
+                    UploadSuccess = new NotifyTaskCompletion<bool>(PlatformDAO.Instance.AddPost(post));
 
-
-
-
-                UploadSuccess = new NotifyTaskCompletion<bool>(PlatformDAO.Instance.AddPost(post));
-
-                FieldText = "";
+                    FieldText = "";
+                }
+                
             });
         }
     }
@@ -87,6 +90,18 @@ public class CreatePostVm : HistoryVm
                 }
             }));
         }
+    }
+
+    public ButtonCommand BackCommand => new ButtonCommand(o =>
+    {
+        NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
+    });
+
+    private void DestroyObjects()
+    {
+        FieldText = "";
+        Tags = null;
+        UploadSuccess = null;
     }
     
     

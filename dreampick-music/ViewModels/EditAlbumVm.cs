@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using dreampick_music.DB;
 using dreampick_music.Models;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
@@ -62,6 +63,7 @@ public class EditAlbumVm : HistoryVm
 
     private ObservableCollection<TrackVm> tracks = new ObservableCollection<TrackVm>();
 
+    
     private BitmapImage imageSource;
 
     [UndoRedo]
@@ -77,6 +79,7 @@ public class EditAlbumVm : HistoryVm
         get => tracks;
         set => Set(ref tracks, value);
     }
+    
 
     public ButtonCommand LoadImageCommand => new ButtonCommand((o =>
     {
@@ -90,19 +93,25 @@ public class EditAlbumVm : HistoryVm
         ImageSource = new BitmapImage(new Uri(path, UriKind.Absolute));
     }));
 
-    public ButtonCommand AddTrackCommand => new ButtonCommand((o =>
-    {
-        var tracks = Tracks;
-        tracks.Add(new TrackVm("sdfsd", Utils.GenerateRandomString(10)));
-        Set(ref this.tracks, tracks);
-    }));
-
     public ButtonCommand PlayQueueCommand => new ButtonCommand((o =>
     {
         if (o is not string id) return;
         var tracksPlaylist = CreatePlaylist();
         PlayerVm.Instance.PlayNewQueue(tracksPlaylist, id);
     }));
+    
+    public ButtonCommand PublishCommand => new ButtonCommand((o =>
+    {
+        PublishPlaylist();
+    }));
+    
+    public ButtonCommand RemoveTrackCommand => new ButtonCommand(o =>
+    {
+        if (o is string id)
+        {
+            Tracks.Remove(Tracks.Single(track => track.TrackId == id));
+        }
+    });
 
 
     private List<Track> VmToTracks(Playlist tracksPlaylist)
@@ -143,7 +152,6 @@ public class EditAlbumVm : HistoryVm
             Name = AlbumName,
             Type = PlaylistType.ALBUM,
             Image = ImageSource is null ? null : ImageSource,
-            // TODO account binding
             Author = loadedP.Result.Author
         };
         playlist.Tracks = new ObservableCollection<Track>(VmToTracks(playlist));
@@ -159,7 +167,6 @@ public class EditAlbumVm : HistoryVm
             Type = PlaylistType.ALBUM,
             Image = ImageSource is null ? null : ImageSource,
 
-            // TODO account binding
             Author = loadedP.Result.Author
         };
         playlist.Tracks = new ObservableCollection<Track>(VmToTracks(playlist, out hasProblems));
@@ -173,12 +180,12 @@ public class EditAlbumVm : HistoryVm
         
         if(hasProblems || loadedP.IsNotCompleted) return;
         
-        _ = PlatformDAO.Instance.UpdatePlaylistAsync(playlist, loadedP.Result.Tracks);
+        _ = PlaylistDAO.Instance.UpdateAsync(playlist, loadedP.Result.Tracks);
     }
 
     private void LoadAlbum()
     {
-        loadedPlaylist = new NotifyTaskCompletion<Playlist>(PlatformDAO.Instance.LoadAlbumAsync(albumId));
+        loadedPlaylist = new NotifyTaskCompletion<Playlist>(PlaylistDAO.Instance.GetAsync(albumId));
     }
 
     private void InitializeAlbumEditor()
@@ -190,23 +197,6 @@ public class EditAlbumVm : HistoryVm
         ImageSource = loadedP.Result.Image;
         
     }
-    
-    
-    
-
-
-    public ButtonCommand PublishCommand => new ButtonCommand((o =>
-    {
-        PublishPlaylist();
-    }));
-    
-    public ButtonCommand RemoveTrackCommand => new ButtonCommand(o =>
-    {
-        if (o is string id)
-        {
-            Tracks.Remove(Tracks.Single(track => track.TrackId == id));
-        }
-    });
 
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };

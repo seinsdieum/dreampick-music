@@ -1,4 +1,4 @@
-﻿<Window WindowStyle="None" x:Class="dreampick_music.MainWindow"
+﻿<Window x:Class="dreampick_music.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,24 +6,27 @@
         xmlns:local="clr-namespace:dreampick_music"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:utilities="clr-namespace:dreampick_music.Utilities"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fluentWpfChromes="clr-namespace:FluentWpfChromes;assembly=FluentWpfChromes"
         mc:Ignorable="d"
+        WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="650" Width="1000"
-        MinHeight="500"
-        Name="Wndw"
-        MinWidth="600">
+        Title="MainWindow"
+        Height="650" Width="1000"
+        MinHeight="500" MinWidth="600"
+        Name="Wndw">
 
     <Window.DataContext>
         <local:MainVm x:Name="VmContext"></local:MainVm>
     </Window.DataContext>
-    <Window.Resources>
+    <!--<Window.Resources>
         <local:DoubleTimeConverter x:Key="DoubleTimeConverter" />
         <local:SongStateIconConverter x:Key="SongStateIconConverter" />
         <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
-    </Window.Resources>
+    </Window.Resources>-->
     <Grid>
         <MediaElement
             Name="AudioPlayer"
@@ -42,7 +45,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </MediaElement>
-        
+
 
         <Border Style="{DynamicResource WindowBorder}" Background="{DynamicResource SecondBrush}" CornerRadius="25"
                 BorderThickness="1"
@@ -143,19 +146,44 @@
                 </PathGeometry>
             </Path.Data>
         </Path>
-        
 
-
-        <Border Margin="4" ClipToBounds="True" CornerRadius="25" Background="{DynamicResource BackBrush}">
+        <Border
+            Margin="4" ClipToBounds="True" CornerRadius="25" Background="{DynamicResource BackBrush}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <local:TitleBar></local:TitleBar>
-                
-                
-                <Border Grid.Row="1" Padding="{DynamicResource Padding}">
+
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Grid.Row="1"
+                    Visibility="{Binding Account.AccountPerson.IsCompleted, Converter={StaticResource StatementVisibilityConverterInversed}}"
+                    Style="{DynamicResource StackRoot}"
+                    >
+                    <Border
+                        Padding="{DynamicResource Padding}"
+                    >
+                        <DockPanel>
+                            <fa:FontAwesome 
+                                HorizontalAlignment="Right"
+                                Icon="CircleOutlineNotch" 
+                                Foreground="{DynamicResource DarkenForeBrush}"
+                                Spin="True"
+                                FontSize="100"
+                                VerticalAlignment="Center"
+                            ></fa:FontAwesome>
+                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource Name}" Content="dreampick"></Label>
+                        </DockPanel>
+                        
+                    </Border>
+                </StackPanel>
+
+                <Border
+                    Visibility="{Binding Account.AccountPerson.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}"
+
+                    Grid.Row="1" Padding="{DynamicResource Padding}">
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -168,7 +196,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Margin="0,0,10,0" Grid.Row="0" Grid.Column="0">
-                            <ListView Style="{DynamicResource ChoiceView}" ItemsSource="{Binding AppTabs}">
+                            <ListView Style="{DynamicResource ChoiceView}" ItemsSource="{Binding Tabs.Result}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
@@ -183,7 +211,7 @@
                                                 </Border>
                                                 <Label
                                                     VerticalAlignment="Center"
-                                                    Visibility="{Binding TabsCollapsed, ElementName=VmContext, Converter={StaticResource VisibilityConverter} }"
+                                                    Visibility="{Binding TabsCollapsed, ElementName=VmContext, Converter={StaticResource StatementVisibilityConverter} }"
                                                     Content="{Binding Name}">
                                                 </Label>
                                             </WrapPanel>
@@ -199,167 +227,257 @@
                             <Frame Loaded="PageFrameLoaded"
                                    NavigationUIVisibility="Hidden" />
                         </Border>
-                        <!--<Border Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
-                                Margin="0,0,10,0" Grid.Row="1" Background="{DynamicResource SecondBrush}">
-                            <StackPanel>
-                                <Label Margin="{DynamicResource BottomPadding}" Content="{DynamicResource LYou}"></Label>
-
-                                <Label  Content="Александр Селицкий"></Label>
+                        <Border Padding="{DynamicResource PaddingInner}" CornerRadius="{DynamicResource Radius}"
+                                Margin="0,0,10,0" Grid.Row="1">
+                            <StackPanel Cursor="Hand" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <!--
+                                <Label Visibility="{Binding TabsCollapsed, Converter={StaticResource StatementVisibilityConverter}}" Margin="{DynamicResource BottomPadding}" Content="{DynamicResource LYou}"></Label>
+                                -->
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction Command="{Binding NavigateToAccount}"></i:InvokeCommandAction>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <Grid HorizontalAlignment="Center">
+                                    <Border
+                                        Visibility="{Binding Account.AccountPerson.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}"
+                                        Background="{DynamicResource ThirdBrush}"
+                                        CornerRadius="{DynamicResource Radius}">
+                                        <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
+                                                        FontSize="30" Icon="CircleOutlineNotch"
+                                                        VerticalAlignment="Center"
+                                                        Spin="True"
+                                                        HorizontalAlignment="Center">
+                                        </fa:FontAwesome>
+                                    </Border>
+                                    <Border
+                                        Visibility="{Binding Account.AccountPerson.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}"
+                                        Background="{DynamicResource ThirdBrush}"
+                                        CornerRadius="{DynamicResource Radius}">
+                                        <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
+                                                        FontSize="30" Icon="User"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center">
+                                        </fa:FontAwesome>
+                                    </Border>
+                                    <Image HorizontalAlignment="Left" Width="45" Height="45"
+                                           Source="{Binding Account.AccountPerson.Result.Image}">
+                                        <Image.OpacityMask>
+                                            <VisualBrush>
+                                                <VisualBrush.Visual>
+                                                    <Border Width="45" Height="45"
+                                                            Background="{DynamicResource BackBrush}"
+                                                            CornerRadius="{DynamicResource Radius}" />
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Image.OpacityMask>
+                                    </Image>
+                                </Grid>
+                                <Label
+                                    HorizontalAlignment="Center"
+                                    Visibility="{Binding TabsCollapsed, Converter={StaticResource StatementVisibilityConverter}}"
+                                    Content="{Binding Account.AccountPerson.Result.Name}">
+                                </Label>
                             </StackPanel>
-                        </Border>-->
+                        </Border>
 
-                        <Border Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
-                                Grid.Row="1" Grid.Column="1" Background="{DynamicResource SecondBrush}">
-                            <Grid>
+                        <Grid Grid.Column="1" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Border HorizontalAlignment="Stretch" Padding="{DynamicResource Padding}"
+                                    CornerRadius="{DynamicResource Radius}"
+                                    Background="{DynamicResource SecondBrush}">
+                                <Grid>
 
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <DockPanel VerticalAlignment="Center" Margin="{DynamicResource BottomPadding}"
-                                                   Grid.Column="0">
-                                            <Border VerticalAlignment="Center" Margin="0,0,10,0"
-                                                    Height="{DynamicResource Icon}" Width="{DynamicResource Icon}"
-                                                    Background="{DynamicResource ThirdBrush}"
-                                                    CornerRadius="5">
-
-                                                <Image Height="{DynamicResource Icon}" Width="{DynamicResource Icon}"
-                                                       Source="{Binding Player.CurrentTrack.Album.Image}" />
-                                            </Border>
-                                            <StackPanel>
-                                                <Label
-                                                    Content="{Binding Player.CurrentTrack.Name}">
-                                                </Label>
-                                                <Label Content="{Binding Player.CurrentTrack.Album.Author.Name}"></Label>
-                                            </StackPanel>
-                                        </DockPanel>
-
-                                        <Grid VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="1">
+                                    <StackPanel Grid.Column="0">
+                                        <Grid>
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
                                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Image
-                                                Stretch="UniformToFill"
-                                                Width="30" Height="30"
-                                                Margin="0,0,0,-15"
-                                                Source="{DynamicResource ImgPrev }"
-                                                Grid.Column="0">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="MouseDown">
-                                                        <i:InvokeCommandAction Command="{Binding Player.PrevTrackCommand}"></i:InvokeCommandAction>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </Image>
-                                            <Grid Margin="10,0,10,0" VerticalAlignment="Center" Grid.Column="1">
-                                                <Ellipse Fill="{DynamicResource BackBrush}" Width="40" Height="40">
-                                                </Ellipse>
+                                            <DockPanel VerticalAlignment="Center"
+                                                       Margin="{DynamicResource BottomPadding}"
+                                                       Grid.Column="0">
+                                                <Border VerticalAlignment="Center" Margin="0,0,10,0"
+                                                        Height="{DynamicResource Icon}" Width="{DynamicResource Icon}"
+                                                        Background="{DynamicResource ThirdBrush}"
+                                                        CornerRadius="5">
+
+                                                    <Image Height="{DynamicResource Icon}"
+                                                           Width="{DynamicResource Icon}"
+                                                           Source="{Binding Player.CurrentTrack.Album.Image}" />
+                                                </Border>
+                                                <StackPanel>
+                                                    <Label
+                                                        Content="{Binding Player.CurrentTrack.Name}">
+                                                    </Label>
+                                                    <Label Content="{Binding Player.CurrentTrack.Album.Author.Name}"></Label>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <Grid VerticalAlignment="Center" Margin="10,0,10,0" Grid.Column="1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
                                                 <Image
-                                                    Width="35" Height="35"
-                                                    Margin="0,0,0,-15"
                                                     Stretch="UniformToFill"
-                                                    VerticalAlignment="Center"
-                                                    Source="{Binding Player.SongState, Converter={StaticResource SongStateIconConverter} }">
+                                                    Width="30" Height="30"
+                                                    Margin="0,0,0,-15"
+                                                    Source="{DynamicResource ImgPrev }"
+                                                    Grid.Column="0">
                                                     <i:Interaction.Triggers>
                                                         <i:EventTrigger EventName="MouseDown">
-                                                            <i:InvokeCommandAction Command="{Binding Player.PlayTrackCommand}"></i:InvokeCommandAction>
+                                                            <i:InvokeCommandAction
+                                                                Command="{Binding Player.PrevTrackCommand}">
+                                                            </i:InvokeCommandAction>
                                                         </i:EventTrigger>
                                                     </i:Interaction.Triggers>
                                                 </Image>
-                                            </Grid>
-                                            <Image
-                                                Width="30" Height="30"
-                                                Margin="0,0,0,-15"
-                                                Stretch="UniformToFill"
-                                                Source="{DynamicResource ImgNext }"
-                                                Grid.Column="2">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="MouseDown">
-                                                        <i:InvokeCommandAction Command="{Binding Player.NextTrackCommand}"></i:InvokeCommandAction>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </Image>
-
-                                        </Grid>
-                                        <DockPanel HorizontalAlignment="Right" Grid.Column="2">
-                                            <Grid Margin="10,0,10,0" VerticalAlignment="Center">
-                                                <Ellipse Fill="{DynamicResource BackBrush}" Width="37" Height="37">
-                                                </Ellipse>
+                                                <Grid Margin="10,0,10,0" VerticalAlignment="Center" Grid.Column="1">
+                                                    <Ellipse Fill="{DynamicResource BackBrush}" Width="40" Height="40">
+                                                    </Ellipse>
+                                                    <fa:FontAwesome
+                                                        FontSize="20"
+                                                        Foreground="{DynamicResource DarkenForeBrush}"
+                                                        VerticalAlignment="Center"
+                                                        Icon="{Binding Player.SongState, Converter={StaticResource SongStateIconConverter}}">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseDown">
+                                                                <i:InvokeCommandAction
+                                                                    Command="{Binding Player.PlayTrackCommand}">
+                                                                </i:InvokeCommandAction>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                    </fa:FontAwesome>
+                                                </Grid>
                                                 <Image
                                                     Width="30" Height="30"
-                                                    Stretch="UniformToFill"
-                                                    VerticalAlignment="Center"
                                                     Margin="0,0,0,-15"
-                                                    Source="{DynamicResource ImgQueue }">
-                                                </Image>
-                                            </Grid>
-
-                                            <Grid Margin="10,0,10,0" VerticalAlignment="Center">
-                                                <Ellipse Fill="{DynamicResource BackBrush}" Width="37" Height="37">
-                                                </Ellipse>
-                                                <Image
-                                                    Width="30" Height="30"
-                                                    Margin="0,0,0,-5"
-
                                                     Stretch="UniformToFill"
-                                                    VerticalAlignment="Center"
-                                                    Source="{DynamicResource ImgRepeat }">
+                                                    Source="{DynamicResource ImgNext }"
+                                                    Grid.Column="2">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="MouseDown">
+                                                            <i:InvokeCommandAction
+                                                                Command="{Binding Player.NextTrackCommand}">
+                                                            </i:InvokeCommandAction>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
                                                 </Image>
+
                                             </Grid>
+                                            <DockPanel HorizontalAlignment="Right" Grid.Column="2">
+                                                <Grid Margin="10,0,10,0" VerticalAlignment="Center">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="MouseDown">
+                                                            <i:InvokeCommandAction Command="{Binding NavigateToQueue}">
+                                                            </i:InvokeCommandAction>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                    <Ellipse Fill="{DynamicResource BackBrush}" Width="37" Height="37">
+                                                    </Ellipse>
+                                                    <Image
+                                                        Width="30" Height="30"
+                                                        Stretch="UniformToFill"
+                                                        VerticalAlignment="Center"
+                                                        Margin="0,0,0,-15"
+                                                        Source="{DynamicResource ImgQueue }">
+                                                    </Image>
+                                                </Grid>
 
+                                                <Grid Margin="10,0,10,0" VerticalAlignment="Center">
+                                                    <Ellipse Fill="{DynamicResource BackBrush}" Width="40" Height="40">
+                                                    </Ellipse>
+                                                    <fa:FontAwesome
 
-                                            <!--<Slider Grid.Column="4" VerticalAlignment="Stretch" Orientation="Vertical"
-                                                    Name="VolumeSlider"
-                                                    IsMoveToPointEnabled="True" Interval="1" Minimum="0" Maximum="1"
-                                                    Value="{Binding SongVolume}">
-                                            </Slider>-->
-                                        </DockPanel>
-                                    </Grid>
+                                                        FontSize="20"
+                                                        Foreground="{DynamicResource DarkenForeBrush}"
+                                                        VerticalAlignment="Center"
+                                                        Icon="{Binding Player.SongState, Converter={StaticResource SongStateIconConverter}}">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseDown">
+                                                                <i:InvokeCommandAction
+                                                                    Command="{Binding Player.ShuffleQueueCommand}">
+                                                                </i:InvokeCommandAction>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                    </fa:FontAwesome>
+                                                </Grid>
+                                                <Grid Margin="10,0,10,0" VerticalAlignment="Center">
+                                                    <Ellipse Fill="{DynamicResource BackBrush}" Width="40" Height="40">
+                                                    </Ellipse>
+                                                    <fa:FontAwesome
 
-                                    <Grid VerticalAlignment="Center">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                            <ColumnDefinition></ColumnDefinition>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
+                                                        FontSize="20"
+                                                        Foreground="{DynamicResource DarkenForeBrush}"
+                                                        VerticalAlignment="Center"
+                                                        Icon="{Binding Player.SongState, Converter={StaticResource SongStateIconConverter}}">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseDown">
+                                                                <i:InvokeCommandAction
+                                                                    Command="{Binding Player.ToggleRepeatCommand}">
+                                                                </i:InvokeCommandAction>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                    </fa:FontAwesome>
+                                                </Grid>
 
-                                        <Label Width="60" Grid.Column="0"
-                                               Content="{Binding Value, ElementName= TrackSlider, Converter={StaticResource DoubleTimeConverter}}">
-                                        </Label>
-                                        <Slider IsSelectionRangeEnabled="True"
-                                                Grid.Column="1" IsMoveToPointEnabled="True"
-                                                Height="30" Name="TrackSlider"
-                                                Minimum="0"
-                                                Maximum="0"
-                                                Value="0"
-                                                Margin="0,2,0,0"
-                                                VerticalAlignment="Center"
-                                                Thumb.DragDelta="TrackSlider_OnValueChanged"
-                                                Thumb.DragCompleted="TrackSlider_OnLastValueChanged"
-                                                MouseLeftButtonUp="TrackSlider_OnMouseReleased">
-                                        </Slider>
-                                        <Label HorizontalContentAlignment="Right" Width="60"
-                                               HorizontalAlignment="Right" Grid.Column="2"
-                                               Content="{Binding  Maximum, ElementName= TrackSlider, Converter={StaticResource DoubleTimeConverter}}">
-                                        </Label>
-                                    </Grid>
-                                </StackPanel>
+                                            </DockPanel>
+                                        </Grid>
 
+                                        <Grid VerticalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
 
-                            </Grid>
-                        </Border>
+                                            <Label Width="60" Grid.Column="0"
+                                                   Content="{Binding Value, ElementName= TrackSlider, Converter={StaticResource DoubleTimeConverter}}">
+                                            </Label>
+                                            <Slider IsSelectionRangeEnabled="True"
+                                                    Grid.Column="1" IsMoveToPointEnabled="True"
+                                                    Height="30" Name="TrackSlider"
+                                                    Minimum="0"
+                                                    Maximum="0"
+                                                    Value="0"
+                                                    Margin="0,2,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Thumb.DragDelta="TrackSlider_OnValueChanged"
+                                                    Thumb.DragCompleted="TrackSlider_OnLastValueChanged"
+                                                    MouseLeftButtonUp="TrackSlider_OnMouseReleased">
+                                            </Slider>
+                                            <Label HorizontalContentAlignment="Right" Width="60"
+                                                   HorizontalAlignment="Right" Grid.Column="2"
+                                                   Content="{Binding  Maximum, ElementName= TrackSlider, Converter={StaticResource DoubleTimeConverter}}">
+                                            </Label>
+                                        </Grid>
+
+                                    </StackPanel>
+
+                                </Grid>
+                            </Border>
+                            <Slider Grid.Column="1" VerticalAlignment="Stretch"
+                                    Orientation="Vertical"
+                                    Name="VolumeSlider"
+                                    IsMoveToPointEnabled="True" Interval="1" Minimum="0" Maximum="1"
+                                    Value="{Binding Player.SongVolume}">
+                            </Slider>
+                        </Grid>
                     </Grid>
+
                 </Border>
-                
+
 
             </Grid>
         </Border>

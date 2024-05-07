@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using dreampick_music.Models;
+using dreampick_music.Views;
 using Application = System.Windows.Forms.Application;
 
 namespace dreampick_music;
@@ -112,33 +113,21 @@ public class PersonVm : INotifyPropertyChanged
         userId = null;
     }
     
-    public ButtonCommand NavigateSubsctibersCommand
+    public ButtonCommand NavigateSubsctibersCommand => new ButtonCommand(o =>
     {
-        get
+        if (o is string id)
         {
-            return new ButtonCommand(o =>
-            {
-                if (o is string id && NavigationVm.Instance.Navigation is NavigationService service)
-                {
-                    service.Navigate(new Subscribers(id));
-                }
-            });
+            NavigationVm.Instance.Navigate(new UserCollection(id, UserCollectionType.Subscribers));
         }
-    }
+    });
     
-    public ButtonCommand NavigateSubscriptionsCommand
+    public ButtonCommand NavigateSubscriptionsCommand => new ButtonCommand(o =>
     {
-        get
+        if (o is string id)
         {
-            return new ButtonCommand(o =>
-            {
-                if (o is string id && NavigationVm.Instance.Navigation is NavigationService service)
-                {
-                    service.Navigate(new Subsctiptions(id));
-                }
-            });
+            NavigationVm.Instance.Navigate(new UserCollection(id, UserCollectionType.Subscriptions));
         }
-    }
+    });
 
 
     private void LoadUserAsync()

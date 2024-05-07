@@ -9,9 +9,8 @@ public class StatementVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        bool item = (bool)value;
         
-        return item ? Visibility.Visible : Visibility.Collapsed;
+        return value is true ? Visibility.Visible : Visibility.Collapsed;
     }
      
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

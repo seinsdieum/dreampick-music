@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dreampickMusic="clr-namespace:dreampick_music"
+                    xmlns:converters="clr-namespace:dreampick_music.Converters"
+                    xmlns:utilities="clr-namespace:dreampick_music.Utilities">
+    <dreampickMusic:DoubleTimeConverter x:Key="DoubleTimeConverter"/>
+    <converters:PlayingTrackConverter x:Key="PlayingTrackConverter"/>
+    <utilities:StatementVisibilityConverter x:Key="StatementVisibilityConverter"/>
+    <utilities:StatementVisibilityConverterInversed x:Key="StatementVisibilityConverterInversed"/>
+    <dreampickMusic:SongStateIconConverter x:Key="SongStateIconConverter" />
+    <converters:DateTimeToStampStringConverter x:Key="DateTimeToStampStringConverter"></converters:DateTimeToStampStringConverter>
+    <converters:ThirdToSecondColorConverter x:Key="ThirdToSecondColorConverter"></converters:ThirdToSecondColorConverter>
+</ResourceDictionary>

@@ -11,9 +11,7 @@
       mc:Ignorable="d"
       Title="Subscribers" >
     
-    <Page.Resources>
-        <utilities:StatementVisibilityConverter x:Key="VisibilityConverter" />
-    </Page.Resources>
+    
     
     <Page.DataContext>
         <local:SubscribersVm x:Name="VmContext"></local:SubscribersVm>
@@ -37,7 +35,7 @@
         </DockPanel>
             
             <fa:FontAwesome Margin="0,100,0,0" FontSize="100"
-                            Visibility="{Binding Subscribers.IsNotCompleted, Converter={StaticResource VisibilityConverter}}"
+                            Visibility="{Binding Subscribers.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}"
                             Foreground="{DynamicResource DarkenForeBrush}" Icon="CircleOutlineNotch" Spin="True">
             </fa:FontAwesome>
             

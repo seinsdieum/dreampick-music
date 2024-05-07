@@ -1,559 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
-using System.Net.Quic;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using dreampick_music.Models;
 using Microsoft.Data.SqlClient;
-using MessageBox = System.Windows.Forms.MessageBox;
 
-namespace dreampick_music.Models;
+namespace dreampick_music.DB;
 
-public class PlatformDAO : IDatabaseRequests
+public class PlaylistDAO
 {
-
-    private SemaphoreSlim sem;
+    public static PlaylistDAO Instance = new PlaylistDAO();
     
-    public static PlatformDAO Instance = new PlatformDAO();
-
-    public async Task<ObservableCollection<Post>> LoadPostsAsync()
-    {
-
-        await sem.WaitAsync();
-        
-        await Task.Delay(500);
-
-
-        var queryString = "select post_date as pdate, post_id as pid, " +
-                          "post_text as ptext, [USER].user_id as puid, " +
-                          "[USER].user_name as puname, [USER].user_image as uimg from POST\ninner join [USER] ON [USER].user_id = post_user_fk_id order by pdate desc";
-
-
-        var posts = new ObservableCollection<Post>();
-
-        try
-        {
-            await using var connection = new SqlConnection(Config.Instance.DbString);
-            await connection.OpenAsync();
-
-            await using var transaction = connection.BeginTransaction();
-
-            var command =
-                new SqlCommand(
-                    queryString)
-                {
-                    Transaction = transaction
-                };
-
-
-
-
-            command.Connection = connection;
-            var result = command.ExecuteReaderAsync().Result;
-
-
-            while (result.ReadAsync().Result)
-            {
-                var user = new User
-                {
-                    ID = (string)result["puid"],
-                    Name = (string)result["puname"]
-                };
-
-                var imgRes = result["uimg"];
-                if (imgRes is byte[] bytes)
-                {
-                    user.Image = Utils.GetBitmapImage(bytes);
-                }
-
-                var post = new Post((string)result["pid"], (string)result["ptext"])
-                {
-                    PostAuthor = user,
-                    PublicationDate = (DateTime)result["pdate"]
-                };
-
-                posts.Add(post);
-            }
-
-            await result.CloseAsync();
-
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show(e.Message);
-        }
-        finally
-        {
-            sem.Release();
-
-        }
-        
-        return posts;
-    }
-
-    public async Task<ObservableCollection<Post>> LoadUserPostsAsync(string id)
-    {
-        
-        var queryString = "select p.post_text as ptext, " +
-                          "u.user_name as puname, " +
-                          "p.post_date as pdate, " +
-                          "p.post_id as pid " +
-                          "from POST as p " +
-                          "inner join [User] u on p.post_user_fk_id = u.user_id " +
-                          "where u.user_id = @valuename " +
-                          "order by pdate desc";
-
-        await sem.WaitAsync();
-        
-        await Task.Delay(200);
-
-        var posts = new ObservableCollection<Post>();
-
-        try
-        {
-
-            await using var connection = new SqlConnection(Config.Instance.DbString);
-
-            await connection.OpenAsync();
-
-            await using var transaction = connection.BeginTransaction();
-
-
-
-
-            var command =
-                new SqlCommand(
-                    queryString)
-                {
-                    Transaction = transaction
-                };
-
-
-            command.Parameters.AddWithValue("valuename", id);
-
-            command.Connection = connection;
-
-
-            var result = command.ExecuteReaderAsync().Result;
-
-
-            while (result.ReadAsync().Result)
-            {
-                var user = new User();
-                user.Name = (string)result["puname"];
-
-                var post = new Post((string)result["pid"], (string)result["ptext"]);
-                post.PostAuthor = user;
-                post.PublicationDate = (DateTime)result["pdate"];
-
-                posts.Add(post);
-            }
-
-            await result.CloseAsync();
-
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show($"{e.Message}");
-        }
-        finally
-        {
-            sem.Release();
-
-        }
-        
-        return posts;
-    }
-
-    public async Task<Person> LoadPersonAsync(string id)
-    {
-
-        await sem.WaitAsync();
-        
-        await Task.Delay(800);
-        var query = "select user_id, user_name, user_artist_fk_id, user_image from [USER] where user_id = @uid";
-
-        Person user = new User();
-
-        try
-        {
-
-            await using var connection = new SqlConnection(Config.Instance.DbString);
-            await connection.OpenAsync();
-
-            await using var transaction = connection.BeginTransaction();
-
-
-            var command = new SqlCommand(query, connection)
-            {
-                Transaction = transaction
-            };
-            command.Parameters.AddWithValue("uid", id);
-
-            var result = command.ExecuteReaderAsync().Result;
-
-            while (result.ReadAsync().Result)
-            {
-                var name = (string)result["user_name"];
-                var uid = (string)result["user_id"];
-                var artistId = result["user_artist_fk_id"];
-                var image = result["user_image"];
-
-                if (artistId is string)
-                {
-                    var artist = new Artist();
-                    user = artist;
-                }
-                else user = new User();
-
-                if (image is byte[] bytes)
-                {
-                    user.Image = Utils.GetBitmapImage(bytes);
-                }
-
-                user.ID = uid;
-                user.Name = name;
-            }
-
-            await result.CloseAsync();
-
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show(e.Message);
-        }
-        finally
-        {
-            sem.Release();
-        }
-        
-        return user;
-    }
-
-    public async Task<int> LoadUserSubscribersAsync(string id)
-    {
-
-        
-        int count = 0;
-
-        var queryString =
-            "select COUNT(*) as [count] from SUBSCRIPTIONS\nwhere subscription_user_subscribed_fk_id = @valueid";
-
-        try
-        {
-            await using var connection = new SqlConnection(Config.Instance.DbString);
-            await connection.OpenAsync();
-            
-            await using var transaction = connection.BeginTransaction();
-            
-
-            var command =
-                new SqlCommand(
-                    queryString)
-                {
-                    Transaction = transaction
-                };
-
-            command.Parameters.AddWithValue("valueid", id);
-            command.Connection = connection;
-            
-            var result = command.ExecuteReaderAsync().Result;
-
-            while (result.ReadAsync().Result)
-            {
-                count = (int)result["count"];
-            }
-            await result.CloseAsync();
-
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show($"{e.Message}");
-        }
-        finally
-        {
-        }
-
-        
-        return count;
-    }
-
-    public async Task<int> LoadUserSubscriptionsAsync(string id)
-    {
-        var queryString = "select COUNT(*) as count from SUBSCRIPTIONS\nwhere subscription_subscriber_fk_id = @valueid";
-
-        int count = 0;
-
-
-        try
-        {
-            await using var connection = new SqlConnection(Config.Instance.DbString);
-            await connection.OpenAsync();
-
-            await using var transaction = connection.BeginTransaction();
-
-
-
-            var command =
-                new SqlCommand(queryString)
-                {
-                    Transaction = transaction
-                };
-
-            command.Parameters.AddWithValue("valueid", id);
-            command.Connection = connection;
-            var result = command.ExecuteReaderAsync().Result;
-
-            while (result.ReadAsync().Result)
-            {
-                count = (int)result["count"];
-            }
-
-            await result.CloseAsync();
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show(e.Message);
-        }
-        finally
-        {
-        }
-
-        return count;
-    }
-
-    public async Task<ObservableCollection<Person>> LoadSubscribersAsync(string id)
-    {
-
-        await sem.WaitAsync();
-        
-        await Task.Delay(500);
-
-
-        var queryString =
-            "select sub.user_name as [name], " +
-            "sub.user_image as [image], sub.user_id as [id] " +
-            "from SUBSCRIPTIONS as subs " +
-            "inner join [USER] as sub on subs.subscription_subscriber_fk_id = " +
-            "sub.user_id " +
-            "where subs.subscription_user_subscribed_fk_id = @valueid";
-
-        var collection = new ObservableCollection<Person>();
-
-        try
-        {
-            await using var connection = new SqlConnection(Config.Instance.DbString);
-            
-            await connection.OpenAsync();
-            await using var transaction = connection.BeginTransaction();
-
-
-            var command = new SqlCommand(queryString)
-            {
-                Transaction = transaction
-            };
-
-            command.Connection = connection;
-
-            command.Parameters.AddWithValue("valueid", id);
-
-            var result = command.ExecuteReaderAsync().Result;
-
-            while (result.ReadAsync().Result)
-            {
-                Person user = new User();
-                var uid = (string)result["id"];
-                var image = result["image"];
-                var uname = (string)result["name"];
-
-                if (image is byte[] bytes)
-                {
-                    user.Image = Utils.GetBitmapImage(bytes);
-                }
-
-                user.Name = uname;
-                user.ID = uid;
-                collection.Add(user);
-            }
-
-            await result.CloseAsync();
-
-            await transaction.CommitAsync();
-
-        }
-
-        catch (Exception e)
-        {
-            MessageBox.Show(e.Message);
-        }
-        finally
-        {
-            sem.Release();
-        }
-
-        return collection;
-    }
-
-    public async Task<ObservableCollection<Person>> LoadSubscriptionsAsync(string id)
+    
+    public async Task AddAsync(Playlist playlist)
     {
         
         var queryString =
-            "select sub.user_name as " +
-            "[name], sub.user_image as [image]" +
-            ", sub.user_id as [id]" +
-            " from SUBSCRIPTIONS as subs " +
-            "inner join [USER] as sub on " +
-            "subs.subscription_user_subscribed_fk_id = sub.user_id " +
-            "where subs.subscription_subscriber_fk_id = @valueid";
-
-        await sem.WaitAsync();
-        await Task.Delay(500);
-        var collection = new ObservableCollection<Person>();
-
-
-        try
-        {
-
-            await using var connection = new SqlConnection(Config.Instance.DbString);
-
-            await connection.OpenAsync();
-
-            await using var transaction = connection.BeginTransaction();
-
-
-
-            var command = new SqlCommand(queryString)
-            {
-                Transaction = transaction
-            };
-
-            command.Connection = connection;
-
-            command.Parameters.AddWithValue("valueid", id);
-
-            var result = command.ExecuteReaderAsync().Result;
-
-            while (result.ReadAsync().Result)
-            {
-                Person user = new User();
-                var uid = (string)result["id"];
-                var image = result["image"];
-                var uname = (string)result["name"];
-
-                if (image is byte[] bytes)
-                {
-                    user.Image = Utils.GetBitmapImage(bytes);
-                }
-
-                user.Name = uname;
-                user.ID = uid;
-                collection.Add(user);
-            }
-
-            await result.CloseAsync();
-
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show(e.Message);
-        }
-        finally
-        {
-            sem.Release();
-            
-        }
-
-
-        return collection;
-    }
-
-
-    public async Task<bool> AddPost(Post post)
-    {
-        var queryString = "insert into POST(post_id, post_date, post_playlist_fk_id, post_text, post_user_fk_id)" +
-                          " values" +
-                          " (@postid, @postDate, NULL, @postText, @postauthor)";
-
-        await sem.WaitAsync();
-
-        try
-        {
-            await Task.Delay(3000);
-
-            await using var connection = new SqlConnection(Config.Instance.DbString);
-            await connection.OpenAsync();
-
-            await using var transaction = connection.BeginTransaction();
-
-
-            // TODO account binding and remove this from fucking here
-            var testUserID = "basebashit";
-
-
-            var postID = post.ID;
-            var postText = post.Description;
-            var postAuthor = testUserID;
-
-
-            var command =
-                new SqlCommand(queryString)
-                {
-                    Transaction = transaction
-                };
-
-
-            command.Parameters.AddWithValue("@postid", postID);
-            command.Parameters.AddWithValue("@postDate", post.PublicationDate);
-            command.Parameters.AddWithValue("@postText", postText);
-            command.Parameters.AddWithValue("@postauthor", postAuthor);
-
-
-            command.Connection = connection;
-            _ = command.ExecuteNonQueryAsync().Result;
-
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show(e.Message);
-        }
-        finally
-        {
-            sem.Release();
-        }
-
-        return true;
-    }
-
-    public async Task AddPlaylist(Playlist playlist)
-    {
-        
-        var queryString =
-            "insert into PLAYLIST(playlist_id, user_fk_id, playlist_type_fk_id, playlist_name, playlist_description, playlist_image) " +
+            "insert into PLAYLIST(playlist_id, user_fk_id, playlist_type_fk_id, playlist_name, playlist_description, playlist_image, release_date) " +
             "values " +
-            "(@plid, @uid, @pltid, @plname, @pld, @pli)";
+            "(@plid, @uid, @pltid, @plname, @pld, @pli, @pldate)";
 
         var tracksQueryString =
-            "insert into TRACK(TRACK_ID, TRACK_PATH, track_playlist_fk_id, track_lyrics, track_name) values";
+            "insert into TRACK(TRACK_ID, TRACK_PATH, track_playlist_fk_id, track_lyrics, track_name, release_date) values";
         
-        
-        
-        await sem.WaitAsync();
-
         try
         {
             if (string.IsNullOrEmpty(playlist.ID) || string.IsNullOrEmpty(playlist.Name) ||
-                playlist.Author is not Person person
+                playlist.Author is not Models.Person person
                 || playlist.Tracks.Count == 0
                 || playlist.Tracks.Any(track =>
                     string.IsNullOrEmpty(track.Name) ||
@@ -582,15 +58,17 @@ public class PlatformDAO : IDatabaseRequests
 
             command.Parameters.AddWithValue("pli",
                 playlist.Image is BitmapImage image ? Utils.GetByteArrayFromImage(image) : DBNull.Value);
+            command.Parameters.AddWithValue("pldate", playlist.ReleaseDate);
 
             command.Connection = connection;
 
             await command.ExecuteNonQueryAsync();
 
+            var tracks = playlist.Tracks.OrderBy(t => t.ReleaseDate).ToList();
 
-            for (int i = 0; i < playlist.Tracks.Count(); i++)
+            for (int i = 0; i < tracks.Count; i++)
             {
-                tracksQueryString += $" (@tid{i}, @tpath{i}, @tplid{i}, @tlyrics{i}, @tname{i})";
+                tracksQueryString += $" (@tid{i}, @tpath{i}, @tplid{i}, @tlyrics{i}, @tname{i}, @tdate{i})";
                 if (i != playlist.Tracks.Count() - 1) tracksQueryString += ",";
             }
 
@@ -599,7 +77,7 @@ public class PlatformDAO : IDatabaseRequests
                 Transaction = transaction
             };
 
-            for (int i = 0; i < playlist.Tracks.Count(); i++)
+            for (int i = 0; i < tracks.Count; i++)
             {
                 tracksCommand.Parameters.AddWithValue($"tid{i}", playlist.Tracks[i].ID);
                 tracksCommand.Parameters.AddWithValue($"@tpath{i}", playlist.Tracks[i].Source.AbsolutePath);
@@ -607,6 +85,7 @@ public class PlatformDAO : IDatabaseRequests
                 tracksCommand.Parameters.AddWithValue($"@tlyrics{i}",
                     string.IsNullOrEmpty(playlist.Tracks[i].Lyrics) ? "" : playlist.Tracks[i].Lyrics);
                 tracksCommand.Parameters.AddWithValue($"@tname{i}", playlist.Tracks[i].Name);
+                tracksCommand.Parameters.AddWithValue($"@tdate{i}", playlist.Tracks[i].ReleaseDate);
             }
 
             tracksCommand.Connection = connection;
@@ -620,15 +99,11 @@ public class PlatformDAO : IDatabaseRequests
         {
             MessageBox.Show(e.Message);
         }
-        finally
-        {
-            sem.Release();
-        }
 
     }
     
     
-     public async Task UpdatePlaylistAsync(Playlist playlist, ObservableCollection<Track> oldTracks)
+     public async Task UpdateAsync(Playlist playlist, ObservableCollection<Track> oldTracks)
     {
         
         var queryString =
@@ -641,13 +116,12 @@ public class PlatformDAO : IDatabaseRequests
             "update track set track_lyrics = @tlyrics, track_name = @tname, TRACK_PATH = @tpath\nwhere TRACK_ID = @tid";
 
         
-        await sem.WaitAsync();
 
         
         try
         {
             if (string.IsNullOrEmpty(playlist.ID) || string.IsNullOrEmpty(playlist.Name) ||
-                playlist.Author is not Person person
+                playlist.Author is not Models.Person person
                 || playlist.Tracks.Count == 0
                 || playlist.Tracks.Any(track =>
                     string.IsNullOrEmpty(track.Name) ||
@@ -748,24 +222,19 @@ public class PlatformDAO : IDatabaseRequests
         {
             MessageBox.Show(e.Message);
         }
-        finally
-        {
-            sem.Release();
-        }
     }
 
 
-    public async Task<Playlist> LoadAlbumAsync(string id)
+    public async Task<Playlist> GetAsync(string id)
     {
 
         var playlist = new Playlist();
 
         
-        const string tracksQuery = "select t.TRACK_ID as id, t.track_lyrics as lyrics, t.track_name as [name], t.TRACK_PATH as [tpath] from TRACK as t where t.track_playlist_fk_id = @playlistid";
-        var playlistQuery = "select p.playlist_id as id, p.playlist_description as [description], p.playlist_image as [image], p.playlist_name as [name], p.playlist_type_fk_id as [type], p.user_fk_id as [uid] from PLAYLIST as p where p.playlist_id = @playlistid";
+        const string tracksQuery = "select t.TRACK_ID as id, t.track_lyrics as lyrics, t.track_name as [name], t.TRACK_PATH as [tpath], t.release_date as [tdate] from TRACK as t where t.track_playlist_fk_id = @playlistid order by t.release_date";
+        var playlistQuery = "select p.playlist_id as id, p.playlist_description as [description], p.playlist_image as [image], p.playlist_name as [name], p.playlist_type_fk_id as [type], p.user_fk_id as [uid], p.release_date as [date] from PLAYLIST as p where p.playlist_id = @playlistid";
         var userQuery = "select u.user_id as [id], u.user_name as [name] from [USER] as u\ninner join PLAYLIST as p on p.user_fk_id = u.user_id and p.playlist_id = @playlistid";
 
-        await sem.WaitAsync();
 
         try
         {
@@ -796,6 +265,7 @@ public class PlatformDAO : IDatabaseRequests
                 track.Lyrics = result1["lyrics"] is string tlyrics ? tlyrics : "";
                 track.Source = result1["tpath"] is string tpath ? new Uri(tpath, UriKind.Absolute) : null;
                 track.Album = playlist;
+                track.ReleaseDate = (DateTime)result1["tdate"];
 
 
                 tracks.Add(track);
@@ -853,6 +323,7 @@ public class PlatformDAO : IDatabaseRequests
                 playlist.ID = id;
                 playlist.Type = PlaylistType.ALBUM;
                 playlist.Name = (string)result["name"];
+                playlist.ReleaseDate = (DateTime)result["date"];
             }
 
             await result.CloseAsync();
@@ -863,23 +334,13 @@ public class PlatformDAO : IDatabaseRequests
         {
             MessageBox.Show(e.Message);
         }
-        finally
-        {
-            sem.Release();
-        }
 
         return playlist;
     }
     
-    
-    
-    
-    
-    
-    public async Task<Playlist> LoadAlbumInfoAsync(string id)
+    public async Task<Playlist> GetInfoAsync(string id)
     {
 
-        await sem.WaitAsync();
         var playlist = new Playlist();
 
 
@@ -957,20 +418,15 @@ public class PlatformDAO : IDatabaseRequests
         {
             MessageBox.Show(e.Message);
         }
-        finally
-        {
-            sem.Release();
-        }
         return playlist;
     }
     
     
-    public async Task<ObservableCollection<Playlist>> LoadAlbumsInfoAsync()
+    public async Task<ObservableCollection<Playlist>> LastCollection()
     {
 
         var query =
-            "select p.playlist_id as id, p.playlist_description as [description], p.playlist_image as [image], p.playlist_name as [name], p.playlist_type_fk_id as [type], u.user_id as [uid], u.user_name as [uname] from PLAYLIST as p inner join [USER] as u on u.user_id = p.user_fk_id";
-        await sem.WaitAsync();
+            "select p.playlist_id as id, p.playlist_description as [description], p.playlist_image as [image], p.playlist_name as [name], p.playlist_type_fk_id as [type], u.user_id as [uid], u.user_name as [uname] from PLAYLIST as p inner join [USER] as u on u.user_id = p.user_fk_id order by p.release_date desc";
         var collection = new ObservableCollection<Playlist>();
 
 
@@ -1029,10 +485,6 @@ public class PlatformDAO : IDatabaseRequests
         {
             MessageBox.Show(e.Message);
         }
-        finally
-        {
-            sem.Release();
-        }
         return collection;
     }
 
@@ -1044,7 +496,7 @@ public class PlatformDAO : IDatabaseRequests
         {
             foreach (var id in albumsID)
             {
-                var item = await LoadAlbumInfoAsync(id);
+                var item = await GetInfoAsync(id);
                 collection.Add(item);
             }
 
@@ -1056,11 +508,72 @@ public class PlatformDAO : IDatabaseRequests
         return collection;
     }
 
+    public async Task<bool> UserRelated(string userId, string playlistId)
+    {
+        var queryString = "if exists(select * from USER_PLAYLIST_RELATION where playlist_id = @plid and user_id = @uid) " +
+                          "select cast(1 as bit) as [statement] " +
+                          "else " +
+                          "select cast(0 as bit) as [statement]";
+
+        await using var connection = new SqlConnection(Config.Instance.DbString);
+
+        await connection.OpenAsync();
+
+        await using var command = new SqlCommand(queryString)
+        {
+            Connection = connection
+        };
+        command.Parameters.AddWithValue("plid", playlistId);
+        command.Parameters.AddWithValue("uid", userId);
+
+        var result = command.ExecuteReaderAsync().Result;
+
+        while (result.ReadAsync().Result)
+        {
+            return result["statement"] is true;
+        }
+
+        await result.CloseAsync();
+
+        return false;
+    }
+    
+    
+    public async Task<bool> RelateUser(string userId, string playlistId)
+    {
+        var queryString = "if exists(select * from [USER_PLAYLIST_RELATION] where playlist_id = @plid and user_id = @uid) " +
+                          "delete USER_PLAYLIST_RELATION where playlist_id = @plid and user_id = @uid " +
+                          "else " +
+                          "insert into USER_PLAYLIST_RELATION (user_id, playlist_id, relation_date) " +
+                          "values (@uid, @plid, @date)";
+
+        await using var connection = new SqlConnection(Config.Instance.DbString);
+
+        await connection.OpenAsync();
+
+        await using var command = new SqlCommand(queryString)
+        {
+            Connection = connection
+        };
+        command.Parameters.AddWithValue("plid", playlistId);
+        command.Parameters.AddWithValue("uid", userId);
+        command.Parameters.AddWithValue("date", DateTime.Now);
+
+        var result = command.ExecuteReaderAsync().Result;
+
+        while (result.ReadAsync().Result)
+        {
+            return result["statement"] is true;
+        }
+
+        return false;
+    }
+    
+
     public async Task<List<string>> GetUserPlaylistRelations(string userId)
     {
         var queryString = "select p.playlist_id as [id] from PLAYLIST as p\nwhere p.user_fk_id = @uid";
         var list = new List<string>();
-        await sem.WaitAsync();
 
         try
         {
@@ -1094,27 +607,69 @@ public class PlatformDAO : IDatabaseRequests
         {
             MessageBox.Show(e.Message);
         }
-        finally
-        {
-            sem.Release();
-            
-        }
         return list;
     }
     
     
-    
-    
-    
-
-
-    public PlatformDAO()
+    public async Task<ObservableCollection<Playlist>> RelatedPlaylists(string userId)
     {
-        sem = new SemaphoreSlim(1);
-    }
+        var res = new ObservableCollection<Playlist>();
 
-    ~PlatformDAO()
-    {
-        sem.Dispose();
+        var queryString =
+            "select " +
+            "p.playlist_image as [pimage], " +
+            "p.playlist_id as [plid], " +
+            "p.playlist_name as [pname], " +
+            "u.user_id as [uid], " +
+            "u.user_name as [uname] " +
+            "from [USER_PLAYLIST_RELATION] as ut " +
+            "inner join [PLAYLIST] as p on ut.playlist_id = p.playlist_id " +
+            "inner join [USER] as u on p.user_fk_id = u.user_id " +
+            "order by ut.relation_date desc";
+
+        await using var connection = new SqlConnection(Config.Instance.DbString);
+
+        await connection.OpenAsync();
+        
+        await using var command = new SqlCommand(queryString)
+        {
+            Connection = connection
+        };
+
+        command.Parameters.AddWithValue("id", userId);
+
+        var result = await command.ExecuteReaderAsync();
+
+        while (await result.ReadAsync())
+        {
+            var author = new Artist()
+            {
+                Name = (string)result["uname"],
+                ID = (string)result["uid"]
+            };
+
+
+            var album = new Playlist()
+            {
+                Author = author,
+                Name = (string)result["pname"],
+                ID = (string)result["plid"],
+            };
+            if (result["pimage"] is byte[] bytes)
+            {
+                album.Image = Utils.GetBitmapImage(bytes);
+            }
+
+            res.Add(album);
+        }
+
+        await result.CloseAsync();
+
+        await connection.CloseAsync();
+
+        return res;
+
     }
+    
+    
 }
