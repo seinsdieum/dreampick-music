@@ -7,7 +7,7 @@ using dreampick_music.Views;
 
 namespace dreampick_music;
 
-public class PlaylistCollectionVm : INotifyPropertyChanged
+public class PlaylistCollectionVm : SelectedBase, INotifyPropertyChanged
 {
 
     private PlaylistCollectionType referenceType = PlaylistCollectionType.NoType;
@@ -47,7 +47,11 @@ public class PlaylistCollectionVm : INotifyPropertyChanged
         {
             case PlaylistCollectionType.Related:
                 Collection = new NotifyTaskCompletion<ObservableCollection<Playlist>>(
-                    PlaylistDAO.Instance.RelatedPlaylists(AccountVm.Instance.AccountPerson.Result.ID));
+                    PlaylistDAO.Instance.RelatedAsync(AccountVm.Instance.AccountPerson.Result.ID));
+                break;
+            case PlaylistCollectionType.Latest:
+                Collection = new NotifyTaskCompletion<ObservableCollection<Playlist>>(
+                    PlaylistDAO.Instance.CollectionAsync());
                 break;
             case PlaylistCollectionType.Picks:
             case PlaylistCollectionType.NoType:
@@ -67,10 +71,16 @@ public class PlaylistCollectionVm : INotifyPropertyChanged
     
     public ButtonCommand NavigateAlbumCommand => new ButtonCommand((o =>
     {
-        if (o is string id && NavigationVm.Instance.Navigation is NavigationService service)
+        if (o is not string id) return;
+        if (IsSelection)
+        {
+            SelectionCommand.Execute(o);
+        }
+        else if (NavigationVm.Instance.Navigation is NavigationService service)
         {
             service.Navigate(new AlbumPage(id));
         }
+
     }));
 
     private void DestroyObjects()

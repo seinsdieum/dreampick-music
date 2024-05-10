@@ -17,6 +17,7 @@ public class FeedVm : INotifyPropertyChanged
     private bool postsLoaded = false;
 
     private NotifyTaskCompletion<ObservableCollection<PostVm>> posts;
+    
 
     public NotifyTaskCompletion<ObservableCollection<PostVm>> Posts
     {
@@ -63,6 +64,14 @@ public class FeedVm : INotifyPropertyChanged
     }
     
     
+    public ButtonCommand NavigatePlaylistCommand => new ButtonCommand(o =>
+    {
+        if (o is string id)
+        {
+            NavigationVm.Instance.Navigate(new AlbumPage(id));
+        }
+    });
+    
     public ButtonCommand RefreshCommand
     {
         get
@@ -84,6 +93,7 @@ public class FeedVm : INotifyPropertyChanged
         if (o is not string id) return;
         NavigationVm.Instance.Navigate(new UserCollection(id, UserCollectionType.PostLikes));
     });
+    
     
     
 

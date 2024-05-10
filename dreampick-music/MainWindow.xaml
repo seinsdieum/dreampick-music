@@ -7,7 +7,6 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:utilities="clr-namespace:dreampick_music.Utilities"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
-        xmlns:fluentWpfChromes="clr-namespace:FluentWpfChromes;assembly=FluentWpfChromes"
         mc:Ignorable="d"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -32,7 +31,7 @@
             Name="AudioPlayer"
             Volume="{Binding Player.SongVolume}"
             LoadedBehavior="{Binding Player.SongState}"
-
+            MediaOpened="AudioPlayer_OnMediaOpened"
             Source="{Binding Player.CurrentTrack.Source}">
             <i:Interaction.Triggers>
                 <i:PropertyChangedTrigger Changed="SongValue_OnChange"
@@ -167,14 +166,12 @@
                     >
                         <DockPanel>
                             <fa:FontAwesome 
-                                HorizontalAlignment="Right"
                                 Icon="CircleOutlineNotch" 
                                 Foreground="{DynamicResource DarkenForeBrush}"
                                 Spin="True"
                                 FontSize="100"
                                 VerticalAlignment="Center"
                             ></fa:FontAwesome>
-                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource Name}" Content="dreampick"></Label>
                         </DockPanel>
                         
                     </Border>
@@ -403,7 +400,7 @@
                                                         FontSize="20"
                                                         Foreground="{DynamicResource DarkenForeBrush}"
                                                         VerticalAlignment="Center"
-                                                        Icon="{Binding Player.SongState, Converter={StaticResource SongStateIconConverter}}">
+                                                        Icon="{Binding Player.IsShuffled, Converter={StaticResource SongShuffleIconConverter}}">
                                                         <i:Interaction.Triggers>
                                                             <i:EventTrigger EventName="MouseDown">
                                                                 <i:InvokeCommandAction
@@ -421,7 +418,7 @@
                                                         FontSize="20"
                                                         Foreground="{DynamicResource DarkenForeBrush}"
                                                         VerticalAlignment="Center"
-                                                        Icon="{Binding Player.SongState, Converter={StaticResource SongStateIconConverter}}">
+                                                        Icon="{Binding Player.AudioRepeat, Converter={StaticResource SongRepeatIconConverter}}">
                                                         <i:Interaction.Triggers>
                                                             <i:EventTrigger EventName="MouseDown">
                                                                 <i:InvokeCommandAction
@@ -467,7 +464,7 @@
 
                                 </Grid>
                             </Border>
-                            <Slider Grid.Column="1" VerticalAlignment="Stretch"
+                            <Slider Margin="10,0,0,0" Grid.Column="1" VerticalAlignment="Stretch"
                                     Orientation="Vertical"
                                     Name="VolumeSlider"
                                     IsMoveToPointEnabled="True" Interval="1" Minimum="0" Maximum="1"

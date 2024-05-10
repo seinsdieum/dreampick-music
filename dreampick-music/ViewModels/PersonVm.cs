@@ -1,8 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using dreampick_music.DB;
 using dreampick_music.Models;
 using dreampick_music.Views;
 using Application = System.Windows.Forms.Application;
@@ -13,6 +17,13 @@ public class PersonVm : INotifyPropertyChanged
 {
 
     private string userId = "";
+    private NotifyTaskCompletion<Models.Person> user;
+    private NotifyTaskCompletion<bool> isSubscribed;
+    private NotifyTaskCompletion<int> subscribersCount;
+    private NotifyTaskCompletion<int> subscriptionsCount;
+    private NotifyTaskCompletion<ObservableCollection<PostVm>> userPosts;
+
+
 
     public string UserId
     {
@@ -27,7 +38,17 @@ public class PersonVm : INotifyPropertyChanged
         }
     }
 
-    private NotifyTaskCompletion<int> subscribersCount;
+
+    public NotifyTaskCompletion<bool> IsSubscribed
+    {
+        get => isSubscribed;
+        set
+        {
+            isSubscribed = value;
+            OnPropertyChanged(nameof(IsSubscribed));
+        }
+    }
+    
 
     public NotifyTaskCompletion<int> SubscribersCount
     {
@@ -43,7 +64,6 @@ public class PersonVm : INotifyPropertyChanged
     
     
     
-    private NotifyTaskCompletion<int> subscriptionsCount;
 
     public NotifyTaskCompletion<int> SubscriptionsCount
     {
@@ -58,9 +78,8 @@ public class PersonVm : INotifyPropertyChanged
     }
 
 
-    private NotifyTaskCompletion<ObservableCollection<Post>> userPosts;
 
-    public NotifyTaskCompletion<ObservableCollection<Post>> UserPosts
+    public NotifyTaskCompletion<ObservableCollection<PostVm>> UserPosts
     {
         get
         {
@@ -73,7 +92,6 @@ public class PersonVm : INotifyPropertyChanged
     }
 
 
-    private NotifyTaskCompletion<Models.Person> user;
 
 
     public NotifyTaskCompletion<Models.Person> User
@@ -103,16 +121,6 @@ public class PersonVm : INotifyPropertyChanged
     }
     
     
-
-    private void DestroyObjects()
-    {
-        User = null;
-        UserPosts = null;
-        SubscriptionsCount = null;
-        SubscribersCount = null;
-        userId = null;
-    }
-    
     public ButtonCommand NavigateSubsctibersCommand => new ButtonCommand(o =>
     {
         if (o is string id)
@@ -129,14 +137,68 @@ public class PersonVm : INotifyPropertyChanged
         }
     });
 
+    public ButtonCommand SubscribeCommand => new ButtonCommand(o =>
+    {
+        if (!IsSubscribed.IsSuccessfullyCompleted) return;
+        var old = IsSubscribed.Result;
+        IsSubscribed = new NotifyTaskCompletion<bool>(Subscribe(old));
+    });
+    
+    public ButtonCommand NavigatePlaylistCommand => new ButtonCommand(o =>
+    {
+        if (o is string id)
+        {
+            NavigationVm.Instance.Navigate(new AlbumPage(id));
+        }
+    });
+    
+    public ButtonCommand NavigatePostLikesCommand => new ButtonCommand(o =>
+    {
+        if (o is not string id) return;
+        NavigationVm.Instance.Navigate(new UserCollection(id, UserCollectionType.PostLikes));
+    });
+    
+    
+
+    private async Task<ObservableCollection<PostVm>> LoadPostList()
+    {
+        var postsAsync = await PostDAO.Instance.UserCollectionAsync(userId);
+
+        return new ObservableCollection<PostVm>(
+            postsAsync.Select(p => new PostVm() { Post = p} )
+        );
+
+    }
 
     private void LoadUserAsync()
     {
-        User = new NotifyTaskCompletion<Models.Person>(PlatformDAO.Instance.LoadPersonAsync(userId));
-        UserPosts = new NotifyTaskCompletion<ObservableCollection<Post>>(PlatformDAO.Instance.LoadUserPostsAsync(userId));
-        SubscribersCount = new NotifyTaskCompletion<int>(PlatformDAO.Instance.LoadUserSubscribersAsync(userId));
-        SubscriptionsCount = new NotifyTaskCompletion<int>(PlatformDAO.Instance.LoadUserSubscriptionsAsync(userId));
+        User = new NotifyTaskCompletion<Models.Person>(UserDAO.Instance.GetAsync(userId));
+        UserPosts = new NotifyTaskCompletion<ObservableCollection<PostVm>>(LoadPostList());
+        SubscribersCount = new NotifyTaskCompletion<int>(UserDAO.Instance.SubscribersCountAsync(userId));
+        SubscriptionsCount = new NotifyTaskCompletion<int>(UserDAO.Instance.SubscriptionsCountAsync(userId));
+        IsSubscribed = 
+            new NotifyTaskCompletion<bool>(UserDAO.Instance.IsSubscribedAsync
+                    (AccountVm.Instance.AccountPerson.Result.ID, userId));
     } 
+    
+    private void DestroyObjects()
+    {
+        User = null;
+        UserPosts = null;
+        SubscriptionsCount = null;
+        SubscribersCount = null;
+        userId = null;
+    }
+    
+    
+    private async Task<bool> Subscribe(bool oldValue)
+    {
+        var a = UserDAO.Instance.SubscribeAsync(AccountVm.Instance.AccountPerson.Result.ID, userId);
+        await a;
+        if (a.IsCompletedSuccessfully) return !oldValue;
+        
+        throw new Exception();
+    }
     
     
     public event PropertyChangedEventHandler PropertyChanged = delegate { };

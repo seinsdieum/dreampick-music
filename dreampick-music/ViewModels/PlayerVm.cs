@@ -62,6 +62,7 @@ public class PlayerVm : INotifyPropertyChanged
 
     public AudioRepeatType AudioRepeat
     {
+        get => repeatType;
         set
         {
             repeatType = value;

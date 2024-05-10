@@ -48,12 +48,12 @@ public class ArtistAlbumsVm : INotifyPropertyChanged
 
     private void LoadArtistAlbumRelations()
     {
-        IdList = new NotifyTaskCompletion<List<string>>(PlaylistDAO.Instance.GetUserPlaylistRelations(artistId));
+        IdList = new NotifyTaskCompletion<List<string>>(PlaylistDAO.Instance.ArtistRelationsAsync(artistId));
     }
 
     private void LoadAlbums()
     {
-        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlaylistDAO.Instance.GetAlbumsInfo(idList.Result));
+        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlaylistDAO.Instance.InfoCollectionAsync(idList.Result));
     }
 
     public ButtonCommand NavigateAlbumCommand => new ButtonCommand(param =>
@@ -67,6 +67,11 @@ public class ArtistAlbumsVm : INotifyPropertyChanged
     public ButtonCommand NavigateAlbumCreationCommand => new ButtonCommand(param =>
     {
         NavigationVm.Instance.Navigate(new PublishAudio());;
+    });
+
+    public ButtonCommand RefreshCommand => new ButtonCommand(o =>
+    {
+        LoadAlbums();
     });
     
     

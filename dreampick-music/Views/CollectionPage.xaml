@@ -30,7 +30,8 @@
                     </b:Interaction.Triggers>
                 </fa:FontAwesome>
             </DockPanel>
-            <Border Margin="{DynamicResource BottomPadding}" Background="{DynamicResource SecondBrush}" CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}">
+            <Border Margin="{DynamicResource BottomPadding}" Background="{DynamicResource SecondBrush}"
+                    CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -78,10 +79,48 @@
                     </Button>
                 </Grid>
             </Border>
+            
+            
+                <Button
+                    Cursor="Hand"
+                    HorizontalAlignment="Left"
+                    Command="{Binding NavigateLastReleasesCommand}">
+                    <Grid>
+                    
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" ></ColumnDefinition>
+                            <ColumnDefinition  Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                    
+                        <StackPanel Margin="0,0,20,0" HorizontalAlignment="Left"  VerticalAlignment="Center">
+                            <Label >last releases</Label>
+                            <Label Foreground="{DynamicResource DarkenForeBrush}">check all</Label>
+                        </StackPanel>
+                        <fa:FontAwesome 
+                            HorizontalAlignment="Right"
+                            Grid.Column="1" VerticalAlignment="Center" 
+                            FontSize="{DynamicResource Header2}"
+                            Foreground="{DynamicResource DarkenForeBrush}" Icon="LocationArrow">
+                        </fa:FontAwesome>
+                    </Grid>
+                </Button>
+            
+            
+            <fa:FontAwesome
+                Foreground="{DynamicResource DarkenForeBrush}"
+                FontSize="150"
+                Icon="CircleOutlineNotch"
+                Spin="True"
+                Visibility="{Binding Albums.IsNotCompleted, 
+                Converter={StaticResource StatementVisibilityConverter},
+                FallbackValue=Collapsed
+                }" />
 
-            <Label>last releases</Label>
-
-            <ItemsControl ItemsSource="{Binding Albums.Result}" Margin="20">
+            <StackPanel
+                Visibility="{Binding Albums.IsSuccessfullyCompleted, 
+                Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}"
+                >
+                <ItemsControl ItemsSource="{Binding Albums.Result}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="5">
@@ -119,6 +158,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
+            </StackPanel>
 
         </StackPanel>
     </ScrollViewer>

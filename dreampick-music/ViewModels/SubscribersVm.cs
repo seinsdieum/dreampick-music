@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Navigation;
+using dreampick_music.DB;
 using dreampick_music.Models;
 
 namespace dreampick_music;
@@ -66,7 +67,7 @@ public class SubscribersVm : INotifyPropertyChanged
     private void LoadSubsAsync()
     {
         Subscribers =
-            new NotifyTaskCompletion<ObservableCollection<Models.Person>>(PlatformDAO.Instance.LoadSubscribersAsync(userId));
+            new NotifyTaskCompletion<ObservableCollection<Models.Person>>(UserDAO.Instance.SubscribersAsync(userId));
     }
     
     private void DestroyObjects()

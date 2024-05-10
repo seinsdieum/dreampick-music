@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Navigation;
+using dreampick_music.DB;
 using dreampick_music.Models;
 
 namespace dreampick_music;
@@ -81,7 +82,7 @@ public class SubscriptionsVm : INotifyPropertyChanged
     {
         Subscribes =
             new NotifyTaskCompletion<ObservableCollection<Models.Person>>(
-                PlatformDAO.Instance.LoadSubscriptionsAsync(userId));
+                UserDAO.Instance.SubscriptionsAsync(userId));
     }
     
     public event PropertyChangedEventHandler PropertyChanged = delegate { };

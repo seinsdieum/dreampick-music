@@ -73,7 +73,12 @@
                                 <Label Style="{DynamicResource H2}" Content="{Binding Album.Result.Name}"></Label>
                                 <Label Style="{DynamicResource H2}" Content="{Binding Album.Result.ReleaseDate.Year}"></Label>
                             </DockPanel>
-                            <Label Foreground="{DynamicResource DarkenForeBrush}" Content="{Binding Album.Result.Author.Name}"></Label>
+                            <TextBlock Margin="5,0,0,5"  Style="{DynamicResource LinkedP}" Foreground="{DynamicResource DarkenForeBrush}" Text="{Binding Album.Result.Author.Name}"></TextBlock>
+                            <DockPanel Margin="5,0,0,0">
+                                <TextBlock Foreground="{DynamicResource DarkenForeBrush}" Margin="0,0,5,0" Style="{DynamicResource P}" Text="{Binding RelationsCount.Result}"></TextBlock>
+                                <TextBlock Foreground="{DynamicResource DarkenForeBrush}" Style="{DynamicResource P}" >listeners</TextBlock>
+
+                            </DockPanel>
                             <Label Foreground="{DynamicResource DarkenForeBrush}" Content="{Binding Album.Result.Description}"></Label>
                         </StackPanel>
                     </Border>
@@ -83,9 +88,11 @@
             </StackPanel>
             
             <WrapPanel>
+                
+                
                 <Button Margin="0,0,10,0" Cursor="Hand"
                         Command="{Binding RelateCommand}"
-                        >
+                >
                     <DockPanel>
                         <fa:FontAwesome 
                             Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverterInversed}}"

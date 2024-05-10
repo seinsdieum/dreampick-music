@@ -30,8 +30,24 @@
                 <Label Style="{DynamicResource H1}" Content="noname_playlist_collection"></Label>
 
             </DockPanel>
+            
+            <fa:FontAwesome
+                Foreground="{DynamicResource DarkenForeBrush}"
+                FontSize="150"
+                Icon="CircleOutlineNotch"
+                Spin="True"
+                Visibility="{Binding Collection.IsNotCompleted, 
+                Converter={StaticResource StatementVisibilityConverter},
+                FallbackValue=Collapsed
+                }" />
 
-            <ItemsControl ItemsSource="{Binding Collection.Result}" >
+            <StackPanel
+                Visibility="{Binding Collection.IsSuccessfullyCompleted, 
+                Converter={StaticResource StatementVisibilityConverter},
+                FallbackValue=Collapsed
+                }" 
+                >
+                <ItemsControl ItemsSource="{Binding Collection.Result}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="5">
@@ -69,6 +85,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
+            </StackPanel>
 
         </StackPanel>
     </ScrollViewer>

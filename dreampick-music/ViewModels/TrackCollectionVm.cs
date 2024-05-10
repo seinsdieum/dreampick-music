@@ -90,7 +90,7 @@ public class TrackCollectionVm : INotifyPropertyChanged
                 simpleTracks = PlayerVm.Instance.Queue.Tracks;
                 break;
             case TrackCollectionType.LikedTracks:
-                simpleTracks = await TrackDAO.Instance.RelatedAsync(AccountVm.Instance.AccountPerson.Result.ID);
+                simpleTracks = await TrackDAO.Instance.RelatedCollectionAsync(AccountVm.Instance.AccountPerson.Result.ID);
                 break;
             case TrackCollectionType.NoType:
                 break;

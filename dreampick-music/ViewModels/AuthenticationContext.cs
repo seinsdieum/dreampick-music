@@ -130,7 +130,7 @@ public class AuthenticationContext : INotifyPropertyChanged
         var regex = new Regex("^[a-zA-Z_](?!.*?\\.{2})[\\w.]{1,28}[\\w]$");
         if (!(RegName.Length > 3 && regex.IsMatch(RegName))) return (false, "Username not valid");
         
-        return AccountDAO.Instance.CheckUsernameExistingAsync(RegName) ? (false, "Username is existing already") : (true, "");
+        return AccountDAO.Instance.NameExistingAsync(RegName) ? (false, "Username is existing already") : (true, "");
     };
 
     private Func<(bool, string)> RegEmailCheck => () =>

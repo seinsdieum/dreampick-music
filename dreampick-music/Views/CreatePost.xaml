@@ -30,39 +30,40 @@
                     </i:Interaction.Triggers>
                 </fa:FontAwesome>
 
-                <Label Margin="0,0,10,0" HorizontalAlignment="Left" Style="{DynamicResource H1}" Content="{DynamicResource LCreatePost}"></Label>
-                
+                <Label Margin="0,0,10,0" HorizontalAlignment="Left" Style="{DynamicResource H1}"
+                       Content="{DynamicResource LCreatePost}">
+                </Label>
+
                 <DockPanel VerticalAlignment="Center" HorizontalAlignment="Right">
-                    <fa:FontAwesome 
+                    <fa:FontAwesome
                         HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                         FontSize="{DynamicResource Header1}" Icon="LongArrowLeft"
                         Margin="0,0,10,0"
-                        VerticalAlignment="Center"
-                    >
+                        VerticalAlignment="Center">
                         <i:Interaction.Triggers>
                             <i:EventTrigger
                                 EventName="MouseDown">
-                                <i:InvokeCommandAction Command="{Binding UndoCommand}"/>
+                                <i:InvokeCommandAction Command="{Binding UndoCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </fa:FontAwesome>
-                    <fa:FontAwesome 
+                    <fa:FontAwesome
                         HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                         FontSize="{DynamicResource Header1}" Icon="LongArrowRight"
-                        VerticalAlignment="Center"
-                    >
+                        VerticalAlignment="Center">
                         <i:Interaction.Triggers>
                             <i:EventTrigger
                                 EventName="MouseDown">
-                                <i:InvokeCommandAction Command="{Binding RedoCommand}"/>
+                                <i:InvokeCommandAction Command="{Binding RedoCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </fa:FontAwesome>
                 </DockPanel>
             </DockPanel>
-            
 
-            <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}" Background="{DynamicResource SecondBrush}">
+
+            <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                    Background="{DynamicResource SecondBrush}">
                 <StackPanel>
                     <fa:FontAwesome Margin="0,100,0,0"
                                     Visibility="{Binding UploadSuccess.IsCompleted, Converter={StaticResource StatementVisibilityConverterInversed}, FallbackValue=Collapsed}"
@@ -72,7 +73,7 @@
                                     Spin="True">
 
                     </fa:FontAwesome>
-                    
+
                     <StackPanel
                         Visibility="{Binding UploadSuccess.Result, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}"
                         Margin="0,20,0,0">
@@ -80,29 +81,80 @@
                     </StackPanel>
                     <StackPanel
                         Visibility="{Binding UploadSuccess.IsNotCompleted, Converter={StaticResource StatementVisibilityConverterInversed}, FallbackValue=Visible}">
-                        <TextBox Margin="{DynamicResource BottomPadding}" Name="Field" MinHeight="100" TextWrapping="Wrap" Text="{Binding FieldText}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusCommand}"></i:InvokeCommandAction>
-                                </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding GotFocusCommand}"></i:InvokeCommandAction>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
+
+                        
+                        <StackPanel
+                            Style="{DynamicResource StackRoot}"
+                            Visibility="{Binding SelectedPlaylist.IsSuccessfullyCompleted, 
+                            Converter={StaticResource StatementVisibilityConverterInversed}, 
+                            FallbackValue=Collapsed}"
+                            >
+                            <fa:FontAwesome Margin="0,100,0,0"
+                                            Foreground="{DynamicResource DarkenForeBrush}"
+                                            Icon="CircleOutlineNotch"
+                                            FontSize="150"
+                                            Spin="True">
+                            </fa:FontAwesome>
+                        </StackPanel>
+                        
+                        <StackPanel
+                            Style="{DynamicResource StackRoot}"
+                            Visibility="{Binding SelectedPlaylist.IsSuccessfullyCompleted, 
+                            Converter={StaticResource StatementVisibilityConverter}, 
+                            FallbackValue=Collapsed}"
+                            >
+                            <Border
+                                Padding="{DynamicResource Padding}" CornerRadius="{DynamicResource Radius}"
+                                Background="{DynamicResource ThirdBrush}">
+                                <DockPanel>
+                                    <Image Margin="0,0,20,0" Width="100" Height="100"
+                                           Source="{Binding SelectedPlaylist.Result.Image}">
+                                    </Image>
+                                    <StackPanel>
+                                        <TextBlock Style="{DynamicResource P}"
+                                                   Text="{Binding SelectedPlaylist.Result.Name}">
+                                        </TextBlock>
+                                        <TextBlock Style="{DynamicResource LinkedP}"
+                                                   Text="{Binding SelectedPlaylist.Result.Author.Name}">
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <fa:FontAwesome
+                                        Foreground="{DynamicResource DarkenForeBrush}" 
+                                        Icon="Close"
+                                        FontSize="{DynamicResource Header2}"
+                                        HorizontalAlignment="Left"
+                                        >
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseDown">
+                                                <i:InvokeCommandAction Command="{Binding RemovePlaylistCommand}">
+                                                    
+                                                </i:InvokeCommandAction>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        
+                                    </fa:FontAwesome>
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <TextBox Margin="{DynamicResource BottomPadding}" Name="Field" MinHeight="100"
+                                 TextWrapping="Wrap" Text="{Binding FieldText}">
                         </TextBox>
-                
+
                         <DockPanel>
-                            <Button FontWeight="{DynamicResource HeaderWeight}" Width="80" Margin="0,0,10,0" Command="{Binding PublishCommand}">publish</Button>
-                            <fa:FontAwesome 
+                            <Button FontWeight="{DynamicResource HeaderWeight}" Width="80" Margin="0,0,10,0"
+                                    Command="{Binding PublishCommand}">
+                                publish
+                            </Button>
+                            <fa:FontAwesome
                                 HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                                 FontSize="{DynamicResource Header1}" Icon="Link"
                                 Margin="0,0,10,0"
-                                VerticalAlignment="Center"
-                            >
+                                VerticalAlignment="Center">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger
                                         EventName="MouseDown">
-                                        <i:InvokeCommandAction Command="{Binding RedoCommand}"/>
+                                        <i:InvokeCommandAction Command="{Binding NavigatePlaylistSelection}" />
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </fa:FontAwesome>

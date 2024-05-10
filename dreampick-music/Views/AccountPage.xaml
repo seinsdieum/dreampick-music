@@ -115,36 +115,167 @@
             <TabControl>
                 <TabItem Header="{DynamicResource LPlaylists}"></TabItem>
                 <TabItem Header="{DynamicResource LFeed}">
-                    <ListView VerticalAlignment="Stretch" Style="{DynamicResource PostView}"
-                              ItemsSource="{Binding UserPosts.Result}">
+                    <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding UserPosts.Result}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
-                                        Background="{DynamicResource SecondBrush}">
+                                <StackPanel Style="{DynamicResource StackRoot}">
+                                    <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                                            Background="{DynamicResource SecondBrush}">
 
-                                    <StackPanel>
-                                        <Label Margin="{DynamicResource BottomPadding}"
-                                               Content="{Binding Description }">
-                                        </Label>
-                                        <Border Padding="{DynamicResource PaddingInner}"
-                                                Background="{DynamicResource ThirdBrush}" CornerRadius="5">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                    <ColumnDefinition></ColumnDefinition>
-                                                </Grid.ColumnDefinitions>
-                                                <Label VerticalAlignment="Center" Grid.Column="0"
-                                                       Foreground="{DynamicResource DarkenForeBrush}"
-                                                       Content="{Binding PostAuthor.Name}">
-                                                </Label>
-                                                <Label Grid.Column="1" Foreground="{DynamicResource DarkenForeBrush}"
-                                                       Content="{Binding PublicationDate}">
-                                                </Label>
+                                        <StackPanel>
 
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-                                </Border>
+                                            <Border
+                                                Cursor="Hand"
+                                                Background="{DynamicResource ThirdBrush}"
+                                                CornerRadius="{DynamicResource Radius}"
+                                                Padding="20"
+                                                Margin="{DynamicResource BottomPadding}"
+                                                Visibility="{Binding HasPlaylist, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}">
+
+
+                                                <b:Interaction.Triggers>
+                                                    <b:EventTrigger EventName="MouseDown">
+                                                        <b:InvokeCommandAction
+                                                            CommandParameter="{Binding Post.PostPlaylist.ID}"
+                                                            Command="{Binding NavigatePlaylistCommand , ElementName=VmContext }">
+                                                        </b:InvokeCommandAction>
+                                                    </b:EventTrigger>
+
+                                                </b:Interaction.Triggers>
+
+
+                                                <DockPanel>
+                                                    <Grid
+                                                        Margin="0,0,10,0">
+                                                        <Border
+                                                            Background="{DynamicResource BackBrush}"
+                                                            Width="100" Height="100"
+                                                            CornerRadius="{DynamicResource Radius}">
+                                                            <fa:FontAwesome
+                                                                Icon="Music"
+                                                                FontSize="80"
+                                                                Foreground="{DynamicResource DarkenForeBrush}" />
+
+                                                        </Border>
+                                                        <Image
+                                                            Width="100"
+                                                            Height="100"
+                                                            Source="{Binding Post.PostPlaylist.Image}">
+                                                            <Image.OpacityMask>
+                                                                <VisualBrush>
+                                                                    <VisualBrush.Visual>
+                                                                        <Border
+                                                                            Height="100" Width="100"
+                                                                            Background="Black"
+                                                                            CornerRadius="{DynamicResource Radius}">
+                                                                        </Border>
+                                                                    </VisualBrush.Visual>
+                                                                </VisualBrush>
+                                                            </Image.OpacityMask>
+                                                        </Image>
+                                                    </Grid>
+                                                    <StackPanel>
+                                                        <Label
+                                                            Style="{DynamicResource H2}"
+                                                            Content="{Binding Post.PostPlaylist.Name}">
+
+                                                        </Label>
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </Border>
+
+                                            <Border
+                                                Padding="{DynamicResource Padding}"
+                                                Margin="{DynamicResource BottomPadding}">
+                                                <TextBlock TextWrapping="Wrap" Style="{DynamicResource P}"
+                                                           Text="{Binding Post.Description}">
+                                                </TextBlock>
+                                            </Border>
+                                            <Border Padding="{DynamicResource Padding}"
+                                                    Background="{DynamicResource ThirdBrush}" CornerRadius="5">
+                                                <DockPanel>
+                                                    <DockPanel Cursor="Hand">
+
+                                                        <Grid Margin="0,0,5,0">
+                                                            <b:Interaction.Triggers>
+                                                                <b:EventTrigger EventName="MouseDown">
+                                                                    <b:InvokeCommandAction
+                                                                        Command="{Binding SetLike}">
+                                                                    </b:InvokeCommandAction>
+                                                                </b:EventTrigger>
+                                                            </b:Interaction.Triggers>
+                                                            <fa:FontAwesome
+                                                                Visibility="{Binding LikeIsSet.Result, Converter={StaticResource StatementVisibilityConverter}}"
+                                                                HorizontalAlignment="Left"
+                                                                FontSize="{DynamicResource Header1}"
+                                                                Foreground="{DynamicResource DarkenForeBrush}"
+                                                                Icon="Heart">
+
+                                                            </fa:FontAwesome>
+                                                            <fa:FontAwesome
+                                                                Visibility="{Binding LikeIsSet.Result, Converter={StaticResource StatementVisibilityConverterInversed}, FallbackValue=Collapsed}"
+                                                                HorizontalAlignment="Left"
+                                                                FontSize="{DynamicResource Header1}"
+                                                                Foreground="{DynamicResource DarkenForeBrush}"
+                                                                Icon="HeartOutline">
+                                                            </fa:FontAwesome>
+                                                        </Grid>
+
+                                                        <Label
+                                                            Margin="0,0,10,0"
+                                                            Content="{Binding Post.Likes}">
+
+                                                            <b:Interaction.Triggers>
+                                                                <b:EventTrigger EventName="MouseDown">
+                                                                    <b:InvokeCommandAction
+                                                                        Command="{Binding NavigatePostLikesCommand , ElementName=VmContext}"
+                                                                        CommandParameter="{Binding Post.ID}">
+                                                                    </b:InvokeCommandAction>
+                                                                </b:EventTrigger>
+                                                            </b:Interaction.Triggers>
+
+                                                        </Label>
+                                                    </DockPanel>
+                                                    <Grid>
+                                                        <b:Interaction.Triggers>
+                                                            <b:EventTrigger EventName="MouseDown">
+                                                                <b:InvokeCommandAction
+                                                                    Command="{Binding NavigateUserCommand ,ElementName=VmContext}"
+                                                                    CommandParameter="{Binding  Post.PostAuthor.ID}">
+                                                                </b:InvokeCommandAction>
+                                                            </b:EventTrigger>
+                                                        </b:Interaction.Triggers>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                            <ColumnDefinition></ColumnDefinition>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Image Margin="0,0,0,-5" VerticalAlignment="Center"
+                                                               Stretch="UniformToFill"
+                                                               Width="{DynamicResource Paragraph}"
+                                                               Height="{DynamicResource Paragraph}"
+                                                               Source="{DynamicResource ImgPlay}">
+                                                        </Image>
+                                                        <Image VerticalAlignment="Center"
+                                                               Width="{DynamicResource Paragraph}"
+                                                               Height="{DynamicResource Paragraph}"
+                                                               Source="{Binding Post.PostAuthor.Image}">
+
+                                                        </Image>
+                                                        <Label VerticalAlignment="Center" Grid.Column="1"
+                                                               Foreground="{DynamicResource DarkenForeBrush}"
+                                                               Content="{Binding Post.PostAuthor.Name}">
+                                                        </Label>
+
+                                                    </Grid>
+                                                    <Label Foreground="{DynamicResource DarkenForeBrush}"
+                                                           Content="{Binding Post.PublicationDate, Converter={StaticResource DateTimeToStampStringConverter}}">
+                                                    </Label>
+                                                </DockPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>

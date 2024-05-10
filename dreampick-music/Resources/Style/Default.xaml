@@ -31,7 +31,7 @@
         <Setter Property="FontWeight" Value="{DynamicResource ParagraphWeight}"></Setter>
         <Setter Property="FontFamily" Value="{DynamicResource AppFont}"></Setter>
         <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
-        <Setter Property="Cursor" Value="Hand"></Setter>
+
     </Style>
     <Style x:Key="PWrap" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource ForeBrush}"></Setter>
@@ -731,9 +731,10 @@
             <Border
                 Name="TrackBackground"
                 Margin="0"
-                CornerRadius="2"
-                Width="34"
+                CornerRadius="5"
+                Width="15"
                 Grid.Column="1"
+                
                 Background="{DynamicResource ThirdBrush}"
                 BorderBrush="{DynamicResource ForeBrush}"
                 BorderThickness="0" />
@@ -744,7 +745,7 @@
                         Command="Slider.DecreaseLarge" />
                 </Track.DecreaseRepeatButton>
                 <Track.Thumb>
-                    <Thumb Width="34" Height="34" Style="{StaticResource SliderThumbStyle}" />
+                    <Thumb Width="15" Height="15" Style="{StaticResource SliderThumbStyle}" />
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
                     <RepeatButton
@@ -850,7 +851,7 @@
                 <Setter Property="Template" Value="{StaticResource HorizontalSlider}" />
             </Trigger>
             <Trigger Property="Orientation" Value="Vertical">
-                <Setter Property="MinWidth" Value="34" />
+                <Setter Property="MinWidth" Value="15" />
                 <Setter Property="MinHeight" Value="104" />
                 <Setter Property="Template" Value="{StaticResource VerticalSlider}" />
             </Trigger>

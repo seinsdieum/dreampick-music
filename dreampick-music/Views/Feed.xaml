@@ -56,6 +56,8 @@
                             Visibility="{Binding Posts.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}"
                             Foreground="{DynamicResource DarkenForeBrush}" Icon="CircleOutlineNotch" Spin="True">
             </fa:FontAwesome>
+            
+            
 
             <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Posts.Result}">
                 <ListView.ItemTemplate>
@@ -65,18 +67,91 @@
                                     Background="{DynamicResource SecondBrush}">
 
                                 <StackPanel>
-                                    <Label Margin="{DynamicResource BottomPadding}" Content="{Binding Post.Description}"></Label>
-                                    <Border Padding="{DynamicResource PaddingInner}"
+                                    
+                                    <Border
+                                        Cursor="Hand"
+                                        Background="{DynamicResource ThirdBrush}"
+                                        CornerRadius="{DynamicResource Radius}"
+                                        Padding="20"
+                                        Margin="{DynamicResource BottomPadding}"
+                                        Visibility="{Binding HasPlaylist, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}"
+                                        >
+                                        
+                                        
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseDown">
+                                                <i:InvokeCommandAction CommandParameter="{Binding Post.PostPlaylist.ID}" Command="{Binding NavigatePlaylistCommand , ElementName=VmContext }"></i:InvokeCommandAction>
+                                            </i:EventTrigger>
+                                            
+                                        </i:Interaction.Triggers>
+                                        
+                                        
+                                        
+                                        <DockPanel>
+                                            <Grid
+                                                Margin="0,0,10,0"
+                                                >
+                                                <Border 
+                                                    Background="{DynamicResource BackBrush}" 
+                                                    Width="100" Height="100"
+                                                    CornerRadius="{DynamicResource Radius}"
+                                                    >
+                                                    <fa:FontAwesome
+                                                        Icon="Music"
+                                                        FontSize="80"
+                                                        Foreground="{DynamicResource DarkenForeBrush}"
+                                                        />
+                                                        
+                                                </Border>
+                                                <Image
+                                                    Width="100"
+                                                    Height="100"
+                                                    Source="{Binding Post.PostPlaylist.Image}"
+                                                >
+                                                    <Image.OpacityMask>
+                                                        <VisualBrush>
+                                                            <VisualBrush.Visual>
+                                                                <Border 
+                                                                    Height="100" Width="100"
+                                                                    Background="Black"
+                                                                    CornerRadius="{DynamicResource Radius}"
+                                                                    
+                                                                    ></Border>
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush>
+                                                    </Image.OpacityMask>
+                                                </Image>
+                                            </Grid>
+                                            <StackPanel>
+                                                <Label 
+                                                    Style="{DynamicResource H2}" 
+                                                    Content="{Binding Post.PostPlaylist.Name}"
+                                                    
+                                                    >
+                                                    
+                                                </Label>
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </Border>
+                                    
+                                    <Border
+                                        Padding="{DynamicResource Padding}"
+                                        Margin="{DynamicResource BottomPadding}"
+                                        >
+                                        <TextBlock TextWrapping="Wrap" Style="{DynamicResource P}"
+                                                   Text="{Binding Post.Description}">
+                                        </TextBlock>
+                                    </Border>
+                                    <Border Padding="{DynamicResource Padding}"
                                             Background="{DynamicResource ThirdBrush}" CornerRadius="5">
                                         <DockPanel>
                                             <DockPanel Cursor="Hand">
-                                                
-                                                <Grid>
+
+                                                <Grid Margin="0,0,5,0">
                                                     <i:Interaction.Triggers>
                                                         <i:EventTrigger EventName="MouseDown">
                                                             <i:InvokeCommandAction
-                                                                Command="{Binding SetLike}"
-                                                            >
+                                                                Command="{Binding SetLike}">
                                                             </i:InvokeCommandAction>
                                                         </i:EventTrigger>
                                                     </i:Interaction.Triggers>
@@ -96,19 +171,20 @@
                                                         Icon="HeartOutline">
                                                     </fa:FontAwesome>
                                                 </Grid>
-                                                
-                                                <Label Content="{Binding Post.Likes}">
-                                                    
+
+                                                <Label
+                                                    Margin="0,0,10,0"
+                                                    Content="{Binding Post.Likes}">
+
                                                     <i:Interaction.Triggers>
                                                         <i:EventTrigger EventName="MouseDown">
                                                             <i:InvokeCommandAction
                                                                 Command="{Binding NavigatePostLikesCommand , ElementName=VmContext}"
-                                                                CommandParameter="{Binding Post.ID}"
-                                                            >
+                                                                CommandParameter="{Binding Post.ID}">
                                                             </i:InvokeCommandAction>
                                                         </i:EventTrigger>
                                                     </i:Interaction.Triggers>
-                                                    
+
                                                 </Label>
                                             </DockPanel>
                                             <Grid>
@@ -134,6 +210,7 @@
                                                 <Image VerticalAlignment="Center" Width="{DynamicResource Paragraph}"
                                                        Height="{DynamicResource Paragraph}"
                                                        Source="{Binding Post.PostAuthor.Image}">
+                                                    
                                                 </Image>
                                                 <Label VerticalAlignment="Center" Grid.Column="1"
                                                        Foreground="{DynamicResource DarkenForeBrush}"

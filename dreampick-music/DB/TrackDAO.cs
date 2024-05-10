@@ -74,7 +74,7 @@ public class TrackDAO
         return true;
     }
 
-    public async Task<ObservableCollection<Track>> RelatedAsync(string userId)
+    public async Task<ObservableCollection<Track>> RelatedCollectionAsync(string userId)
     {
         var res = new ObservableCollection<Track>();
 

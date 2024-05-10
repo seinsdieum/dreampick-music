@@ -13,7 +13,11 @@ public class PostVm : INotifyPropertyChanged
 
     private Post _post;
 
-
+    public bool HasPlaylist
+    {
+        get => Post.PostPlaylist is Playlist;
+    }
+    
     public NotifyTaskCompletion<bool> LikeIsSet
     {
         get => _likeIsSet;
@@ -69,6 +73,7 @@ public class PostVm : INotifyPropertyChanged
     {
         LikeIsSet = new NotifyTaskCompletion<bool>(
             PostDAO.Instance.IsRelatedAsync(AccountVm.Instance.AccountPerson.Result.ID, Post.ID));
+        OnPropertyChanged(nameof(HasPlaylist));
     }
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };

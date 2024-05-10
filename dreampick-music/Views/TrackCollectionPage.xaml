@@ -30,9 +30,26 @@
                 <Label Style="{DynamicResource H1}" Content="noname_tracks_collection"></Label>
 
             </DockPanel>
+            
+            <fa:FontAwesome
+                Foreground="{DynamicResource DarkenForeBrush}"
+                FontSize="150"
+                Icon="CircleOutlineNotch"
+                Spin="True"
+                Visibility="{Binding Tracks.IsNotCompleted, 
+                Converter={StaticResource StatementVisibilityConverter},
+                FallbackValue=Collapsed
+                }" />
 
 
-            <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Tracks.Result}">
+            <StackPanel
+                
+                Visibility="{Binding Tracks.IsSuccessfullyCompleted, 
+                Converter={StaticResource StatementVisibilityConverter},
+                FallbackValue=Collapsed
+                }"
+                >
+                <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Tracks.Result}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
 
@@ -141,6 +158,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </Page>

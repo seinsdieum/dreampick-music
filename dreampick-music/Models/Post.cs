@@ -15,6 +15,8 @@ public class Post
         get;
         set;
     }
+    
+    public Playlist PostPlaylist { get; set; }
 
     public Post(string id, string description = "")
     {
@@ -22,5 +24,10 @@ public class Post
 
         ID = id;
         PublicationDate = DateTime.Now;
+    }
+
+    public Post()
+    {
+        
     }
 }

@@ -71,9 +71,9 @@ public class UserCollectionVm : INotifyPropertyChanged
 
         Collection = new NotifyTaskCompletion<ObservableCollection<Models.Person>>(_collectionType switch
         {
-            UserCollectionType.Subscribers => PlatformDAO.Instance.LoadSubscribersAsync(referenceId),
-            UserCollectionType.Subscriptions => PlatformDAO.Instance.LoadSubscriptionsAsync(referenceId),
-            UserCollectionType.PostLikes => UserDAO.Instance.PostRelationsAsync(referenceId),
+            UserCollectionType.Subscribers => UserDAO.Instance.SubscribersAsync(referenceId),
+            UserCollectionType.Subscriptions => UserDAO.Instance.SubscriptionsAsync(referenceId),
+            UserCollectionType.PostLikes => PostDAO.Instance.RelationsAsync(referenceId),
             _ => new Task<ObservableCollection<Models.Person>>(() => new ObservableCollection<Models.Person>()),
         });
     }

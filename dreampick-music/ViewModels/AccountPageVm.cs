@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using dreampick_music.DB;
 using dreampick_music.Models;
+using dreampick_music.Views;
 using Microsoft.Win32;
 
 namespace dreampick_music;
@@ -142,9 +146,9 @@ public class AccountPageVm : INotifyPropertyChanged
     }
 
 
-    private NotifyTaskCompletion<ObservableCollection<Post>> userPosts;
+    private NotifyTaskCompletion<ObservableCollection<PostVm>> userPosts;
 
-    public NotifyTaskCompletion<ObservableCollection<Post>> UserPosts
+    public NotifyTaskCompletion<ObservableCollection<PostVm>> UserPosts
     {
         get
         {
@@ -263,12 +267,38 @@ public class AccountPageVm : INotifyPropertyChanged
         ChangeAvatar = image;
     });
     
+    public ButtonCommand NavigatePlaylistCommand => new ButtonCommand(o =>
+    {
+        if (o is string id)
+        {
+            NavigationVm.Instance.Navigate(new AlbumPage(id));
+        }
+    });
+    
+    public ButtonCommand NavigatePostLikesCommand => new ButtonCommand(o =>
+    {
+        if (o is not string id) return;
+        NavigationVm.Instance.Navigate(new UserCollection(id, UserCollectionType.PostLikes));
+    });
+    
+    
+
+    private async Task<ObservableCollection<PostVm>> LoadPostList()
+    {
+        var postsAsync = await PostDAO.Instance.UserCollectionAsync(userId);
+
+        return new ObservableCollection<PostVm>(
+            postsAsync.Select(p => new PostVm() { Post = p} )
+        );
+
+    }
+    
 
     private void LoadData()
     {
-        SubscribersCount = new NotifyTaskCompletion<int>(PlatformDAO.Instance.LoadUserSubscribersAsync(userId));
-        SubscriptionsCount = new NotifyTaskCompletion<int>(PlatformDAO.Instance.LoadUserSubscriptionsAsync(userId));
-        UserPosts = new NotifyTaskCompletion<ObservableCollection<Post>>(PlatformDAO.Instance.LoadUserPostsAsync(userId));
+        SubscribersCount = new NotifyTaskCompletion<int>(UserDAO.Instance.SubscribersCountAsync(userId));
+        SubscriptionsCount = new NotifyTaskCompletion<int>(UserDAO.Instance.SubscriptionsCountAsync(userId));
+        UserPosts = new NotifyTaskCompletion<ObservableCollection<PostVm>>(LoadPostList());
 
         ChangeName = Account.AccountPerson.Result.Name;
         ChangeEmail = Account.AccountPerson.Result.Email;

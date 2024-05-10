@@ -65,7 +65,7 @@ public class AccountVm : INotifyPropertyChanged
         loginAttemtps += 1;
 
         var auth = new NotifyTaskCompletion<bool>(
-            AccountDAO.Instance.VerifyUserAsync(name, Utils.HashPassword(password)));
+            AccountDAO.Instance.VerifyAsync(name, Utils.HashPassword(password)));
 
         var synchronizedComplete = false;
 
@@ -75,7 +75,7 @@ public class AccountVm : INotifyPropertyChanged
             IsAuthorized = auth.Result;
             if (isAuthorized)
             {
-                AccountPerson = new NotifyTaskCompletion<Models.Person>(AccountDAO.Instance.LoadAccountAsync(name));
+                AccountPerson = new NotifyTaskCompletion<Models.Person>(AccountDAO.Instance.GetAsync(name));
 
                 if (navigateToMain) WindowModel.SwitchToMainWindow();
             }
@@ -98,7 +98,7 @@ public class AccountVm : INotifyPropertyChanged
                     {
                         loginAttemtps = 0;
                         AccountPerson =
-                            new NotifyTaskCompletion<Models.Person>(AccountDAO.Instance.LoadAccountAsync(name));
+                            new NotifyTaskCompletion<Models.Person>(AccountDAO.Instance.GetAsync(name));
 
 
                         if (navigateToMain) WindowModel.SwitchToMainWindow();
@@ -118,7 +118,7 @@ public class AccountVm : INotifyPropertyChanged
         var normalPassword = accountModel.Password;
         accountModel.Password = Utils.HashPassword(accountModel.Password);
 
-        var task = new NotifyTaskCompletion<bool>(AccountDAO.Instance.AddUserAsync(accountModel));
+        var task = new NotifyTaskCompletion<bool>(AccountDAO.Instance.AddAsync(accountModel));
 
         var synchronizedComplete = false;
 
@@ -153,7 +153,7 @@ public class AccountVm : INotifyPropertyChanged
         loginAttemtps += 1;
 
         var auth = new NotifyTaskCompletion<bool>(
-            AccountDAO.Instance.VerifyUserAsync(AccountPerson.Result.Name, Utils.HashPassword(normalPassword)));
+            AccountDAO.Instance.VerifyAsync(AccountPerson.Result.Name, Utils.HashPassword(normalPassword)));
 
         var synchronizedComplete = false;
 
@@ -164,7 +164,7 @@ public class AccountVm : INotifyPropertyChanged
             if (isAuthorized)
             {
                 var task = new NotifyTaskCompletion<bool>(
-                    AccountDAO.Instance.ChangePersonProperty(AccountPerson.Result.ID, type, value));
+                    AccountDAO.Instance.ChangePropertyAsync(AccountPerson.Result.ID, type, value));
                 var synchonizedComplete = false;
 
                 if (!synchonizedComplete && task.IsCompleted)
@@ -173,7 +173,7 @@ public class AccountVm : INotifyPropertyChanged
                     {
                         AccountPerson =
                             new NotifyTaskCompletion<Models.Person>(
-                                AccountDAO.Instance.LoadAccountAsync(type == PersonPropertyChangeType.Username
+                                AccountDAO.Instance.GetAsync(type == PersonPropertyChangeType.Username
                                     ? nameValue
                                     : AccountPerson.Result.Name));
                     }
@@ -189,7 +189,7 @@ public class AccountVm : INotifyPropertyChanged
                             {
                                 AccountPerson =
                                     new NotifyTaskCompletion<Models.Person>(
-                                        AccountDAO.Instance.LoadAccountAsync(AccountPerson.Result.Name));
+                                        AccountDAO.Instance.GetAsync(AccountPerson.Result.Name));
                             }
                         }
                     };
@@ -207,7 +207,7 @@ public class AccountVm : INotifyPropertyChanged
                     if (isAuthorized)
                     {
                         var task = new NotifyTaskCompletion<bool>(
-                            AccountDAO.Instance.ChangePersonProperty(AccountPerson.Result.ID, type, value));
+                            AccountDAO.Instance.ChangePropertyAsync(AccountPerson.Result.ID, type, value));
                         var synchonizedComplete = false;
 
                         if (!synchonizedComplete && task.IsCompleted)
@@ -216,7 +216,7 @@ public class AccountVm : INotifyPropertyChanged
                             {
                                 AccountPerson =
                                     new NotifyTaskCompletion<Models.Person>(
-                                        AccountDAO.Instance.LoadAccountAsync(AccountPerson.Result.Name));
+                                        AccountDAO.Instance.GetAsync(AccountPerson.Result.Name));
                             }
                             else Console.WriteLine("hueta");
                         }
@@ -230,7 +230,7 @@ public class AccountVm : INotifyPropertyChanged
                                     {
                                         AccountPerson =
                                             new NotifyTaskCompletion<Models.Person>(
-                                                AccountDAO.Instance.LoadAccountAsync(AccountPerson.Result.Name));
+                                                AccountDAO.Instance.GetAsync(AccountPerson.Result.Name));
                                     }
                                 }
                             };

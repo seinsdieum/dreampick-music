@@ -35,6 +35,7 @@ public class AlbumPageVm : INotifyPropertyChanged
     private NotifyTaskCompletion<ObservableCollection<TrackListenVm>> tracks;
     private NotifyTaskCompletion<Playlist> album;
     private NotifyTaskCompletion<bool> isSubscribed;
+    private NotifyTaskCompletion<int> relationsCount;
 
     public NotifyTaskCompletion<bool> IsSubscribed
     {
@@ -43,6 +44,16 @@ public class AlbumPageVm : INotifyPropertyChanged
         {
             isSubscribed = value;
             OnPropertyChanged(nameof(IsSubscribed));
+        }
+    }
+
+    public NotifyTaskCompletion<int> RelationsCount
+    {
+        get => relationsCount;
+        set
+        {
+            relationsCount = value;
+            OnPropertyChanged(nameof(RelationsCount));
         }
     }
 
@@ -83,12 +94,14 @@ public class AlbumPageVm : INotifyPropertyChanged
 
     private async Task<ObservableCollection<TrackListenVm>> GetTracks()
     {
+        IsSubscribed = new NotifyTaskCompletion<bool>(PlaylistDAO.Instance.IsRelatedAsync(AccountVm.Instance.AccountPerson.Result.ID,
+            albumid));
+
+        RelationsCount = new NotifyTaskCompletion<int>(PlaylistDAO.Instance.RelationsCountAsync(albumid));
         Album = new NotifyTaskCompletion<Playlist>(PlaylistDAO.Instance.GetAsync(albumid));
 
         var res = await Album.Task;
-
-        IsSubscribed = new NotifyTaskCompletion<bool>(PlaylistDAO.Instance.UserRelated(AccountVm.Instance.AccountPerson.Result.ID,
-            res.ID));
+        
 
         return new ObservableCollection<TrackListenVm>(
             res.Tracks.Select(t => new TrackListenVm()
@@ -103,7 +116,7 @@ public class AlbumPageVm : INotifyPropertyChanged
     {
         if (Album.Result is null || AccountVm.Instance.AccountPerson is null) return false;
 
-        await PlaylistDAO.Instance.RelateUser(AccountVm.Instance.AccountPerson.Result.ID, Album.Result.ID);
+        await PlaylistDAO.Instance.RelateAsync(AccountVm.Instance.AccountPerson.Result.ID, Album.Result.ID);
         return !isSubbed;
     }
     

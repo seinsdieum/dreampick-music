@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
@@ -15,15 +16,23 @@ namespace dreampick_music;
 public class EditAlbumVm : HistoryVm
 {
     
-    private MainVm mainVm;
+    private string albumName;
+    private string albumDescription;
 
-    public MainVm MainVm
-    {
-        set { mainVm = value; }
-    }
+    
 
+    private ObservableCollection<TrackVm> tracks = new ObservableCollection<TrackVm>();
 
+    
+    private BitmapImage imageSource;
+    
     private string albumId;
+    private NotifyTaskCompletion<Playlist> loadedPlaylist;
+
+    
+
+
+
 
     public string AlbumId
     {
@@ -35,36 +44,35 @@ public class EditAlbumVm : HistoryVm
         }
     }
 
-    private NotifyTaskCompletion<Playlist> loadedP;
     
-    public NotifyTaskCompletion<Playlist> loadedPlaylist
+    public NotifyTaskCompletion<Playlist> LoadedPlaylist
     {
         get
         {
-            return loadedP;
+            return loadedPlaylist;
         }
         set
         {
-            loadedP = value;
-            OnPropertyChanged(nameof(loadedPlaylist));
-            InitializeAlbumEditor();
+            loadedPlaylist = value;
+            NotifyPropertyChanged();
         }
     }
     
     
-    private string albumName;
-
     [UndoRedo]
+
     public string AlbumName
     {
         get => albumName;
         set => Set(ref albumName, value);
     }
-
-    private ObservableCollection<TrackVm> tracks = new ObservableCollection<TrackVm>();
-
     
-    private BitmapImage imageSource;
+    [UndoRedo]
+    public string AlbumDescription
+    {
+        get => albumDescription;
+        set => Set(ref albumDescription, value);
+    }
 
     [UndoRedo]
     public BitmapImage ImageSource
@@ -152,7 +160,7 @@ public class EditAlbumVm : HistoryVm
             Name = AlbumName,
             Type = PlaylistType.ALBUM,
             Image = ImageSource is null ? null : ImageSource,
-            Author = loadedP.Result.Author
+            Author = loadedPlaylist.Result.Author
         };
         playlist.Tracks = new ObservableCollection<Track>(VmToTracks(playlist));
         return playlist;
@@ -162,12 +170,12 @@ public class EditAlbumVm : HistoryVm
     {
         var playlist = new Playlist()
         {
-            ID = loadedP.Result.ID,
+            ID = loadedPlaylist.Result.ID,
             Name = AlbumName,
             Type = PlaylistType.ALBUM,
             Image = ImageSource is null ? null : ImageSource,
 
-            Author = loadedP.Result.Author
+            Author = loadedPlaylist.Result.Author
         };
         playlist.Tracks = new ObservableCollection<Track>(VmToTracks(playlist, out hasProblems));
         return playlist;
@@ -178,25 +186,37 @@ public class EditAlbumVm : HistoryVm
     {
         var playlist = CreatePlaylist(out var hasProblems);
         
-        if(hasProblems || loadedP.IsNotCompleted) return;
+        if(hasProblems || loadedPlaylist.IsNotCompleted) return;
         
-        _ = PlaylistDAO.Instance.UpdateAsync(playlist, loadedP.Result.Tracks);
+        _ = PlaylistDAO.Instance.UpdateAsync(playlist, loadedPlaylist.Result.Tracks);
     }
 
-    private void LoadAlbum()
+    private async Task LoadAlbum()
     {
-        loadedPlaylist = new NotifyTaskCompletion<Playlist>(PlaylistDAO.Instance.GetAsync(albumId));
+        LoadedPlaylist = new NotifyTaskCompletion<Playlist>(PlaylistDAO.Instance.GetAsync(albumId));
+        await LoadedPlaylist.Task;
+
+        if (LoadedPlaylist.IsSuccessfullyCompleted)
+        {
+            AlbumName = loadedPlaylist.Result.Name;
+            AlbumDescription = loadedPlaylist.Result.Description;
+            Tracks = new ObservableCollection<TrackVm>(
+                loadedPlaylist.Result.Tracks.Select(track => new TrackVm(loadedPlaylist.Result.Author.ID, track.ID) { Source = track.Source, Name = track.Name, TrackId = track.ID}).ToList());
+
+            ImageSource = loadedPlaylist.Result.Image;
+        }
     }
 
-    private void InitializeAlbumEditor()
+    private void DestroyObjects()
     {
-        AlbumName = loadedP.Result.Name;
-        Tracks = new ObservableCollection<TrackVm>(
-            loadedP.Result.Tracks.Select(track => new TrackVm(loadedP.Result.Author.ID, track.ID) { Source = track.Source, Name = track.Name, TrackId = track.ID}).ToList());
-
-        ImageSource = loadedP.Result.Image;
         
     }
+    
+    public ButtonCommand BackCommand => new ButtonCommand((o =>
+    {
+        NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
+    }));
+
 
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };

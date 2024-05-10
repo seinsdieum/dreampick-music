@@ -46,11 +46,16 @@ public class CollectionVm : INotifyPropertyChanged
     {
         NavigationVm.Instance.Navigate(new PlaylistCollection(PlaylistCollectionType.Related, ""));
     });
+
+    public ButtonCommand NavigateLastReleasesCommand => new ButtonCommand(o =>
+    {
+        NavigationVm.Instance.Navigate(new PlaylistCollection(PlaylistCollectionType.Latest, ""));
+    });
     
 
     private void RefreshContent()
     {
-        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlaylistDAO.Instance.LastCollection());
+        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlaylistDAO.Instance.LastCollectionAsync());
     }
 
 

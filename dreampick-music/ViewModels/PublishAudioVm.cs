@@ -17,16 +17,14 @@ namespace dreampick_music;
 
 public class PublishAudioVm : HistoryVm
 {
-    private MainVm mainVm;
-
-    public MainVm MainVm
-    {
-        set { mainVm = value; }
-    }
+    
 
     private string albumName;
 
     private string albumDescription;
+    private ObservableCollection<TrackVm> tracks = new ObservableCollection<TrackVm>();
+
+    private Uri imageSource;
 
     [UndoRedo]
     public string AlbumName
@@ -35,15 +33,13 @@ public class PublishAudioVm : HistoryVm
         set => Set(ref albumName, value);
     }
 
+    [UndoRedo]
     public string AlbumDescription
     {
         get => albumDescription;
         set => Set(ref albumDescription, value);
     }
-
-    private ObservableCollection<TrackVm> tracks = new ObservableCollection<TrackVm>();
-
-    private Uri imageSource;
+    
 
     [UndoRedo]
     public Uri ImageSource

@@ -19,7 +19,21 @@
 
             <DockPanel Margin="0,0,0,15">
 
-                <Label Margin="0,0,10,0" HorizontalAlignment="Left" Style="{DynamicResource H1}" Content="artist creation"></Label>
+                <Label Margin="0,0,10,0" HorizontalAlignment="Left" Style="{DynamicResource H1}"
+                       Content="artist creation">
+                </Label>
+
+                <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                FontSize="{DynamicResource Header1}" Icon="Refresh"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="MouseDown">
+                            <b:InvokeCommandAction Command="{Binding RefreshCommand}"></b:InvokeCommandAction>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                </fa:FontAwesome>
+
 
                 <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                                 FontSize="{DynamicResource Header1}" Icon="Music"
@@ -33,44 +47,59 @@
                 </fa:FontAwesome>
             </DockPanel>
 
-            <ItemsControl ItemsSource="{Binding Albums.Result}" Margin="0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="5">
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="MouseDown">
-                                    <b:InvokeCommandAction CommandParameter="{Binding ID}"
-                                                           Command="{Binding NavigateAlbumCommand , ElementName=VmContext}">
-                                    </b:InvokeCommandAction>
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                            <Grid.OpacityMask>
-                                <VisualBrush>
-                                    <VisualBrush.Visual>
-                                        <Border Width="200" Height="200" CornerRadius="{DynamicResource Radius}"
-                                                Background="Black">
-                                        </Border>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Grid.OpacityMask>
+            <fa:FontAwesome
+                Foreground="{DynamicResource DarkenForeBrush}"
+                FontSize="150"
+                Icon="CircleOutlineNotch"
+                Spin="True"
+                Visibility="{Binding Albums.IsNotCompleted, 
+                Converter={StaticResource StatementVisibilityConverter},
+                FallbackValue=Collapsed
+                }" />
 
-                            <Image Source="{Binding Image}" Width="200" Height="200"></Image>
-                            <Border Width="200" Height="200" Background="{DynamicResource DarkenBottomGradient}"></Border>
-                            <Border Padding="{DynamicResource Padding}">
-                                <StackPanel VerticalAlignment="Bottom">
-                                    <Label Foreground="White" Content="{Binding Name}"></Label>
-                                    <Label Foreground="White" Content="{Binding Author.Name}"></Label>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+
+            <StackPanel
+                Style="{DynamicResource StackRoot}"
+                Visibility="{Binding Albums.IsSuccessfullyCompleted, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}">
+                <ItemsControl ItemsSource="{Binding Albums.Result}" Margin="0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="5">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="MouseDown">
+                                        <b:InvokeCommandAction CommandParameter="{Binding ID}"
+                                                               Command="{Binding NavigateAlbumCommand , ElementName=VmContext}">
+                                        </b:InvokeCommandAction>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                                <Grid.OpacityMask>
+                                    <VisualBrush>
+                                        <VisualBrush.Visual>
+                                            <Border Width="200" Height="200" CornerRadius="{DynamicResource Radius}"
+                                                    Background="Black">
+                                            </Border>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Grid.OpacityMask>
+
+                                <Image Source="{Binding Image}" Width="200" Height="200"></Image>
+                                <Border Width="200" Height="200" Background="{DynamicResource DarkenBottomGradient}"></Border>
+                                <Border Padding="{DynamicResource Padding}">
+                                    <StackPanel VerticalAlignment="Bottom">
+                                        <Label Foreground="White" Content="{Binding Name}"></Label>
+                                        <Label Foreground="White" Content="{Binding Author.Name}"></Label>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
 
             <!-- region BackLabel -->
 

@@ -6,7 +6,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using dreampick_music.DB;
 using dreampick_music.Models;
+using dreampick_music.Views;
 
 namespace dreampick_music;
 
@@ -16,6 +18,15 @@ public class CreatePostVm : HistoryVm
 
 
     private NotifyTaskCompletion<bool> uploadSuccess;
+    
+    private NotifyTaskCompletion<Playlist> selectedPlaylist;
+
+    [UndoRedo]
+    public NotifyTaskCompletion<Playlist> SelectedPlaylist
+    {
+        get => selectedPlaylist;
+        set => Set(ref selectedPlaylist, value);
+    }
 
     public NotifyTaskCompletion<bool> UploadSuccess
     {
@@ -56,41 +67,46 @@ public class CreatePostVm : HistoryVm
     }
 
 
-    public ButtonCommand PublishCommand
+    public ButtonCommand PublishCommand => new ButtonCommand(o =>
     {
-        get
+        if (string.IsNullOrEmpty(FieldText)) return;
+        
+        var post = new Post(Utils.GenerateRandomString(10), FieldText)
         {
-            return new ButtonCommand(o =>
-            {
-                if (!string.IsNullOrEmpty(FieldText))
-                {
-                    var post = new Post(Utils.GenerateRandomString(10), FieldText)
-                    {
-                        PostAuthor = AccountVm.Instance.AccountPerson.Result
-                    };
-                    UploadSuccess = new NotifyTaskCompletion<bool>(PlatformDAO.Instance.AddPost(post));
+            PostAuthor = AccountVm.Instance.AccountPerson.Result,
+            PostPlaylist = SelectedPlaylist is not null && SelectedPlaylist.Result is not null ? SelectedPlaylist.Result : null
+        };
+        UploadSuccess = new NotifyTaskCompletion<bool>(PostDAO.Instance.AddAsync(post));
 
-                    FieldText = "";
-                }
-                
-            });
-        }
-    }
-    
-    
-    public ButtonCommand LostFocusCommand
+        FieldText = "";
+
+    }, o => !string.IsNullOrEmpty(FieldText));
+
+    private void SelectPlaylist(string id)
     {
-        get
-        {
-            return new ButtonCommand((o =>
-            {
-                if (FieldText == "")
-                {
-                    FieldText = Utils.GetLocalizedName("LWriteSometh");
-                }
-            }));
-        }
+        SelectedPlaylist = new NotifyTaskCompletion<Playlist>(PlaylistDAO.Instance.InfoAsync(id));
     }
+    
+    public ButtonCommand NavigatePlaylistSelection => new ButtonCommand(o =>
+    {
+        var window = new SelectionDialog(new PlaylistCollection(PlaylistCollectionType.Related, "", (o1 =>
+        {
+            if (o1 is not string id) return;
+            
+            
+            SelectPlaylist(id);
+        })))
+        {
+            Topmost = true
+        };
+        window.ShowDialog();
+        
+    });
+
+    public ButtonCommand RemovePlaylistCommand => new ButtonCommand(o =>
+    {
+        SelectedPlaylist = null;
+    });
 
     public ButtonCommand BackCommand => new ButtonCommand(o =>
     {
@@ -102,31 +118,6 @@ public class CreatePostVm : HistoryVm
         FieldText = "";
         Tags = null;
         UploadSuccess = null;
-    }
-    
-    
-    public ButtonCommand GotFocusCommand
-    {
-        get
-        {
-            return new ButtonCommand((o =>
-            {
-                if (FieldText == Utils.GetLocalizedName("LWriteSometh"))
-                {
-                    FieldText = "";
-                }
-
-                
-            }));
-        }
-    }
-    
-
-    public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-    public void OnPropertyChanged(string prop)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 }
 

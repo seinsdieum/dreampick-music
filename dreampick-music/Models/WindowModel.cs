@@ -30,4 +30,9 @@ public class WindowModel
         mainWindow.Topmost = false;
         window.Close();
     }
+
+    public static void ShowDialogWindow()
+    {
+        
+    }
 }

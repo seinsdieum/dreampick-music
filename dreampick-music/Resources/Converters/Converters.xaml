@@ -8,6 +8,9 @@
     <utilities:StatementVisibilityConverter x:Key="StatementVisibilityConverter"/>
     <utilities:StatementVisibilityConverterInversed x:Key="StatementVisibilityConverterInversed"/>
     <dreampickMusic:SongStateIconConverter x:Key="SongStateIconConverter" />
+    <converters:SongShuffleIconConverter x:Key="SongShuffleIconConverter" />
+    <converters:SongRepeatIconConverter x:Key="SongRepeatIconConverter" />
+    
     <converters:DateTimeToStampStringConverter x:Key="DateTimeToStampStringConverter"></converters:DateTimeToStampStringConverter>
     <converters:ThirdToSecondColorConverter x:Key="ThirdToSecondColorConverter"></converters:ThirdToSecondColorConverter>
 </ResourceDictionary>

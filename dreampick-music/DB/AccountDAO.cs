@@ -12,7 +12,7 @@ public class AccountDAO
     public static AccountDAO Instance = new AccountDAO();
     
     
-    public async Task<bool> VerifyUserAsync(string name, string hashedPassword)
+    public async Task<bool> VerifyAsync(string name, string hashedPassword)
     {
         User user = new User()
         {
@@ -58,7 +58,7 @@ public class AccountDAO
         return user.ID != "NOTFOUND";
     }
 
-    public bool CheckUsernameExistingAsync(string name)
+    public bool NameExistingAsync(string name)
     {
         try
         {
@@ -87,7 +87,7 @@ public class AccountDAO
         }
     }
 
-    public async Task<bool> AddUserAsync(AccountModel accountModel)
+    public async Task<bool> AddAsync(AccountModel accountModel)
     {
         var queryString =
             "insert into [USER] (user_id, user_name, user_password, user_email, user_image, user_is_artist) VALUES (@id, @name, @password, @email, NULL, 0)";
@@ -119,7 +119,7 @@ public class AccountDAO
     }
 
 
-    public async Task<Person> LoadAccountAsync(string uname)
+    public async Task<Person> GetAsync(string uname)
     {
         await Task.Delay(1200);
         var query =
@@ -182,7 +182,7 @@ public class AccountDAO
         return user;
     }
 
-    public async Task<bool> ChangePersonProperty(string id, PersonPropertyChangeType type, object propValue)
+    public async Task<bool> ChangePropertyAsync(string id, PersonPropertyChangeType type, object propValue)
     {
 
         var valueType = Utils.GetPersonChangeType(type);

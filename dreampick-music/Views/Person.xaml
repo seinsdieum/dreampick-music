@@ -17,16 +17,15 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="5,0,10,0" Style="{DynamicResource StackRoot}">
             <StackPanel>
-                
+
                 <!-- region BackLabel -->
-                
+
                 <DockPanel Margin="0,0,0,15">
-                    
+
                     <fa:FontAwesome Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                                     FontSize="{DynamicResource Header1}" Icon="ArrowLeft"
                                     Margin="0,0,10,0"
-                                    VerticalAlignment="Center"
-                    >
+                                    VerticalAlignment="Center">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDown">
                                 <i:InvokeCommandAction Command="{Binding BackCommand}"></i:InvokeCommandAction>
@@ -37,14 +36,16 @@
                     <Label Style="{DynamicResource H1}" Content="{Binding User.Result.Name}"></Label>
 
                 </DockPanel>
-                
+
                 <!-- region BackLabel -->
-                
+
                 <DockPanel Margin="{DynamicResource BottomPadding}">
                     <Grid Margin="0,0,10,0">
-                        
-                        
-                        <Border Visibility="{Binding User.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}" Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+
+
+                        <Border
+                            Visibility="{Binding User.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}"
+                            Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
                             <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
                                             FontSize="150" Icon="CircleOutlineNotch"
                                             VerticalAlignment="Center"
@@ -52,8 +53,10 @@
                                             HorizontalAlignment="Center">
                             </fa:FontAwesome>
                         </Border>
-                        
-                        <Border Visibility="{Binding User.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}" Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
+
+                        <Border
+                            Visibility="{Binding User.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}"
+                            Background="{DynamicResource BackBrush}" CornerRadius="{DynamicResource Radius}">
                             <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
                                             FontSize="150" Icon="User"
                                             VerticalAlignment="Center"
@@ -108,37 +111,209 @@
 
 
             </StackPanel>
+
+
+            <WrapPanel>
+                <Button Margin="0,0,10,0" Cursor="Hand"
+                        Command="{Binding SubscribeCommand}">
+                    <DockPanel>
+                        <fa:FontAwesome
+                            Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverterInversed}}"
+                            Margin="0,0,5,0"
+                            Foreground="{DynamicResource ForeBrush}"
+                            FontSize="{DynamicResource Header2}"
+                            Icon="HeartOutline"
+                            VerticalAlignment="Center">
+                        </fa:FontAwesome>
+                        <fa:FontAwesome
+                            Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverter}}"
+                            Margin="0,0,5,0"
+                            Foreground="{DynamicResource ForeBrush}"
+                            FontSize="{DynamicResource Header2}"
+                            Icon="Heart"
+                            VerticalAlignment="Center">
+                        </fa:FontAwesome>
+                        <Label
+                            Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverterInversed}}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            sub
+                        </Label>
+                        <Label
+                            Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverter}}"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            subbed
+                        </Label>
+                    </DockPanel>
+                </Button>
+            </WrapPanel>
+
+
             <TabControl>
                 <TabItem Header="{DynamicResource LPlaylists}"></TabItem>
                 <TabItem Header="{DynamicResource LFeed}">
-                    <ListView VerticalAlignment="Stretch" Style="{DynamicResource PostView}"
-                              ItemsSource="{Binding UserPosts.Result}">
+                    <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding UserPosts.Result}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
-                                        Background="{DynamicResource SecondBrush}">
+                                <StackPanel Style="{DynamicResource StackRoot}">
+                                    <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}"
+                                            Background="{DynamicResource SecondBrush}">
 
-                                    <StackPanel>
-                                        <Label Margin="{DynamicResource BottomPadding}" Content="{Binding Description }"></Label>
-                                        <Border Padding="{DynamicResource PaddingInner}"
-                                                Background="{DynamicResource ThirdBrush}" CornerRadius="5">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                    <ColumnDefinition></ColumnDefinition>
-                                                </Grid.ColumnDefinitions>
-                                                <Label VerticalAlignment="Center" Grid.Column="0"
-                                                       Foreground="{DynamicResource DarkenForeBrush}"
-                                                       Content="{Binding PostAuthor.Name}">
-                                                </Label>
-                                                <Label Grid.Column="1" Foreground="{DynamicResource DarkenForeBrush}"
-                                                       Content="{Binding PublicationDate}">
-                                                </Label>
+                                        <StackPanel>
 
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-                                </Border>
+                                            <Border
+                                                Cursor="Hand"
+                                                Background="{DynamicResource ThirdBrush}"
+                                                CornerRadius="{DynamicResource Radius}"
+                                                Padding="20"
+                                                Margin="{DynamicResource BottomPadding}"
+                                                Visibility="{Binding HasPlaylist, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}">
+
+
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="MouseDown">
+                                                        <i:InvokeCommandAction
+                                                            CommandParameter="{Binding Post.PostPlaylist.ID}"
+                                                            Command="{Binding NavigatePlaylistCommand , ElementName=VmContext }">
+                                                        </i:InvokeCommandAction>
+                                                    </i:EventTrigger>
+
+                                                </i:Interaction.Triggers>
+
+
+                                                <DockPanel>
+                                                    <Grid
+                                                        Margin="0,0,10,0">
+                                                        <Border
+                                                            Background="{DynamicResource BackBrush}"
+                                                            Width="100" Height="100"
+                                                            CornerRadius="{DynamicResource Radius}">
+                                                            <fa:FontAwesome
+                                                                Icon="Music"
+                                                                FontSize="80"
+                                                                Foreground="{DynamicResource DarkenForeBrush}" />
+
+                                                        </Border>
+                                                        <Image
+                                                            Width="100"
+                                                            Height="100"
+                                                            Source="{Binding Post.PostPlaylist.Image}">
+                                                            <Image.OpacityMask>
+                                                                <VisualBrush>
+                                                                    <VisualBrush.Visual>
+                                                                        <Border
+                                                                            Height="100" Width="100"
+                                                                            Background="Black"
+                                                                            CornerRadius="{DynamicResource Radius}">
+                                                                        </Border>
+                                                                    </VisualBrush.Visual>
+                                                                </VisualBrush>
+                                                            </Image.OpacityMask>
+                                                        </Image>
+                                                    </Grid>
+                                                    <StackPanel>
+                                                        <Label
+                                                            Style="{DynamicResource H2}"
+                                                            Content="{Binding Post.PostPlaylist.Name}">
+
+                                                        </Label>
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </Border>
+
+                                            <Border
+                                                Padding="{DynamicResource Padding}"
+                                                Margin="{DynamicResource BottomPadding}">
+                                                <TextBlock TextWrapping="Wrap" Style="{DynamicResource P}"
+                                                           Text="{Binding Post.Description}">
+                                                </TextBlock>
+                                            </Border>
+                                            <Border Padding="{DynamicResource Padding}"
+                                                    Background="{DynamicResource ThirdBrush}" CornerRadius="5">
+                                                <DockPanel>
+                                                    <DockPanel Cursor="Hand">
+
+                                                        <Grid Margin="0,0,5,0">
+                                                            <i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="MouseDown">
+                                                                    <i:InvokeCommandAction
+                                                                        Command="{Binding SetLike}">
+                                                                    </i:InvokeCommandAction>
+                                                                </i:EventTrigger>
+                                                            </i:Interaction.Triggers>
+                                                            <fa:FontAwesome
+                                                                Visibility="{Binding LikeIsSet.Result, Converter={StaticResource StatementVisibilityConverter}}"
+                                                                HorizontalAlignment="Left"
+                                                                FontSize="{DynamicResource Header1}"
+                                                                Foreground="{DynamicResource DarkenForeBrush}"
+                                                                Icon="Heart">
+
+                                                            </fa:FontAwesome>
+                                                            <fa:FontAwesome
+                                                                Visibility="{Binding LikeIsSet.Result, Converter={StaticResource StatementVisibilityConverterInversed}, FallbackValue=Collapsed}"
+                                                                HorizontalAlignment="Left"
+                                                                FontSize="{DynamicResource Header1}"
+                                                                Foreground="{DynamicResource DarkenForeBrush}"
+                                                                Icon="HeartOutline">
+                                                            </fa:FontAwesome>
+                                                        </Grid>
+
+                                                        <Label
+                                                            Margin="0,0,10,0"
+                                                            Content="{Binding Post.Likes}">
+
+                                                            <i:Interaction.Triggers>
+                                                                <i:EventTrigger EventName="MouseDown">
+                                                                    <i:InvokeCommandAction
+                                                                        Command="{Binding NavigatePostLikesCommand , ElementName=VmContext}"
+                                                                        CommandParameter="{Binding Post.ID}">
+                                                                    </i:InvokeCommandAction>
+                                                                </i:EventTrigger>
+                                                            </i:Interaction.Triggers>
+
+                                                        </Label>
+                                                    </DockPanel>
+                                                    <Grid>
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseDown">
+                                                                <i:InvokeCommandAction
+                                                                    Command="{Binding NavigateUserCommand ,ElementName=VmContext}"
+                                                                    CommandParameter="{Binding  Post.PostAuthor.ID}">
+                                                                </i:InvokeCommandAction>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                            <ColumnDefinition></ColumnDefinition>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Image Margin="0,0,0,-5" VerticalAlignment="Center"
+                                                               Stretch="UniformToFill"
+                                                               Width="{DynamicResource Paragraph}"
+                                                               Height="{DynamicResource Paragraph}"
+                                                               Source="{DynamicResource ImgPlay}">
+                                                        </Image>
+                                                        <Image VerticalAlignment="Center"
+                                                               Width="{DynamicResource Paragraph}"
+                                                               Height="{DynamicResource Paragraph}"
+                                                               Source="{Binding Post.PostAuthor.Image}">
+
+                                                        </Image>
+                                                        <Label VerticalAlignment="Center" Grid.Column="1"
+                                                               Foreground="{DynamicResource DarkenForeBrush}"
+                                                               Content="{Binding Post.PostAuthor.Name}">
+                                                        </Label>
+
+                                                    </Grid>
+                                                    <Label Foreground="{DynamicResource DarkenForeBrush}"
+                                                           Content="{Binding Post.PublicationDate, Converter={StaticResource DateTimeToStampStringConverter}}">
+                                                    </Label>
+                                                </DockPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>

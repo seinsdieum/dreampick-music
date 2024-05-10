@@ -13,11 +13,10 @@ namespace dreampick_music.DB;
 public class PlaylistDAO
 {
     public static PlaylistDAO Instance = new PlaylistDAO();
-    
-    
+
+
     public async Task AddAsync(Playlist playlist)
     {
-        
         var queryString =
             "insert into PLAYLIST(playlist_id, user_fk_id, playlist_type_fk_id, playlist_name, playlist_description, playlist_image, release_date) " +
             "values " +
@@ -25,7 +24,7 @@ public class PlaylistDAO
 
         var tracksQueryString =
             "insert into TRACK(TRACK_ID, TRACK_PATH, track_playlist_fk_id, track_lyrics, track_name, release_date) values";
-        
+
         try
         {
             if (string.IsNullOrEmpty(playlist.ID) || string.IsNullOrEmpty(playlist.Name) ||
@@ -94,18 +93,19 @@ public class PlaylistDAO
 
             await transaction.CommitAsync();
         }
-        
+
         catch (Exception e)
         {
             MessageBox.Show(e.Message);
         }
-
     }
-    
-    
-     public async Task UpdateAsync(Playlist playlist, ObservableCollection<Track> oldTracks)
+
+
+    public async Task UpdateAsync(Playlist playlist, ObservableCollection<Track> oldTracks)
     {
-        
+        await Task.Delay(500);
+
+
         var queryString =
             "update playlist set playlist_description = @pld, playlist_type_fk_id = @pltid, playlist_name = @plname, playlist_image = @pli where playlist_id = @plid";
 
@@ -115,9 +115,7 @@ public class PlaylistDAO
         var tracksUpdateQueryString =
             "update track set track_lyrics = @tlyrics, track_name = @tname, TRACK_PATH = @tpath\nwhere TRACK_ID = @tid";
 
-        
 
-        
         try
         {
             if (string.IsNullOrEmpty(playlist.ID) || string.IsNullOrEmpty(playlist.Name) ||
@@ -156,7 +154,6 @@ public class PlaylistDAO
             //////////////////////////////////////////
             //////////////////////////////////////////
             //////////////////////////////////////////
-
 
 
             foreach (var track in playlist.Tracks)
@@ -215,9 +212,8 @@ public class PlaylistDAO
             }
 
             await transaction.CommitAsync();
-
         }
-        
+
         catch (Exception e)
         {
             MessageBox.Show(e.Message);
@@ -227,120 +223,116 @@ public class PlaylistDAO
 
     public async Task<Playlist> GetAsync(string id)
     {
+        await Task.Delay(500);
 
         var playlist = new Playlist();
 
-        
-        const string tracksQuery = "select t.TRACK_ID as id, t.track_lyrics as lyrics, t.track_name as [name], t.TRACK_PATH as [tpath], t.release_date as [tdate] from TRACK as t where t.track_playlist_fk_id = @playlistid order by t.release_date";
-        var playlistQuery = "select p.playlist_id as id, p.playlist_description as [description], p.playlist_image as [image], p.playlist_name as [name], p.playlist_type_fk_id as [type], p.user_fk_id as [uid], p.release_date as [date] from PLAYLIST as p where p.playlist_id = @playlistid";
-        var userQuery = "select u.user_id as [id], u.user_name as [name] from [USER] as u\ninner join PLAYLIST as p on p.user_fk_id = u.user_id and p.playlist_id = @playlistid";
+
+        const string tracksQuery =
+            "select t.TRACK_ID as id, t.track_lyrics as lyrics, t.track_name as [name], t.TRACK_PATH as [tpath], t.release_date as [tdate] from TRACK as t where t.track_playlist_fk_id = @playlistid order by t.release_date";
+        var playlistQuery =
+            "select p.playlist_id as id, p.playlist_description as [description], p.playlist_image as [image], p.playlist_name as [name], p.playlist_type_fk_id as [type], p.user_fk_id as [uid], p.release_date as [date] from PLAYLIST as p where p.playlist_id = @playlistid";
+        var userQuery =
+            "select u.user_id as [id], u.user_name as [name] from [USER] as u\ninner join PLAYLIST as p on p.user_fk_id = u.user_id and p.playlist_id = @playlistid";
 
 
-        try
+        await using var connection = new SqlConnection(Config.Instance.DbString);
+
+        await connection.OpenAsync();
+
+        await using var transaction = connection.BeginTransaction();
+
+        var tracksCommand = new SqlCommand(tracksQuery)
         {
-            await using var connection = new SqlConnection(Config.Instance.DbString);
+            Transaction = transaction
+        };
+        tracksCommand.Parameters.AddWithValue("playlistid", id);
+        tracksCommand.Connection = connection;
+        var result1 = tracksCommand.ExecuteReaderAsync().Result;
 
-            await connection.OpenAsync();
+        var tracks = new List<Track>();
+        var artist = new Artist();
 
-            await using var transaction = connection.BeginTransaction();
-
-            var tracksCommand = new SqlCommand(tracksQuery)
-            {
-                Transaction = transaction
-            };
-            tracksCommand.Parameters.AddWithValue("playlistid", id);
-            tracksCommand.Connection = connection;
-            var result1 = tracksCommand.ExecuteReaderAsync().Result;
-
-            var tracks = new List<Track>();
-            var artist = new Artist();
-
-            while (result1.ReadAsync().Result)
-            {
-
-                var track = new Track();
-
-                track.ID = (string)result1["id"];
-                track.Name = (string)result1["name"];
-                track.Lyrics = result1["lyrics"] is string tlyrics ? tlyrics : "";
-                track.Source = result1["tpath"] is string tpath ? new Uri(tpath, UriKind.Absolute) : null;
-                track.Album = playlist;
-                track.ReleaseDate = (DateTime)result1["tdate"];
-
-
-                tracks.Add(track);
-            }
-
-            playlist.Tracks = new ObservableCollection<Track>(tracks);
-
-            await result1.CloseAsync();
-
-
-            ///////////////////////////////////////////////
-            ///////////////////////////////////////////////
-            ///////////////////////////////////////////////
-
-            var userCommand = new SqlCommand(userQuery)
-            {
-                Transaction = transaction
-            };
-
-            userCommand.Parameters.AddWithValue("playlistid", id);
-            userCommand.Connection = connection;
-
-            var result2 = userCommand.ExecuteReaderAsync().Result;
-
-            while (result2.ReadAsync().Result)
-            {
-                artist.ID = (string)result2["id"];
-                artist.Name = (string)result2["name"];
-            }
-
-            playlist.Author = artist;
-
-
-            await result2.CloseAsync();
-
-
-            ///////////////////////////////////////////////
-            ///////////////////////////////////////////////
-            ///////////////////////////////////////////////
-
-
-            var playlistCommand = new SqlCommand(playlistQuery)
-            {
-                Transaction = transaction
-            };
-
-            playlistCommand.Parameters.AddWithValue("playlistid", id);
-            playlistCommand.Connection = connection;
-            var result = playlistCommand.ExecuteReaderAsync().Result;
-
-            while (result.ReadAsync().Result)
-            {
-                playlist.Image = result["image"] is byte[] playlistBytes ? Utils.GetBitmapImage(playlistBytes) : null;
-                playlist.Description = result["description"] is string desc ? desc : "";
-                playlist.ID = id;
-                playlist.Type = PlaylistType.ALBUM;
-                playlist.Name = (string)result["name"];
-                playlist.ReleaseDate = (DateTime)result["date"];
-            }
-
-            await result.CloseAsync();
-
-            await transaction.CommitAsync();
-        }
-        catch (Exception e)
+        while (result1.ReadAsync().Result)
         {
-            MessageBox.Show(e.Message);
+            var track = new Track();
+
+            track.ID = (string)result1["id"];
+            track.Name = (string)result1["name"];
+            track.Lyrics = result1["lyrics"] is string tlyrics ? tlyrics : "";
+            track.Source = result1["tpath"] is string tpath ? new Uri(tpath, UriKind.Absolute) : null;
+            track.Album = playlist;
+            track.ReleaseDate = (DateTime)result1["tdate"];
+
+
+            tracks.Add(track);
         }
+
+        playlist.Tracks = new ObservableCollection<Track>(tracks);
+
+        await result1.CloseAsync();
+
+
+        ///////////////////////////////////////////////
+        ///////////////////////////////////////////////
+        ///////////////////////////////////////////////
+
+        var userCommand = new SqlCommand(userQuery)
+        {
+            Transaction = transaction
+        };
+
+        userCommand.Parameters.AddWithValue("playlistid", id);
+        userCommand.Connection = connection;
+
+        var result2 = userCommand.ExecuteReaderAsync().Result;
+
+        while (result2.ReadAsync().Result)
+        {
+            artist.ID = (string)result2["id"];
+            artist.Name = (string)result2["name"];
+        }
+
+        playlist.Author = artist;
+
+
+        await result2.CloseAsync();
+
+
+        ///////////////////////////////////////////////
+        ///////////////////////////////////////////////
+        ///////////////////////////////////////////////
+
+
+        var playlistCommand = new SqlCommand(playlistQuery)
+        {
+            Transaction = transaction
+        };
+
+        playlistCommand.Parameters.AddWithValue("playlistid", id);
+        playlistCommand.Connection = connection;
+        var result = playlistCommand.ExecuteReaderAsync().Result;
+
+        while (result.ReadAsync().Result)
+        {
+            playlist.Image = result["image"] is byte[] playlistBytes ? Utils.GetBitmapImage(playlistBytes) : null;
+            playlist.Description = result["description"] is string desc ? desc : "";
+            playlist.ID = id;
+            playlist.Type = PlaylistType.ALBUM;
+            playlist.Name = (string)result["name"];
+            playlist.ReleaseDate = (DateTime)result["date"];
+        }
+
+        await result.CloseAsync();
+
+        await transaction.CommitAsync();
+
 
         return playlist;
     }
-    
-    public async Task<Playlist> GetInfoAsync(string id)
-    {
 
+    public async Task<Playlist> InfoAsync(string id)
+    {
         var playlist = new Playlist();
 
 
@@ -412,19 +404,19 @@ public class PlaylistDAO
             await result.CloseAsync();
 
             await transaction.CommitAsync();
-
         }
         catch (Exception e)
         {
             MessageBox.Show(e.Message);
         }
+
         return playlist;
     }
-    
-    
-    public async Task<ObservableCollection<Playlist>> LastCollection()
-    {
 
+
+    public async Task<ObservableCollection<Playlist>> CollectionAsync()
+    {
+        await Task.Delay(1000);
         var query =
             "select p.playlist_id as id, p.playlist_description as [description], p.playlist_image as [image], p.playlist_name as [name], p.playlist_type_fk_id as [type], u.user_id as [uid], u.user_name as [uname] from PLAYLIST as p inner join [USER] as u on u.user_id = p.user_fk_id order by p.release_date desc";
         var collection = new ObservableCollection<Playlist>();
@@ -432,13 +424,11 @@ public class PlaylistDAO
 
         try
         {
-            
             await using var connection = new SqlConnection(Config.Instance.DbString);
 
             await connection.OpenAsync();
 
             await using var transaction = connection.BeginTransaction();
-
 
 
             ///////////////////////////////////////////////
@@ -461,7 +451,7 @@ public class PlaylistDAO
                     Name = (string)result["uname"],
                     ID = (string)result["uid"]
                 };
-                
+
                 var p = new Playlist()
                 {
                     Author = author,
@@ -475,45 +465,112 @@ public class PlaylistDAO
             }
 
             await result.CloseAsync();
-            
 
 
             await transaction.CommitAsync();
-
         }
         catch (Exception e)
         {
             MessageBox.Show(e.Message);
         }
+
         return collection;
     }
 
 
-    public async Task<ObservableCollection<Playlist>> GetAlbumsInfo(List<string> albumsID)
+    public async Task<ObservableCollection<Playlist>> LastCollectionAsync(int n = 5)
     {
+        await Task.Delay(500);
+        var query =
+            $"select top {n} p.playlist_id as id, p.playlist_description as [description], p.playlist_image as [image], p.playlist_name as [name], p.playlist_type_fk_id as [type], u.user_id as [uid], u.user_name as [uname] from PLAYLIST as p inner join [USER] as u on u.user_id = p.user_fk_id order by p.release_date desc";
+        var collection = new ObservableCollection<Playlist>();
+
+
+        try
+        {
+            await using var connection = new SqlConnection(Config.Instance.DbString);
+
+            await connection.OpenAsync();
+
+            await using var transaction = connection.BeginTransaction();
+
+
+            ///////////////////////////////////////////////
+            ///////////////////////////////////////////////
+            ///////////////////////////////////////////////
+
+            var command = new SqlCommand(query)
+            {
+                Transaction = transaction
+            };
+
+            command.Connection = connection;
+
+
+            var result = command.ExecuteReaderAsync().Result;
+
+            while (result.ReadAsync().Result)
+            {
+                var author = new Artist()
+                {
+                    Name = (string)result["uname"],
+                    ID = (string)result["uid"]
+                };
+
+                var p = new Playlist()
+                {
+                    Author = author,
+                    Name = (string)result["name"],
+                    Description = result["description"] is string str ? str : "",
+                    ID = (string)result["id"],
+                    Image = result["image"] is byte[] bytes ? Utils.GetBitmapImage(bytes) : null,
+                    Type = result["type"] == "1" ? PlaylistType.ALBUM : PlaylistType.PLAYLIST,
+                };
+                collection.Add(p);
+            }
+
+            await result.CloseAsync();
+
+
+            await transaction.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message);
+        }
+
+        return collection;
+    }
+
+
+    public async Task<ObservableCollection<Playlist>> InfoCollectionAsync(List<string> albumsID)
+    {
+        await Task.Delay(500);
+
         var collection = new ObservableCollection<Playlist>();
         try
         {
             foreach (var id in albumsID)
             {
-                var item = await GetInfoAsync(id);
+                var item = await InfoAsync(id);
                 collection.Add(item);
             }
-
         }
         catch (Exception e)
         {
             MessageBox.Show($"{e.Message}");
         }
+
         return collection;
     }
 
-    public async Task<bool> UserRelated(string userId, string playlistId)
+    public async Task<bool> IsRelatedAsync(string userId, string playlistId)
     {
-        var queryString = "if exists(select * from USER_PLAYLIST_RELATION where playlist_id = @plid and user_id = @uid) " +
-                          "select cast(1 as bit) as [statement] " +
-                          "else " +
-                          "select cast(0 as bit) as [statement]";
+        var queryString =
+            "if exists(select * from USER_PLAYLIST_RELATION where playlist_id = @plid and user_id = @uid) " +
+            "select cast(1 as bit) as [statement] " +
+            "else " +
+            "select cast(0 as bit) as [statement]";
 
         await using var connection = new SqlConnection(Config.Instance.DbString);
 
@@ -537,15 +594,16 @@ public class PlaylistDAO
 
         return false;
     }
-    
-    
-    public async Task<bool> RelateUser(string userId, string playlistId)
+
+
+    public async Task<bool> RelateAsync(string userId, string playlistId)
     {
-        var queryString = "if exists(select * from [USER_PLAYLIST_RELATION] where playlist_id = @plid and user_id = @uid) " +
-                          "delete USER_PLAYLIST_RELATION where playlist_id = @plid and user_id = @uid " +
-                          "else " +
-                          "insert into USER_PLAYLIST_RELATION (user_id, playlist_id, relation_date) " +
-                          "values (@uid, @plid, @date)";
+        var queryString =
+            "if exists(select * from [USER_PLAYLIST_RELATION] where playlist_id = @plid and user_id = @uid) " +
+            "delete USER_PLAYLIST_RELATION where playlist_id = @plid and user_id = @uid " +
+            "else " +
+            "insert into USER_PLAYLIST_RELATION (user_id, playlist_id, relation_date) " +
+            "values (@uid, @plid, @date)";
 
         await using var connection = new SqlConnection(Config.Instance.DbString);
 
@@ -568,9 +626,9 @@ public class PlaylistDAO
 
         return false;
     }
-    
 
-    public async Task<List<string>> GetUserPlaylistRelations(string userId)
+
+    public async Task<List<string>> ArtistRelationsAsync(string userId)
     {
         var queryString = "select p.playlist_id as [id] from PLAYLIST as p\nwhere p.user_fk_id = @uid";
         var list = new List<string>();
@@ -601,17 +659,17 @@ public class PlaylistDAO
             await result.CloseAsync();
 
             await transaction.CommitAsync();
-
         }
         catch (Exception e)
         {
             MessageBox.Show(e.Message);
         }
+
         return list;
     }
-    
-    
-    public async Task<ObservableCollection<Playlist>> RelatedPlaylists(string userId)
+
+
+    public async Task<ObservableCollection<Playlist>> RelatedAsync(string userId)
     {
         var res = new ObservableCollection<Playlist>();
 
@@ -630,7 +688,7 @@ public class PlaylistDAO
         await using var connection = new SqlConnection(Config.Instance.DbString);
 
         await connection.OpenAsync();
-        
+
         await using var command = new SqlCommand(queryString)
         {
             Connection = connection
@@ -668,8 +726,33 @@ public class PlaylistDAO
         await connection.CloseAsync();
 
         return res;
-
     }
-    
-    
+
+
+    public async Task<int> RelationsCountAsync(string albumId)
+    {
+        var queryString = "select count(*) as [count] from USER_PLAYLIST_RELATION where playlist_id = @plid";
+
+        var count = 0;
+
+        await using var connection = new SqlConnection(Config.Instance.DbString);
+
+        await connection.OpenAsync();
+
+        var command = new SqlCommand(queryString)
+        {
+            Connection = connection
+        };
+
+        command.Parameters.AddWithValue("plid", albumId);
+
+        var result = await command.ExecuteReaderAsync();
+
+        while (result.ReadAsync().Result)
+        {
+            count = (int)result["count"];
+        }
+
+        return count;
+    }
 }

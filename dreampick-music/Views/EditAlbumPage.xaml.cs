@@ -9,6 +9,5 @@ public partial class EditAlbumPage : Page
         InitializeComponent();
         if (DataContext is not EditAlbumVm vm) return;
         vm.AlbumId = id;
-        if (App.Current.MainWindow.DataContext is MainVm mainVm) vm.MainVm = mainVm;
     }
 }
