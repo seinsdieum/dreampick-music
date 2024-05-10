@@ -43,9 +43,6 @@ public class ApplicationContext : DbContext
             .IsRequired();
         modelBuilder.Entity<Post>()
             .HasOne(p => p.Playlist).WithOne();
-        
-        modelBuilder.Entity<Account>()
-            .HasOne(u => u.User).WithOne();
 
 
         modelBuilder.Entity<User>()
@@ -55,6 +52,11 @@ public class ApplicationContext : DbContext
         
         modelBuilder.Entity<User>()
             .HasMany(u => u.Subscribers)
+            .WithOne().IsRequired()
+            ;
+        
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Playlists)
             .WithOne().IsRequired()
             ;
 

@@ -27,4 +27,6 @@ public class User
     
     public List<User> Subscribers { get; set; }
     
+    public List<Playlist> Playlists { get; set; }
+    
 }

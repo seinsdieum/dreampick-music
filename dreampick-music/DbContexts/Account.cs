@@ -2,7 +2,9 @@
 
 public class Account
 {
-    public User User { get; set; }
+    public string Id { get; set; }
     
     public string HashedPassword { get; set; }
+
+    public bool disabled { get; set; } = false;
 }

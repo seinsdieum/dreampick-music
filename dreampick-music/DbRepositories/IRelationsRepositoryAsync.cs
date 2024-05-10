@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace dreampick_music.DbRepositories;
 
-public interface IRelationsRepositoryAsync<T1, T2>
+public interface IRelationsRepositoryAsync<T2>
 {
-    Task<IEnumerable<T2>> GetRelations(T1 entity);
+    Task<IEnumerable<T2>> GetRelations(string id);
     
     
-    Task<int> GetRelationsCount(T1 entity);
+    Task<int> GetRelationsCount(string id);
 }
