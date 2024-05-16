@@ -21,15 +21,17 @@ public class PlayerVm : INotifyPropertyChanged
     private double songVolume = 0.5;
 
 
-    private Playlist queue = new Playlist();
-    private bool TrackIsAvailable => Queue.HasTrack(currentIndex);
+    private DbContexts.Playlist queue = new DbContexts.Playlist();
+    
+    //TODO
+    //private bool TrackIsAvailable => ;
     private int currentIndex = 0;
 
 
     private bool isShuffled = false;
     private AudioRepeatType repeatType = AudioRepeatType.NO_REPEAT;
 
-    public Playlist Queue
+    public DbContexts.Playlist Queue
     {
         get => queue;
         set
@@ -80,17 +82,17 @@ public class PlayerVm : INotifyPropertyChanged
     }
 
 
-    public Track CurrentTrack
+    public DbContexts.Track CurrentTrack
     {
         get
         {
             try
             {
-                return Queue.Tracks[currentIndex];
+                return Queue.Tracks.ElementAt(currentIndex);
             }
             catch
             {
-                return new Track();
+                return new DbContexts.Track();
             }
         }
     }
@@ -119,7 +121,7 @@ public class PlayerVm : INotifyPropertyChanged
         }
         else
         {
-            if (queue.HasTrack(delta)) CurrentIndex = delta;
+            if ( true /*queue.HasTrack(delta)*/) CurrentIndex = delta;
             else if (repeatType == AudioRepeatType.REPEAT_QUEUE) CurrentIndex = 0;
             else
             {
@@ -146,7 +148,7 @@ public class PlayerVm : INotifyPropertyChanged
         }
         else
         {
-            if (queue.HasTrack(delta)) CurrentIndex = delta;
+            if ( true/*queue.HasTrack(delta)*/) CurrentIndex = delta;
             else if (repeatType == AudioRepeatType.REPEAT_QUEUE) CurrentIndex = 0;
             else
             {
@@ -172,9 +174,9 @@ public class PlayerVm : INotifyPropertyChanged
     });
 
 
-    public void PlayNewQueue(Playlist queuePlay, string trackId)
+    public void PlayNewQueue(DbContexts.Playlist queuePlay, string trackId)
     {
-        if (Queue.ID == queuePlay.ID && CurrentTrack.ID == trackId)
+        if (Queue.Id == queuePlay.Id && CurrentTrack.Id == trackId)
         {
             SwitchSongState();
             return;
@@ -188,9 +190,9 @@ public class PlayerVm : INotifyPropertyChanged
         SongState = MediaState.Play;
     }
 
-    public void PlayNewQueue(Playlist queuePlay, int index = 0)
+    public void PlayNewQueue(DbContexts.Playlist queuePlay, int index = 0)
     {
-        if (Queue.ID == queuePlay.ID)
+        if (Queue.Id == queuePlay.Id)
         {
             SwitchSongState();
             return;

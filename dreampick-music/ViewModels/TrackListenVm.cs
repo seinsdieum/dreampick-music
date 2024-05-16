@@ -2,16 +2,16 @@
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms.VisualStyles;
-using dreampick_music.DB;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 
 namespace dreampick_music;
 
 public class TrackListenVm : INotifyPropertyChanged
 {
-    
+
     private NotifyTaskCompletion<bool> _likeIsSet;
-    private Track _track;
+    private DbContexts.Track _track;
 
     private bool isPlaying;
 
@@ -25,7 +25,7 @@ public class TrackListenVm : INotifyPropertyChanged
         }
     }
 
-    public Track Track
+    public DbContexts.Track Track
     {
         get => _track;
         set
@@ -48,8 +48,14 @@ public class TrackListenVm : INotifyPropertyChanged
 
     private async Task<bool> SetTrackLike(bool actual)
     {
-        var a = await TrackDAO.Instance.RelateAsync(AccountVm.Instance.AccountPerson.Result.ID, Track.ID);
 
+        var trackRepository = new TrackRepository();
+
+        Task a;
+        a = !actual ? trackRepository.AddLike(Track.Id, AccountVm.Instance.AccountPerson.Id) : trackRepository.RemoveLike(Track.Id, AccountVm.Instance.AccountPerson.Id);
+        await a;
+        
+        if (a.IsFaulted) return actual;
         return !actual;
     }
 
@@ -58,14 +64,18 @@ public class TrackListenVm : INotifyPropertyChanged
         if ( args.PropertyName != nameof(PlayerVm.Instance.CurrentTrack) )
             return;
         
-        IsPlaying = PlayerVm.Instance.CurrentTrack.ID == Track.ID;
+        IsPlaying = PlayerVm.Instance.CurrentTrack.Id == Track.Id;
     }
 
     private void LoadTrackInfo()
     {
-        isPlaying = PlayerVm.Instance.CurrentTrack.ID == Track.ID;
+        
+        var trackRepository = new TrackRepository();
+
+        
+        isPlaying = PlayerVm.Instance.CurrentTrack.Id == Track.Id;
         PlayerVm.Instance.PropertyChanged += OnTrackChange;
-        LikeIsSet = new NotifyTaskCompletion<bool>(TrackDAO.Instance.IsRelatedAsync(AccountVm.Instance.AccountPerson.Result.ID, Track.ID));
+        LikeIsSet = new NotifyTaskCompletion<bool>(trackRepository.GetIsLiked(Track.Id, AccountVm.Instance.AccountPerson.Id));
     }
 
     ~TrackListenVm()

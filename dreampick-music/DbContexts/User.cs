@@ -6,27 +6,28 @@ namespace dreampick_music.DbContexts;
 
 public class User
 {
-    [Required]
 
     public string Id { get; set; }
-    [Required]
 
     public string Username { get; set; }
     
-    [Required]
 
     public string Email { get; set; }
-    public byte[] Image { get; set; }
+    public byte[]? Image { get; set; }
     
-    [Required]
 
     public DateTime CreatedOn { get; set; }
-    
-    public List<User> Follows { get; set; }
-    public List<Post> Posts { get; set; }
-    
-    public List<User> Subscribers { get; set; }
-    
-    public List<Playlist> Playlists { get; set; }
+
+    public List<User> Follows { get; set; } = new List<User>();
+    public List<Post> Posts { get; set; } = new List<Post>();
+    public List<Post> LikedPosts { get; set; } = new List<Post>();
+
+    public List<User> Subscribers { get; set; } = new List<User>();
+
+    public List<Playlist> Playlists { get; set; } = new List<Playlist>();
+    public List<Track> Tracks { get; set; } = new List<Track>();
+
+    public List<Playlist> OwnedPlaylists { get; set; } = new List<Playlist>();
+    public bool IsArtist { get; set; }
     
 }

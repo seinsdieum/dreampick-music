@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using dreampick_music.DB;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 
 namespace dreampick_music;
 
 public class TrackCollectionVm : INotifyPropertyChanged
 {
+
+    
     public ButtonCommand BackCommand => new ButtonCommand((o =>
     {
         NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
@@ -82,15 +86,20 @@ public class TrackCollectionVm : INotifyPropertyChanged
 
     private async Task<ObservableCollection<TrackListenVm>> LoadTracks()
     {
+
+        var repo = new TrackRepository();
         var trackss = new ObservableCollection<TrackListenVm>();
-        var simpleTracks = new ObservableCollection<Track>();
+        var simpleTracks = new List<Track>();
         switch (_collectionType)
         {
             case TrackCollectionType.Queue:
                 simpleTracks = PlayerVm.Instance.Queue.Tracks;
                 break;
-            case TrackCollectionType.LikedTracks:
-                simpleTracks = await TrackDAO.Instance.RelatedCollectionAsync(AccountVm.Instance.AccountPerson.Result.ID);
+            case TrackCollectionType.Liked:
+                simpleTracks = (await repo.GetByUserId(AccountVm.Instance.AccountPerson.Id)).ToList();
+                break;
+            case TrackCollectionType.Recommended:
+                simpleTracks = (await UserTrackRecommends.GetRecommendedTrackCollection(AccountVm.Instance.AccountPerson.Id, 10, 3)).ToList();
                 break;
             case TrackCollectionType.NoType:
                 break;

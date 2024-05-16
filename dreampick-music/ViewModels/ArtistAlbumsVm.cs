@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Navigation;
-using dreampick_music.DB;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using dreampick_music.Views;
 
@@ -10,50 +12,35 @@ namespace dreampick_music;
 
 public class ArtistAlbumsVm : INotifyPropertyChanged
 {
-    
-    private string artistId;
-    public string ArtistId
-    {
-        set
-        {
-            artistId = value;
-            LoadArtistAlbumRelations();
-        }
-    }
 
-    private NotifyTaskCompletion<List<string>> idList;
 
-    public NotifyTaskCompletion<List<string>> IdList
-    {
-        get => idList;
-        set
-        {
-            idList = value;
-            LoadAlbums();
-        }
-    }
-    
+    private List<DbContexts.Playlist> albums;
 
-    private NotifyTaskCompletion<ObservableCollection<Playlist>> albums;
-
-    public NotifyTaskCompletion<ObservableCollection<Playlist>> Albums
+    public List<DbContexts.Playlist> Albums
     {
         get => albums;
         set
         {
-            albums = value; OnPropertyChanged(nameof(Albums));
+            albums = value;
+            OnPropertyChanged(nameof(Albums));
         }
     }
 
-
-    private void LoadArtistAlbumRelations()
+    private async void LoadAlbums()
     {
-        IdList = new NotifyTaskCompletion<List<string>>(PlaylistDAO.Instance.ArtistRelationsAsync(artistId));
-    }
 
-    private void LoadAlbums()
-    {
-        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlaylistDAO.Instance.InfoCollectionAsync(idList.Result));
+        var repository = new PlaylistRepository();
+        
+        var a = repository.GetAllByArtist(AccountVm.Instance.AccountPerson.Id);
+        await a;
+
+        if (a.IsFaulted)
+        {
+            return;
+        }
+
+
+        Albums = a.Result.ToList();
     }
 
     public ButtonCommand NavigateAlbumCommand => new ButtonCommand(param =>
@@ -64,18 +51,20 @@ public class ArtistAlbumsVm : INotifyPropertyChanged
             service.Navigate(new EditAlbumPage(id));
         }
     });
+
     public ButtonCommand NavigateAlbumCreationCommand => new ButtonCommand(param =>
     {
-        NavigationVm.Instance.Navigate(new PublishAudio());;
+        NavigationVm.Instance.Navigate(new PublishAudio());
+        ;
     });
 
-    public ButtonCommand RefreshCommand => new ButtonCommand(o =>
+    public ButtonCommand RefreshCommand => new ButtonCommand(o => { LoadAlbums(); });
+
+    public ArtistAlbumsVm()
     {
         LoadAlbums();
-    });
-    
-    
-    
+    }
+
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
     public void OnPropertyChanged(string prop)

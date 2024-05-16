@@ -1,14 +1,18 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
-using dreampick_music.DB;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 
 namespace dreampick_music;
 
 public class UserCollectionVm : INotifyPropertyChanged
 {
+
     private UserCollectionType _collectionType = UserCollectionType.NoType;
 
     public UserCollectionType CollectionType
@@ -35,9 +39,9 @@ public class UserCollectionVm : INotifyPropertyChanged
         }
     }
 
-    private NotifyTaskCompletion<ObservableCollection<Models.Person>> collection;
+    private NotifyTaskCompletion<IEnumerable<User>> collection;
 
-    public NotifyTaskCompletion<ObservableCollection<Models.Person>> Collection
+    public NotifyTaskCompletion<IEnumerable<User>> Collection
     {
         get
         {
@@ -69,12 +73,15 @@ public class UserCollectionVm : INotifyPropertyChanged
     private void LoadCollection()
     {
 
-        Collection = new NotifyTaskCompletion<ObservableCollection<Models.Person>>(_collectionType switch
+        var userRepository = new UserRepository();
+        var postRepository = new PostRepository();
+        
+        Collection = new NotifyTaskCompletion<IEnumerable<User>>(_collectionType switch
         {
-            UserCollectionType.Subscribers => UserDAO.Instance.SubscribersAsync(referenceId),
-            UserCollectionType.Subscriptions => UserDAO.Instance.SubscriptionsAsync(referenceId),
-            UserCollectionType.PostLikes => PostDAO.Instance.RelationsAsync(referenceId),
-            _ => new Task<ObservableCollection<Models.Person>>(() => new ObservableCollection<Models.Person>()),
+            UserCollectionType.Subscribers => userRepository.GetSubscribers(referenceId),
+            UserCollectionType.Subscriptions => userRepository.GetFollowers(referenceId),
+            UserCollectionType.PostLikes => postRepository.GetLikes(referenceId),
+            _ => new Task<IEnumerable<User>>(() => new List<User>()),
         });
     }
     

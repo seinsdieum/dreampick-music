@@ -1,12 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Navigation;
-using System.Windows.Threading;
-using dreampick_music.DB;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using dreampick_music.Views;
 
@@ -15,6 +12,7 @@ namespace dreampick_music;
 public class FeedVm : INotifyPropertyChanged
 {
     private bool postsLoaded = false;
+
 
     private NotifyTaskCompletion<ObservableCollection<PostVm>> posts;
     
@@ -47,7 +45,8 @@ public class FeedVm : INotifyPropertyChanged
 
     private async Task<ObservableCollection<PostVm>> LoadPostList()
     {
-        var postsAsync = await PostDAO.Instance.CollectionAsync();
+        var postRepository = new PostRepository();
+        var postsAsync = await postRepository.GetAll();
 
         return new ObservableCollection<PostVm>(
             postsAsync.Select(p => new PostVm() { Post = p} )

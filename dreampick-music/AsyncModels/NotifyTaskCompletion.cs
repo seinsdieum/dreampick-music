@@ -25,7 +25,7 @@ public sealed class NotifyTaskCompletion<TResult> : INotifyPropertyChanged
         }
         catch (Exception e)
         {
-            MessageBox.Show($"{e.Message}");
+            MessageBox.Show($"{e.Message} {e.StackTrace}");
         }
 
         var propertyChanged = PropertyChanged;

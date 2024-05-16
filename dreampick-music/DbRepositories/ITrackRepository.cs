@@ -10,6 +10,11 @@ public interface ITrackRepository : IRepositoryAsync<Track>
 
     Task<bool> GetIsLiked(string id, string userId);
     
-    Task AddLike(string id, User user);
+    Task AddLike(string trackId, string userId);
+    Task RemoveLike(string trackId, string userId);
+
+    Task<ICollection<Track>> GetByUserId(string userId);
+    
+    Task<DbContexts.Track> GetRandomByUserId(string userId);
 
 }

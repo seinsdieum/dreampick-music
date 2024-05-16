@@ -1,58 +1,51 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Mime;
 using System.Security;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
+using dreampick_music.ValidationRules;
 
 namespace dreampick_music;
 
-public class AuthenticationContext : INotifyPropertyChanged
+public class AuthenticationContext : INotifyPropertyChanged, INotifyDataErrorInfo
 {
+    private readonly Dictionary<string, List<string>> _loginErrors = new();
+    private readonly Dictionary<string, List<string>> _regErrors = new();
+
+    private bool validationLoading = false;
+
+    public bool ValidationLoading
+    {
+        get => validationLoading;
+        set
+        {
+            validationLoading = value;
+            OnPropertyChanged(nameof(ValidationLoading));
+        }
+    }
+
+    public List<string> RegErrors => _regErrors.SelectMany(item => item.Value).ToList();
+    public List<string> LoginErrors  => _loginErrors.SelectMany(item => item.Value).ToList();
+
     private string loginUsername;
     private string loginPassword;
     private bool passwordVisible = false;
+
 
     private string regEmail = "";
     private string regName = "";
     private string regPassword = "";
     private bool regPasswordVisible = false;
 
-    private ObservableCollection<string> validationErrors => new ObservableCollection<string>()
-    {
-        "Username must have at least 4 letters",
-        "Username should have only 1-9, a-Z or (. _) symbols",
-        "Invalid email",
-        "Invalid email",
-    };
-
-    private ObservableCollection<string> regValidationErrors = new ObservableCollection<string>();
-
-    private ObservableCollection<string> loginValidationErrors = new ObservableCollection<string>();
-    public ObservableCollection<string> LoginValidationErrors
-    {
-        get => loginValidationErrors;
-        set
-        {
-            loginValidationErrors = value;
-            OnPropertyChanged(nameof(LoginValidationErrors));
-        }
-    }
-    
-    public ObservableCollection<string> RegValidationErrors
-    {
-        get => regValidationErrors;
-        set
-        {
-            regValidationErrors = value;
-            OnPropertyChanged(nameof(RegValidationErrors));
-        }
-    }
-    
-    
 
     public bool PasswordVisible
     {
@@ -74,6 +67,8 @@ public class AuthenticationContext : INotifyPropertyChanged
         {
             loginUsername = value;
             OnPropertyChanged(nameof(LoginUsername));
+            ValidateLoginForm();
+
         }
     }
 
@@ -85,15 +80,54 @@ public class AuthenticationContext : INotifyPropertyChanged
         {
             loginPassword = value;
             OnPropertyChanged(nameof(LoginPassword));
+            ValidateLoginForm();
         }
     }
 
-    public ButtonCommand SetPasswordVisible => new ButtonCommand(o =>
+    public ButtonCommand SetPasswordVisible => new ButtonCommand(o => { PasswordVisible = !PasswordVisible; });
+
+
+    private void ValidateNameToRegister()
     {
-        PasswordVisible = !PasswordVisible;
-    });
+        var regex = new Regex("^[a-zA-Z_](?!.*?\\.{2})[\\w.]{1,28}[\\w]$");
 
+        if (string.IsNullOrEmpty(RegName)) AddRegisterError(nameof(RegName), "name empty");
+        else if (!regex.IsMatch(RegName)) AddRegisterError(nameof(RegName), "name not valid");
+    }
 
+    private void ValidateLoginName()
+    {
+        ClearLoginErrors(nameof(LoginUsername));
+        if(string.IsNullOrEmpty(loginUsername)) AddLoginError(nameof(LoginUsername), "username empty");
+    }
+
+    private void ValidateLoginPassword()
+    {
+        ClearLoginErrors(nameof(LoginPassword));
+        if(string.IsNullOrEmpty(loginPassword)) AddLoginError(nameof(LoginPassword), "password empty");
+    }
+
+    private void ValidateLoginForm()
+    {
+        logErrorsChecked = true;
+        
+        ValidateLoginName();
+        ValidateLoginPassword();
+        OnPropertyChanged(nameof(LoginErrors));
+    }
+
+    private void ValidateRegForm()
+    {
+        ClearRegisterErrors(nameof(RegName));
+        
+
+        regErrorsChecked = true;
+        ValidateNameToRegister();
+        ValidateEmail();
+        ValidatePassword();
+        
+        OnPropertyChanged(nameof(RegErrors));
+    }
 
     public string RegName
     {
@@ -102,8 +136,44 @@ public class AuthenticationContext : INotifyPropertyChanged
         {
             regName = value;
             OnPropertyChanged(nameof(RegName));
+            ValidateRegForm();
         }
     }
+
+    private void ValidateEmail()
+    {
+        var regex = new Regex("^\\S+@\\S+\\.\\S+$");
+        
+        ClearRegisterErrors(nameof(RegEmail));
+        
+        if(string.IsNullOrEmpty(RegEmail)) AddRegisterError(nameof(RegEmail), "email empty");
+        if(!regex.IsMatch(RegEmail)) AddRegisterError(nameof(RegEmail), "email not valid");
+        
+    }
+
+    private void ValidatePassword()
+    {
+        
+        ClearRegisterErrors(nameof(RegPassword));
+
+        
+        var regex = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,16}$");
+        if(!regex.IsMatch(RegPassword)) AddRegisterError(nameof(RegPassword), 
+            "password must contain at least 8 characters, one digit, one big latin letter and small latin letter");
+    }
+
+    private void ValidateExistingUsername()
+    {
+        var repo = new AccountRepository();
+        var a =  repo.Exists(RegName);
+
+        a.Wait();
+        
+        if(a.Result) AddRegisterError(nameof(RegName), "Username Existing Already");
+
+    }
+    
+
     public string RegEmail
     {
         get => regEmail;
@@ -111,6 +181,7 @@ public class AuthenticationContext : INotifyPropertyChanged
         {
             regEmail = value;
             OnPropertyChanged(nameof(RegEmail));
+            ValidateRegForm();
         }
     }
 
@@ -121,99 +192,65 @@ public class AuthenticationContext : INotifyPropertyChanged
         {
             regPassword = value;
             OnPropertyChanged(nameof(RegPassword));
+            ValidateRegForm();
         }
     }
 
     //TODO localized errors
-    private Func<(bool, string)> RegUsernameCheck => () =>
+    private async Task<(bool, string)> RegUsernameCheck()
     {
+        var accountRepository = new AccountRepository();
+
         var regex = new Regex("^[a-zA-Z_](?!.*?\\.{2})[\\w.]{1,28}[\\w]$");
         if (!(RegName.Length > 3 && regex.IsMatch(RegName))) return (false, "Username not valid");
+
+        var a = await accountRepository.Exists(RegName);
+
+        return a ? (false, "Username is existing already") : (true, "");
+    }
+
+    private async Task CheckRegister()
+    {
+
         
-        return AccountDAO.Instance.NameExistingAsync(RegName) ? (false, "Username is existing already") : (true, "");
-    };
+        var nameCheck = await RegUsernameCheck();
+        var isCheck = nameCheck.Item1;
 
-    private Func<(bool, string)> RegEmailCheck => () =>
-    {
-        var regex = new Regex("^\\S+@\\S+\\.\\S+$");
-        return (regex.IsMatch(RegEmail), "User email not valid");
-    };
-
-    private Func<(bool, string)> RegPasswordCheck => () =>
-    {
-        var regex = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,16}$");
-        return (regex.IsMatch(RegPassword), "Password:  min8, 1 letter u, 1 letter U, 1 number");
-    };
-
-    public AccountVm Account => AccountVm.Instance;
-
-    private bool ValidateRegister()
-    {
-        var checkList = new List<Func<(bool, string)>>()
+        if (!isCheck)
         {
-            RegEmailCheck,
-            RegPasswordCheck,
-            RegUsernameCheck,
-        };
-
-        var isCheck = true;
-
-        var errorList = new List<string>();
-
-        foreach (var check in checkList)
-        {
-            var c = check.Invoke();
-            if(!c.Item1) errorList.Add(c.Item2);
-            isCheck = isCheck && c.Item1;
+            AddRegisterError(nameof(RegName), "name existing already");
+            OnPropertyChanged(nameof(RegErrors));
+            return;
         }
 
-        RegValidationErrors = new ObservableCollection<string>(errorList);
-        
-        if (!isCheck) return false;
-
-        return isCheck;
-        //  DATABASE TRANSACTION CODE
-    }
-
-    private void RefreshForms()
-    {
-        PasswordVisible = false;
-    }
-
-    public ButtonCommand TryRegister => new ButtonCommand(o =>
-    {
-        if (ValidateRegister())
+        Account.TryRegister(new AccountModel()
         {
-            Account.TryRegister(new AccountModel()
-            {
-                Email = RegEmail,
-                ID = Utils.GenerateRandomString(30),
-                Name = RegName,
-                Password = RegPassword
-            });
-        };
-    });
+            Email = RegEmail,
+            ID = Utils.GenerateRandomString(30),
+            Name = RegName,
+            Password = RegPassword
+        });
+    }
+
+    public AccountVm Account => AccountVm.Instance;
+    
+
+    public ButtonCommand TryRegister => 
+        new ButtonCommand(o =>
+        {
+            CheckRegister(); 
+        }, o
+            => regErrorsChecked && !ValidationLoading && !_regErrors.Any());
 
     public ButtonCommand TryLogin => new ButtonCommand(o =>
     {
-        if (ValidateLogin())
-        {
-            Account.TryAuthenticate(LoginUsername, LoginPassword, true);
-        }
-    });
-
-    private bool ValidateLogin()
-    {
-        return !string.IsNullOrEmpty(LoginPassword) && !string.IsNullOrEmpty(LoginUsername);
-    }
+        Account.TryAuthenticate(LoginUsername, LoginPassword, true);
+    }, o => logErrorsChecked && !_loginErrors.Any() );
     
 
 
-    public ButtonCommand CloseApplication => new ButtonCommand(o =>
-    {
-        App.Current.Shutdown();
-    });
-    
+    public ButtonCommand CloseApplication => new ButtonCommand(o => { App.Current.Shutdown(); });
+
 
     #region NotifyPropertyChange Members
 
@@ -225,4 +262,67 @@ public class AuthenticationContext : INotifyPropertyChanged
     }
 
     #endregion
+
+    public IEnumerable GetErrors(string propertyName)
+    {
+        return _loginErrors.ContainsKey(propertyName) ? _loginErrors[propertyName] : null;
+    }
+
+
+    private void OnErrorsChanged(string propertyName)
+    {
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+    }
+
+    private void AddLoginError(string propertyName, string error)
+    {
+        
+        
+        if (!_loginErrors.ContainsKey(propertyName))
+            _loginErrors[propertyName] = new List<string>();
+
+        if (!_loginErrors[propertyName].Contains(error))
+        {
+            _loginErrors[propertyName].Add(error);
+            OnErrorsChanged(propertyName);
+        }
+    }
+
+    private void ClearLoginErrors(string propertyName)
+    {
+        if (_loginErrors.ContainsKey(propertyName))
+        {
+            _loginErrors.Remove(propertyName);
+            OnErrorsChanged(propertyName);
+        }
+    }
+
+
+    private void AddRegisterError(string propertyName, string error)
+    {
+        if (!_regErrors.ContainsKey(propertyName))
+            _regErrors[propertyName] = new List<string>();
+
+        if (!_regErrors[propertyName].Contains(error))
+        {
+            _regErrors[propertyName].Add(error);
+            OnErrorsChanged(propertyName);
+        }
+    }
+
+    private void ClearRegisterErrors(string propertyName)
+    {
+        if (_regErrors.ContainsKey(propertyName))
+        {
+            _regErrors.Remove(propertyName);
+            OnErrorsChanged(propertyName);
+        }
+    }
+
+    private bool logErrorsChecked = false;
+    private bool regErrorsChecked = false;
+
+    public bool HasErrors => _loginErrors.Any() || _regErrors.Any();
+
+    public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
 }

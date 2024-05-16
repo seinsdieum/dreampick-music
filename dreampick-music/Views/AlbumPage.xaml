@@ -71,9 +71,9 @@
                         <StackPanel>
                             <DockPanel>
                                 <Label Style="{DynamicResource H2}" Content="{Binding Album.Result.Name}"></Label>
-                                <Label Style="{DynamicResource H2}" Content="{Binding Album.Result.ReleaseDate.Year}"></Label>
+                                <Label Style="{DynamicResource H2}" Content="{Binding Album.Result.CreatedOn.Year}"></Label>
                             </DockPanel>
-                            <TextBlock Margin="5,0,0,5"  Style="{DynamicResource LinkedP}" Foreground="{DynamicResource DarkenForeBrush}" Text="{Binding Album.Result.Author.Name}"></TextBlock>
+                            <TextBlock Margin="5,0,0,5"  Style="{DynamicResource LinkedP}" Foreground="{DynamicResource DarkenForeBrush}" Text="{Binding Album.Result.User.Username}"></TextBlock>
                             <DockPanel Margin="5,0,0,0">
                                 <TextBlock Foreground="{DynamicResource DarkenForeBrush}" Margin="0,0,5,0" Style="{DynamicResource P}" Text="{Binding RelationsCount.Result}"></TextBlock>
                                 <TextBlock Foreground="{DynamicResource DarkenForeBrush}" Style="{DynamicResource P}" >listeners</TextBlock>
@@ -152,7 +152,7 @@
                                         <Grid Cursor="Hand">
                                             <b:Interaction.Triggers>
                                                 <b:EventTrigger EventName="MouseDown">
-                                                    <b:InvokeCommandAction CommandParameter="{Binding Track.ID }"
+                                                    <b:InvokeCommandAction CommandParameter="{Binding Track.Id }"
                                                                            Command="{Binding PlayAlbumCommand,  ElementName=VmContext}">
                                                     </b:InvokeCommandAction>
                                                 </b:EventTrigger>
@@ -166,7 +166,7 @@
                                             </Border>
 
 
-                                            <Image Source="{Binding Track.Album.Image}" Width="{DynamicResource Icon}"
+                                            <Image Source="{Binding Album.Result.Image, ElementName=VmContext}" Width="{DynamicResource Icon}"
                                                    Height="{DynamicResource Icon}">
                                                 <Image.OpacityMask>
                                                     <VisualBrush>
@@ -198,7 +198,7 @@
                                             <Label Content="{Binding Track.Name}"></Label>
                                             <TextBlock Margin="5,0,0,0" Foreground="{DynamicResource DarkenForeBrush}"
                                                        Style="{DynamicResource LinkedP}"
-                                                       Text="{Binding Track.Album.Author.Name}">
+                                                       Text="{Binding Album.Result.User.Username, ElementName=VmContext}">
                                             </TextBlock>
                                         </StackPanel>
                                     </DockPanel>

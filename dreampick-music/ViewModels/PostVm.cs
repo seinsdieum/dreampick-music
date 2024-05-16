@@ -1,8 +1,11 @@
 ﻿using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
-using dreampick_music.DB;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace dreampick_music;
 
@@ -11,11 +14,11 @@ public class PostVm : INotifyPropertyChanged
 
     private NotifyTaskCompletion<bool> _likeIsSet;
 
-    private Post _post;
+    private DbContexts.Post _post;
 
     public bool HasPlaylist
     {
-        get => Post.PostPlaylist is Playlist;
+        get => Post.Playlist is DbContexts.Playlist;
     }
     
     public NotifyTaskCompletion<bool> LikeIsSet
@@ -28,7 +31,7 @@ public class PostVm : INotifyPropertyChanged
         }
     }
 
-    public Post Post
+    public DbContexts.Post Post
     {
         get => _post;
         set
@@ -41,20 +44,20 @@ public class PostVm : INotifyPropertyChanged
 
     private async Task<bool> SetLikeAsync(bool prevState)
     {
-        var a = await PostDAO.Instance.RelateAsync(AccountVm.Instance.AccountPerson.Result.ID, Post.ID);
+        var postRepository = new PostRepository();
 
-        if (!a) return false;
+        var a = false;
 
         if (prevState)
         {
-            Post.Likes--;
-            OnPropertyChanged(nameof(Post));
+           a = await postRepository.RemoveLike(Post.Id, AccountVm.Instance.AccountPerson.Id);
         }
         else
         {
-            Post.Likes++;
-            OnPropertyChanged(nameof(Post));
+          a = await postRepository.AddLike(Post.Id, AccountVm.Instance.AccountPerson.Id);
         }
+
+        if (!a) return prevState;
 
         return !prevState;
 
@@ -71,8 +74,8 @@ public class PostVm : INotifyPropertyChanged
 
     private void LoadPostInfo()
     {
-        LikeIsSet = new NotifyTaskCompletion<bool>(
-            PostDAO.Instance.IsRelatedAsync(AccountVm.Instance.AccountPerson.Result.ID, Post.ID));
+        var postRepository = new PostRepository();
+        LikeIsSet = new NotifyTaskCompletion<bool>(postRepository.GetIsLiked(Post.Id, AccountVm.Instance.AccountPerson.Id));
         OnPropertyChanged(nameof(HasPlaylist));
     }
 

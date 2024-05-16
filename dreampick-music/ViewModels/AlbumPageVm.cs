@@ -3,14 +3,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
-using dreampick_music.DB;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 
 namespace dreampick_music;
 
 public class AlbumPageVm : INotifyPropertyChanged
 {
-    
+
     #region VmContext
     
     
@@ -29,11 +29,12 @@ public class AlbumPageVm : INotifyPropertyChanged
 
     #endregion
 
-    
+
+    private PlaylistRepository playlistRepo = new PlaylistRepository();
 
     private string albumid;
     private NotifyTaskCompletion<ObservableCollection<TrackListenVm>> tracks;
-    private NotifyTaskCompletion<Playlist> album;
+    private NotifyTaskCompletion<DbContexts.Playlist> album;
     private NotifyTaskCompletion<bool> isSubscribed;
     private NotifyTaskCompletion<int> relationsCount;
 
@@ -82,7 +83,7 @@ public class AlbumPageVm : INotifyPropertyChanged
     }
 
 
-    public NotifyTaskCompletion<Playlist> Album
+    public NotifyTaskCompletion<DbContexts.Playlist> Album
     {
         get => album;
         set
@@ -94,11 +95,11 @@ public class AlbumPageVm : INotifyPropertyChanged
 
     private async Task<ObservableCollection<TrackListenVm>> GetTracks()
     {
-        IsSubscribed = new NotifyTaskCompletion<bool>(PlaylistDAO.Instance.IsRelatedAsync(AccountVm.Instance.AccountPerson.Result.ID,
-            albumid));
+        IsSubscribed = new NotifyTaskCompletion<bool>(playlistRepo.GetIsLiked(albumid, AccountVm.Instance.AccountPerson.Id));
 
-        RelationsCount = new NotifyTaskCompletion<int>(PlaylistDAO.Instance.RelationsCountAsync(albumid));
-        Album = new NotifyTaskCompletion<Playlist>(PlaylistDAO.Instance.GetAsync(albumid));
+        // TODO
+        RelationsCount = new NotifyTaskCompletion<int>(playlistRepo.GetLikesCount(albumid));
+        Album = new NotifyTaskCompletion<DbContexts.Playlist>(playlistRepo.GetById(albumid));
 
         var res = await Album.Task;
         
@@ -114,9 +115,16 @@ public class AlbumPageVm : INotifyPropertyChanged
 
     private async Task<bool> SwitchUserRelation(bool isSubbed)
     {
-        if (Album.Result is null || AccountVm.Instance.AccountPerson is null) return false;
+        var repo = new PlaylistRepository();
 
-        await PlaylistDAO.Instance.RelateAsync(AccountVm.Instance.AccountPerson.Result.ID, Album.Result.ID);
+        Task a;
+
+        a = isSubbed ? repo.RemoveLike(albumid, AccountVm.Instance.AccountPerson.Id) : repo.AddLike(albumid, AccountVm.Instance.AccountPerson.Id);
+
+        await a;
+
+        if (a.IsFaulted) return isSubbed;
+        
         return !isSubbed;
     }
     

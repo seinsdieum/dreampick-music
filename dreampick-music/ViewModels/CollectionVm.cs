@@ -1,7 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Navigation;
-using dreampick_music.DB;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using dreampick_music.Views;
 
@@ -10,9 +14,10 @@ namespace dreampick_music;
 public class CollectionVm : INotifyPropertyChanged
 {
 
-    private NotifyTaskCompletion<ObservableCollection<Playlist>> albums;
 
-    public NotifyTaskCompletion<ObservableCollection<Playlist>> Albums
+    private List<DbContexts.Playlist> albums;
+
+    public List<DbContexts.Playlist> Albums
     {
         get => albums;
         set
@@ -39,7 +44,12 @@ public class CollectionVm : INotifyPropertyChanged
 
     public ButtonCommand NavigateLikedTracksCommand => new ButtonCommand(o =>
     {
-        NavigationVm.Instance.Navigate(new TrackCollectionPage(TrackCollectionType.LikedTracks, ""));
+        NavigationVm.Instance.Navigate(new TrackCollectionPage(TrackCollectionType.Liked, ""));
+    });
+    
+    public ButtonCommand NavigateRecommendedTracksCommand => new ButtonCommand(o =>
+    {
+        NavigationVm.Instance.Navigate(new TrackCollectionPage(TrackCollectionType.Recommended, ""));
     });
     
     public ButtonCommand NavigateLikedPlaylistsCommand => new ButtonCommand(o =>
@@ -53,9 +63,12 @@ public class CollectionVm : INotifyPropertyChanged
     });
     
 
-    private void RefreshContent()
+    private async Task RefreshContent()
     {
-        Albums = new NotifyTaskCompletion<ObservableCollection<Playlist>>(PlaylistDAO.Instance.LastCollectionAsync());
+        var playlistRepository = new PlaylistRepository();
+        
+        var a = await playlistRepository.GetSome(5);
+        Albums = a.ToList();
     }
 
 

@@ -27,7 +27,8 @@ public class NavigationVm : INotifyPropertyChanged
 
     public void ClearNavigateBack(Action clearContentAction)
     {
-        if (navigation.CanGoBack)
+        
+        if (navigation is not null && navigation.CanGoBack)
         {
             clearContentAction.Invoke();
             navigation.Content = "";

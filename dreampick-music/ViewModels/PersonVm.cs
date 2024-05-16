@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using dreampick_music.DB;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using dreampick_music.Views;
 using Application = System.Windows.Forms.Application;
@@ -16,8 +17,9 @@ namespace dreampick_music;
 public class PersonVm : INotifyPropertyChanged
 {
 
+
     private string userId = "";
-    private NotifyTaskCompletion<Models.Person> user;
+    private NotifyTaskCompletion<User> user;
     private NotifyTaskCompletion<bool> isSubscribed;
     private NotifyTaskCompletion<int> subscribersCount;
     private NotifyTaskCompletion<int> subscriptionsCount;
@@ -94,7 +96,7 @@ public class PersonVm : INotifyPropertyChanged
 
 
 
-    public NotifyTaskCompletion<Models.Person> User
+    public NotifyTaskCompletion<User> User
     {
         get
         {
@@ -162,7 +164,9 @@ public class PersonVm : INotifyPropertyChanged
 
     private async Task<ObservableCollection<PostVm>> LoadPostList()
     {
-        var postsAsync = await PostDAO.Instance.UserCollectionAsync(userId);
+
+        var userRepository = new UserRepository();
+        var postsAsync = await userRepository.GetUserPosts(userId);
 
         return new ObservableCollection<PostVm>(
             postsAsync.Select(p => new PostVm() { Post = p} )
@@ -172,13 +176,16 @@ public class PersonVm : INotifyPropertyChanged
 
     private void LoadUserAsync()
     {
-        User = new NotifyTaskCompletion<Models.Person>(UserDAO.Instance.GetAsync(userId));
+        
+        var userRepository = new UserRepository();
+
+        
+        User = new NotifyTaskCompletion<User>(userRepository.GetById(userId));
         UserPosts = new NotifyTaskCompletion<ObservableCollection<PostVm>>(LoadPostList());
-        SubscribersCount = new NotifyTaskCompletion<int>(UserDAO.Instance.SubscribersCountAsync(userId));
-        SubscriptionsCount = new NotifyTaskCompletion<int>(UserDAO.Instance.SubscriptionsCountAsync(userId));
+        SubscribersCount = new NotifyTaskCompletion<int>(userRepository.GetSubscribersCount(userId));
+        SubscriptionsCount = new NotifyTaskCompletion<int>(userRepository.GetFollowersCount(userId));
         IsSubscribed = 
-            new NotifyTaskCompletion<bool>(UserDAO.Instance.IsSubscribedAsync
-                    (AccountVm.Instance.AccountPerson.Result.ID, userId));
+            new NotifyTaskCompletion<bool>(userRepository.GetIsFollowed(userId, AccountVm.Instance.AccountPerson.Id));
     } 
     
     private void DestroyObjects()
@@ -193,7 +200,10 @@ public class PersonVm : INotifyPropertyChanged
     
     private async Task<bool> Subscribe(bool oldValue)
     {
-        var a = UserDAO.Instance.SubscribeAsync(AccountVm.Instance.AccountPerson.Result.ID, userId);
+        var userRepository = new UserRepository();
+
+        
+        var a = userRepository.Follow(userId, AccountVm.Instance.AccountPerson.Id);
         await a;
         if (a.IsCompletedSuccessfully) return !oldValue;
         

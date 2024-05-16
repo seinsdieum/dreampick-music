@@ -10,6 +10,7 @@ public interface IUserRepository : IRepositoryAsync<User>
 {
     Task<IEnumerable<DbContexts.Post>> GetUserPosts(string id);
     Task<IEnumerable<DbContexts.Playlist>> GetPlaylists(string id);
+    Task<IEnumerable<DbContexts.Playlist>> GetOwnedPlaylists(string id);
     Task<IEnumerable<DbContexts.User>> GetFollowers(string id);
     Task<IEnumerable<DbContexts.User>> GetSubscribers(string id);
     
@@ -19,5 +20,8 @@ public interface IUserRepository : IRepositoryAsync<User>
     Task<bool> GetIsFollowed(string userid, string accountId);
     
     Task Follow(string id1, string id);
+
+    Task<DbContexts.User> GetRandomByTrackId(string trackId);
+
 
 }

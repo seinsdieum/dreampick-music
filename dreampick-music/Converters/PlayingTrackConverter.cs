@@ -16,7 +16,7 @@ public class PlayingTrackConverter : IValueConverter
 
         try
         {
-            isPlaying = PlayerVm.Instance.CurrentTrack.ID == str && PlayerVm.Instance.SongState == MediaState.Play;
+            isPlaying = PlayerVm.Instance.CurrentTrack.Id == str && PlayerVm.Instance.SongState == MediaState.Play;
         }
         catch {}
         

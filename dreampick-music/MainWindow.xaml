@@ -155,30 +155,7 @@
                 </Grid.RowDefinitions>
                 <local:TitleBar></local:TitleBar>
 
-                <StackPanel
-                    VerticalAlignment="Center"
-                    Grid.Row="1"
-                    Visibility="{Binding Account.AccountPerson.IsCompleted, Converter={StaticResource StatementVisibilityConverterInversed}}"
-                    Style="{DynamicResource StackRoot}"
-                    >
-                    <Border
-                        Padding="{DynamicResource Padding}"
-                    >
-                        <DockPanel>
-                            <fa:FontAwesome 
-                                Icon="CircleOutlineNotch" 
-                                Foreground="{DynamicResource DarkenForeBrush}"
-                                Spin="True"
-                                FontSize="100"
-                                VerticalAlignment="Center"
-                            ></fa:FontAwesome>
-                        </DockPanel>
-                        
-                    </Border>
-                </StackPanel>
-
                 <Border
-                    Visibility="{Binding Account.AccountPerson.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}"
 
                     Grid.Row="1" Padding="{DynamicResource Padding}">
 
@@ -193,7 +170,7 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Margin="0,0,10,0" Grid.Row="0" Grid.Column="0">
-                            <ListView Style="{DynamicResource ChoiceView}" ItemsSource="{Binding Tabs.Result}">
+                            <ListView Style="{DynamicResource ChoiceView}" ItemsSource="{Binding Tabs}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
@@ -237,18 +214,6 @@
                                 </i:Interaction.Triggers>
                                 <Grid HorizontalAlignment="Center">
                                     <Border
-                                        Visibility="{Binding Account.AccountPerson.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}}"
-                                        Background="{DynamicResource ThirdBrush}"
-                                        CornerRadius="{DynamicResource Radius}">
-                                        <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
-                                                        FontSize="30" Icon="CircleOutlineNotch"
-                                                        VerticalAlignment="Center"
-                                                        Spin="True"
-                                                        HorizontalAlignment="Center">
-                                        </fa:FontAwesome>
-                                    </Border>
-                                    <Border
-                                        Visibility="{Binding Account.AccountPerson.IsCompleted, Converter={StaticResource StatementVisibilityConverter}}"
                                         Background="{DynamicResource ThirdBrush}"
                                         CornerRadius="{DynamicResource Radius}">
                                         <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}"
@@ -258,7 +223,7 @@
                                         </fa:FontAwesome>
                                     </Border>
                                     <Image HorizontalAlignment="Left" Width="45" Height="45"
-                                           Source="{Binding Account.AccountPerson.Result.Image}">
+                                           Source="{Binding Account.AccountPerson.Image}">
                                         <Image.OpacityMask>
                                             <VisualBrush>
                                                 <VisualBrush.Visual>
@@ -273,7 +238,7 @@
                                 <Label
                                     HorizontalAlignment="Center"
                                     Visibility="{Binding TabsCollapsed, Converter={StaticResource StatementVisibilityConverter}}"
-                                    Content="{Binding Account.AccountPerson.Result.Name}">
+                                    Content="{Binding Account.AccountPerson.Username}">
                                 </Label>
                             </StackPanel>
                         </Border>
@@ -310,13 +275,13 @@
 
                                                     <Image Height="{DynamicResource Icon}"
                                                            Width="{DynamicResource Icon}"
-                                                           Source="{Binding Player.CurrentTrack.Album.Image}" />
+                                                           Source="{Binding Player.CurrentTrack.Playlist.Image}" />
                                                 </Border>
                                                 <StackPanel>
                                                     <Label
                                                         Content="{Binding Player.CurrentTrack.Name}">
                                                     </Label>
-                                                    <Label Content="{Binding Player.CurrentTrack.Album.Author.Name}"></Label>
+                                                    <Label Content="{Binding Player.CurrentTrack.Playlist.User.Username}"></Label>
                                                 </StackPanel>
                                             </DockPanel>
 

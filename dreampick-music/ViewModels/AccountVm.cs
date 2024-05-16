@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using MessageBox = System.Windows.Forms.MessageBox;
+using Playlist = dreampick_music.DbContexts.Playlist;
+using Post = dreampick_music.DbContexts.Post;
+using User = dreampick_music.DbContexts.User;
 
 namespace dreampick_music;
 
@@ -15,23 +21,18 @@ public class AccountVm : INotifyPropertyChanged
     private int loginAttemtps { get; set; } = 0;
 
     private bool isAuthorized;
-
-
-    private NotifyTaskCompletion<Models.Person> accountPerson;
+    
+    private DbContexts.User accountPerson;
 
     private bool authenticationInProcess = false;
 
-
-    public bool IsArtist => accountPerson?.Result is Artist;
-
-    public NotifyTaskCompletion<Models.Person> AccountPerson
+    public DbContexts.User AccountPerson
     {
         get => accountPerson;
         set
         {
             accountPerson = value;
             OnPropertyChanged(nameof(AccountPerson));
-            AddArtistCheck();
         }
     }
 
@@ -58,212 +59,86 @@ public class AccountVm : INotifyPropertyChanged
 
     public bool IsAuthorizedWhenTried => (isAuthorized || loginAttemtps == 0);
 
-
-    public void TryAuthenticate(string name, string password, bool navigateToMain = false)
+    public async Task TryAuthenticate(string name, string password, bool navigateToMain = false)
     {
-        AuthenticationInProcess = true;
-        loginAttemtps += 1;
-
-        var auth = new NotifyTaskCompletion<bool>(
-            AccountDAO.Instance.VerifyAsync(name, Utils.HashPassword(password)));
-
-        var synchronizedComplete = false;
-
-        if (!synchronizedComplete && auth.IsCompleted)
+        var accountRepo = new AccountRepository();
+        try
         {
-            AuthenticationInProcess = false;
-            IsAuthorized = auth.Result;
-            if (isAuthorized)
-            {
-                AccountPerson = new NotifyTaskCompletion<Models.Person>(AccountDAO.Instance.GetAsync(name));
+            AuthenticationInProcess = true;
+            loginAttemtps += 1;
 
+
+            var a = await accountRepo.GetAuthenticatedUser(name, Utils.HashPassword(password));
+
+            if (a.Item1)
+            {
+                loginAttemtps = 0;
+                AccountPerson = a.Item2;
                 if (navigateToMain) WindowModel.SwitchToMainWindow();
             }
-            else
-            {
-                AccountPerson = null;
-            }
 
-            synchronizedComplete = true;
+            AuthenticationInProcess = false;
+            IsAuthorized = a.Item1;
         }
-
-        if (!synchronizedComplete)
-            auth.PropertyChanged += (_, _) =>
-            {
-                if (auth.IsCompleted)
-                {
-                    AuthenticationInProcess = false;
-                    IsAuthorized = auth.Result;
-                    if (isAuthorized)
-                    {
-                        loginAttemtps = 0;
-                        AccountPerson =
-                            new NotifyTaskCompletion<Models.Person>(AccountDAO.Instance.GetAsync(name));
-
-
-                        if (navigateToMain) WindowModel.SwitchToMainWindow();
-                    }
-                    else
-                    {
-                        AccountPerson = null;
-                    }
-
-                    auth = null;
-                }
-            };
-    }
-
-    public void TryRegister(AccountModel accountModel)
-    {
-        var normalPassword = accountModel.Password;
-        accountModel.Password = Utils.HashPassword(accountModel.Password);
-
-        var task = new NotifyTaskCompletion<bool>(AccountDAO.Instance.AddAsync(accountModel));
-
-        var synchronizedComplete = false;
-
-        if (!synchronizedComplete && task.IsCompleted)
+        catch (Exception e)
         {
-            if (task.Result)
-            {
-                TryAuthenticate(accountModel.Name, normalPassword, true);
-            }
-            else Console.WriteLine("hueta");
+            MessageBox.Show($"{e.Message} {e.StackTrace}");
         }
+    }
+    
+    public async Task TryRegister(AccountModel accountModel)
+    {
+        var accountRepo = new AccountRepository();
 
-        if (!synchronizedComplete)
-            task.PropertyChanged += (_, _) =>
-            {
-                if (task.IsCompleted)
-                {
-                    if (task.Result)
-                    {
-                        TryAuthenticate(accountModel.Name, normalPassword, true);
-                    }
-                    else Console.WriteLine("hueta");
-                }
-            };
+        var task = accountRepo.AddUserAccount(new User()
+        {
+            IsArtist = false,
+            CreatedOn = DateTime.Now,
+            Id = Utils.GenerateRandomString(10),
+            Username = accountModel.Name,
+            Email = accountModel.Email,
+        }, Utils.HashPassword(accountModel.Password));
+        
+        
+        await Task.WhenAll(task);
+        
+        
+        if (task.Result) await TryAuthenticate(accountModel.Name, accountModel.Password, true);
     }
 
-    public void TryChangeProperty(PersonPropertyChangeType type, object value, string normalPassword)
+    public async Task<bool> TryUpdate(string id, string hashedPassword, User account, string newHashedPassword = "")
     {
-        var nameValue = value is string str ? str : "";
-        if (type is PersonPropertyChangeType.Username && string.IsNullOrEmpty(nameValue)) return;
 
+
+        AuthenticationInProcess = true;
         loginAttemtps += 1;
+        
+        var db = new AccountRepository();
+        var userDb = new UserRepository();
+        
+        var a = await db.GetAuthentication(id, hashedPassword);
+        
+        AuthenticationInProcess = false;
+        IsAuthorized = a;
+        if (!a) return false;
 
-        var auth = new NotifyTaskCompletion<bool>(
-            AccountDAO.Instance.VerifyAsync(AccountPerson.Result.Name, Utils.HashPassword(normalPassword)));
-
-        var synchronizedComplete = false;
-
-
-        if (!synchronizedComplete && auth.IsCompleted)
+        loginAttemtps = 0;
+        if (!string.IsNullOrEmpty(newHashedPassword))
         {
-            IsAuthorized = auth.Result;
-            if (isAuthorized)
+            await db.Update(new Account()
             {
-                var task = new NotifyTaskCompletion<bool>(
-                    AccountDAO.Instance.ChangePropertyAsync(AccountPerson.Result.ID, type, value));
-                var synchonizedComplete = false;
-
-                if (!synchonizedComplete && task.IsCompleted)
-                {
-                    if (task.Result)
-                    {
-                        AccountPerson =
-                            new NotifyTaskCompletion<Models.Person>(
-                                AccountDAO.Instance.GetAsync(type == PersonPropertyChangeType.Username
-                                    ? nameValue
-                                    : AccountPerson.Result.Name));
-                    }
-                    else Console.WriteLine("hueta");
-                }
-
-                if (!synchonizedComplete)
-                    task.PropertyChanged += (sender, args) =>
-                    {
-                        if (task.IsCompleted)
-                        {
-                            if (task.Result)
-                            {
-                                AccountPerson =
-                                    new NotifyTaskCompletion<Models.Person>(
-                                        AccountDAO.Instance.GetAsync(AccountPerson.Result.Name));
-                            }
-                        }
-                    };
-            }
-
-            synchronizedComplete = true;
+                disabled = false,
+                HashedPassword = newHashedPassword,
+                Id = account.Id
+            });
         }
 
-        if (!synchronizedComplete)
-            auth.PropertyChanged += (_, _) =>
-            {
-                if (auth.IsCompleted)
-                {
-                    IsAuthorized = auth.Result;
-                    if (isAuthorized)
-                    {
-                        var task = new NotifyTaskCompletion<bool>(
-                            AccountDAO.Instance.ChangePropertyAsync(AccountPerson.Result.ID, type, value));
-                        var synchonizedComplete = false;
+        await userDb.Update(account);
 
-                        if (!synchonizedComplete && task.IsCompleted)
-                        {
-                            if (task.Result)
-                            {
-                                AccountPerson =
-                                    new NotifyTaskCompletion<Models.Person>(
-                                        AccountDAO.Instance.GetAsync(AccountPerson.Result.Name));
-                            }
-                            else Console.WriteLine("hueta");
-                        }
+        return true;
 
-                        if (!synchonizedComplete)
-                            task.PropertyChanged += (sender, args) =>
-                            {
-                                if (task.IsCompleted)
-                                {
-                                    if (task.Result)
-                                    {
-                                        AccountPerson =
-                                            new NotifyTaskCompletion<Models.Person>(
-                                                AccountDAO.Instance.GetAsync(AccountPerson.Result.Name));
-                                    }
-                                }
-                            };
-                    }
-
-
-                    auth = null;
-                }
-            };
     }
-
-    private void AddArtistCheck()
-    {
-        var synchronized = false;
-        if (AccountPerson is not null && AccountPerson.IsCompleted)
-        {
-            synchronized = true;
-            OnPropertyChanged(nameof(IsArtist));
-        }
-
-        if (AccountPerson is not null && !synchronized)
-        {
-            AccountPerson.PropertyChanged += (sender, args) =>
-            {
-                if (AccountPerson.IsCompleted)
-                {
-                    OnPropertyChanged(nameof(IsArtist));
-                }
-            };
-        }
-    }
-
-
+    
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
     public void OnPropertyChanged(string prop)

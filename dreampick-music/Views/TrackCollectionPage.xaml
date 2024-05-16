@@ -74,7 +74,7 @@
                                         <Grid Cursor="Hand">
                                             <b:Interaction.Triggers>
                                                 <b:EventTrigger EventName="MouseDown">
-                                                    <b:InvokeCommandAction CommandParameter="{Binding Track.ID }"
+                                                    <b:InvokeCommandAction CommandParameter="{Binding Track.Id }"
                                                                            Command="{Binding PlayAlbumCommand,  ElementName=VmContext}">
                                                     </b:InvokeCommandAction>
                                                 </b:EventTrigger>
@@ -88,7 +88,7 @@
                                             </Border>
 
 
-                                            <Image Source="{Binding Track.Album.Image}" Width="{DynamicResource Icon}"
+                                            <Image Source="{Binding Track.Playlist.Image}" Width="{DynamicResource Icon}"
                                                    Height="{DynamicResource Icon}">
                                                 <Image.OpacityMask>
                                                     <VisualBrush>
@@ -120,7 +120,7 @@
                                             <Label Content="{Binding Track.Name}"></Label>
                                             <TextBlock Margin="5,0,0,0" Foreground="{DynamicResource DarkenForeBrush}"
                                                        Style="{DynamicResource LinkedP}"
-                                                       Text="{Binding Track.Album.Author.Name}">
+                                                       Text="{Binding Track.Playlist.User.Username}">
                                             </TextBlock>
                                         </StackPanel>
                                     </DockPanel>

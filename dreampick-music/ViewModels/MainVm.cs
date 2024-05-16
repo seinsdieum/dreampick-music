@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Navigation;
-using System.Windows.Threading;
 using dreampick_music.Models;
 using dreampick_music.Views;
 
@@ -21,7 +15,6 @@ public class MainVm : INotifyPropertyChanged
     private Feed feedPage;
     private Settings settingsPage;
     private CreatePost createPostPage;
-    private PublishAudio publishAudio;
     private ArtistAlbums artistAlbums;
     private AccountPage accountPage;
     private TrackCollectionPage trackQueue;
@@ -39,14 +32,15 @@ public class MainVm : INotifyPropertyChanged
         }
     }
 
-    private NotifyTaskCompletion<ObservableCollection<SingleChoice>> tabs;
+    private ObservableCollection<SingleChoice> tabs;
 
-    public NotifyTaskCompletion<ObservableCollection<SingleChoice>> Tabs
+    public ObservableCollection<SingleChoice> Tabs
     {
         get => tabs;
         set
         {
             tabs = value;
+            NavigationVm.Instance.Navigate(feedPage ??= new Feed());
             OnPropertyChanged(nameof(Tabs));
         }
     }
@@ -116,14 +110,13 @@ public class MainVm : INotifyPropertyChanged
     #endregion
 
 
-    private async Task<ObservableCollection<SingleChoice>> LoadTabs()
+    private ObservableCollection<SingleChoice> LoadTabs()
     {
-        var result = await Task.WhenAny(Account.AccountPerson.Task);
 
 
         if (NavigationVm.Instance.Navigation is NavigationService service) service.Navigate((feedPage = new Feed()));
         
-        if (result.Result is Artist)
+        if (AccountVm.Instance.AccountPerson.IsArtist)
         {
             return new ObservableCollection<SingleChoice>()
             {
@@ -150,14 +143,14 @@ public class MainVm : INotifyPropertyChanged
                 new SingleChoice("LMissing", () =>
                     {
                         if (NavigationVm.Instance.Navigation is NavigationService service)
-                            service.Navigate(artistAlbums ??= new ArtistAlbums(result.Result.ID));
+                            service.Navigate(artistAlbums ??= new ArtistAlbums());
                     },
                     "ImgQueue"),
                 
             };
         }
-        if (result.Result is User)
-            return new ObservableCollection<SingleChoice>()
+        
+        return new ObservableCollection<SingleChoice>()
             {
                 new SingleChoice("LCollection", (() =>
                     {
@@ -181,36 +174,39 @@ public class MainVm : INotifyPropertyChanged
                     "ImgQueue"),
                 
             };
-        throw new Exception();
     }
 
 
     public MainVm()
     {
-        Console.WriteLine("sdsd");
-        TestTrackVm();
-
+        RefreshWindowNavigation();
+        
         AccountVm.Instance.PropertyChanged += (sender, args) =>
         {
-            if (args.PropertyName == nameof(AccountVm.Instance.IsArtist))
-            {
-                ClearCurrentUserData();
-                Tabs = new NotifyTaskCompletion<ObservableCollection<SingleChoice>>(LoadTabs());
-            }
+            if (args.PropertyName != nameof(AccountVm.Instance.AccountPerson)) return;
+            RefreshWindowNavigation();
         };
         
+    }
+
+    private void RefreshWindowNavigation()
+    {
+        ClearCurrentUserData();
+        Tabs = LoadTabs();
+        Tabs[1].ExecuteChoice();
     }
     
     private void ClearCurrentUserData()
     {
-        while (NavigationVm.Instance.Navigation.CanGoBack) NavigationVm.Instance.Navigation.RemoveBackEntry();
+        if (NavigationVm.Instance.Navigation is null) return;
+        while ( NavigationVm.Instance.Navigation.CanGoBack) NavigationVm.Instance.Navigation.RemoveBackEntry();
     }
 
     public AccountVm Account => AccountVm.Instance;
 
     public ButtonCommand NavigateToAccount => new ButtonCommand((o =>
     {
-        if (NavigationVm.Instance.Navigation is NavigationService service && Account.AccountPerson.IsCompleted)
+        if (NavigationVm.Instance.Navigation is NavigationService service )
             service.Navigate(accountPage ??= new AccountPage());
     }));
 
@@ -225,7 +221,7 @@ public class MainVm : INotifyPropertyChanged
 
     public PlayerVm Player => PlayerVm.Instance;
 
-    public void TestTrackVm()
+    /*public void TestTrackVm()
     {
         var artist1 = new Artist();
         var artist2 = new Artist();
@@ -257,7 +253,7 @@ public class MainVm : INotifyPropertyChanged
         album1.Tracks.Add(testTrack2);
 
         Player.Queue = album1;
-    }
+    }*/
 
     #endregion
 

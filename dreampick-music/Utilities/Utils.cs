@@ -76,21 +76,6 @@ public class Utils
     }
     
     
-    public static Type GetPersonChangeType(PersonPropertyChangeType type)
-    {
-        return type switch
-        {
-            PersonPropertyChangeType.Image => typeof(BitmapImage),
-            PersonPropertyChangeType.HeaderImage => typeof(BitmapImage),
-            PersonPropertyChangeType.Password => typeof(string),
-            PersonPropertyChangeType.IsArtist => typeof(bool),
-            PersonPropertyChangeType.Username => typeof(string),
-            PersonPropertyChangeType.Email => typeof(string),
-            
-            _ => null,
-        };
-    } 
-    
     /*public byte[] GenerateSalt()
     {
         using (var rng = new RNGCryptoServiceProvider())

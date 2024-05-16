@@ -5,7 +5,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:dreampick_music"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-      xmlns:utilities="clr-namespace:dreampick_music.Utilities"
       xmlns:fa="http://schemas.fontawesome.io/icons/"
       mc:Ignorable="d"
       Title="Feed">
@@ -80,7 +79,7 @@
                                         
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="MouseDown">
-                                                <i:InvokeCommandAction CommandParameter="{Binding Post.PostPlaylist.ID}" Command="{Binding NavigatePlaylistCommand , ElementName=VmContext }"></i:InvokeCommandAction>
+                                                <i:InvokeCommandAction CommandParameter="{Binding Post.Playlist.Id}" Command="{Binding NavigatePlaylistCommand , ElementName=VmContext }"></i:InvokeCommandAction>
                                             </i:EventTrigger>
                                             
                                         </i:Interaction.Triggers>
@@ -106,7 +105,7 @@
                                                 <Image
                                                     Width="100"
                                                     Height="100"
-                                                    Source="{Binding Post.PostPlaylist.Image}"
+                                                    Source="{Binding Post.Playlist.Image}"
                                                 >
                                                     <Image.OpacityMask>
                                                         <VisualBrush>
@@ -125,7 +124,7 @@
                                             <StackPanel>
                                                 <Label 
                                                     Style="{DynamicResource H2}" 
-                                                    Content="{Binding Post.PostPlaylist.Name}"
+                                                    Content="{Binding Post.Playlist.Name}"
                                                     
                                                     >
                                                     
@@ -139,7 +138,7 @@
                                         Margin="{DynamicResource BottomPadding}"
                                         >
                                         <TextBlock TextWrapping="Wrap" Style="{DynamicResource P}"
-                                                   Text="{Binding Post.Description}">
+                                                   Text="{Binding Post.Text}">
                                         </TextBlock>
                                     </Border>
                                     <Border Padding="{DynamicResource Padding}"
@@ -174,13 +173,13 @@
 
                                                 <Label
                                                     Margin="0,0,10,0"
-                                                    Content="{Binding Post.Likes}">
+                                                    Content="{Binding Post.Likes.Count}">
 
                                                     <i:Interaction.Triggers>
                                                         <i:EventTrigger EventName="MouseDown">
                                                             <i:InvokeCommandAction
                                                                 Command="{Binding NavigatePostLikesCommand , ElementName=VmContext}"
-                                                                CommandParameter="{Binding Post.ID}">
+                                                                CommandParameter="{Binding Post.Id}">
                                                             </i:InvokeCommandAction>
                                                         </i:EventTrigger>
                                                     </i:Interaction.Triggers>
@@ -192,7 +191,7 @@
                                                     <i:EventTrigger EventName="MouseDown">
                                                         <i:InvokeCommandAction
                                                             Command="{Binding NavigateUserCommand ,ElementName=VmContext}"
-                                                            CommandParameter="{Binding  Post.PostAuthor.ID}">
+                                                            CommandParameter="{Binding  Post.UserId}">
                                                         </i:InvokeCommandAction>
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
@@ -207,19 +206,19 @@
                                                        Height="{DynamicResource Paragraph}"
                                                        Source="{DynamicResource ImgPlay}">
                                                 </Image>
-                                                <Image VerticalAlignment="Center" Width="{DynamicResource Paragraph}"
+                                                <Image Grid.Column="0" VerticalAlignment="Center" Width="{DynamicResource Paragraph}"
                                                        Height="{DynamicResource Paragraph}"
-                                                       Source="{Binding Post.PostAuthor.Image}">
+                                                       Source="{Binding Post.User.Image}">
                                                     
                                                 </Image>
                                                 <Label VerticalAlignment="Center" Grid.Column="1"
                                                        Foreground="{DynamicResource DarkenForeBrush}"
-                                                       Content="{Binding Post.PostAuthor.Name}">
+                                                       Content="{Binding Post.User.Username}">
                                                 </Label>
 
                                             </Grid>
                                             <Label Foreground="{DynamicResource DarkenForeBrush}"
-                                                   Content="{Binding Post.PublicationDate, Converter={StaticResource DateTimeToStampStringConverter}}">
+                                                   Content="{Binding Post.CreatedOn, Converter={StaticResource DateTimeToStampStringConverter}}">
                                             </Label>
                                         </DockPanel>
                                     </Border>

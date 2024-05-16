@@ -2,7 +2,8 @@
 
 public enum TrackCollectionType
 {
+    NoType = 0,
     Queue = 1,
-    LikedTracks = 2,
-    NoType = 3,
+    Liked = 2,
+    Recommended = 3,
 }

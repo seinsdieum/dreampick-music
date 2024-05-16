@@ -41,7 +41,7 @@
                     <Border CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource Padding}" Background="{DynamicResource SecondBrush}">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="MouseDown">
-                                <b:InvokeCommandAction Command="{Binding NavigateUserCommand ,ElementName=VmContext}" CommandParameter="{Binding ID}"></b:InvokeCommandAction>
+                                <b:InvokeCommandAction Command="{Binding NavigateUserCommand ,ElementName=VmContext}" CommandParameter="{Binding Id}"></b:InvokeCommandAction>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                         
@@ -66,7 +66,7 @@
                                         </VisualBrush>
                                     </Image.OpacityMask>
                                 </Image>
-                                <Label VerticalAlignment="Center" Grid.Column="1" Foreground="{DynamicResource DarkenForeBrush}" Content="{Binding Name}"></Label>
+                                <Label VerticalAlignment="Center" Grid.Column="1" Foreground="{DynamicResource DarkenForeBrush}" Content="{Binding Username}"></Label>
 
                             </Grid>
                         </StackPanel>

@@ -14,9 +14,9 @@ public class SongRepeatIconConverter : IValueConverter
 
         return value switch
         {
-            AudioRepeatType.NO_REPEAT => FontAwesomeIcon.ArrowRight,
-            AudioRepeatType.REPEAT_QUEUE => FontAwesomeIcon.Repeat,
-            AudioRepeatType.REPEAT_TRACK => FontAwesomeIcon.ArrowCircleRight,
+            AudioRepeatType.NO_REPEAT => FontAwesomeIcon.Undo,
+            AudioRepeatType.REPEAT_QUEUE => FontAwesomeIcon.Retweet,
+            AudioRepeatType.REPEAT_TRACK => FontAwesomeIcon.Repeat,
             _ => FontAwesomeIcon.MinusSquare
         };
 

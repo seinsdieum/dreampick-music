@@ -9,7 +9,8 @@ public interface IPostRepository : IRepositoryAsync<Post>
 {
     public Task<int> GetLikesCount(string id);
     public Task<IEnumerable<User>> GetLikes(string id);
-    Task AddLike(string id, User user);
+    Task<bool> AddLike(string postId, string accountId);
+    Task<bool> RemoveLike(string postId, string accountId);
 
 
     

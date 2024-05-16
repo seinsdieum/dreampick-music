@@ -12,14 +12,14 @@ public class Config
     private App app = (App)Application.Current;
     public static Config Instance = new Config();
 
-    private string dbString = "Data Source=MOONFADE;Initial Catalog=MUSIC_PLATFORM;Integrated Security=True;";
+    private string dbString = "Data Source=MOONFADE;Initial Catalog=DreampickMusic;Integrated Security=True;";
     private void BuildSqlString()
     {
         var builder = new SqlConnectionStringBuilder();
         builder.DataSource = "MOONFADE";
         builder.TrustServerCertificate = true;
         builder.IntegratedSecurity = true;
-        builder.InitialCatalog = "MUSIC_PLATFORM";
+        builder.InitialCatalog = "DreampickMusic";
         dbString = builder.ToString();
     }
 

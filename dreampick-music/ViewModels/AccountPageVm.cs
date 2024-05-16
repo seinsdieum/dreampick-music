@@ -5,7 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using dreampick_music.DB;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using dreampick_music.Views;
 using Microsoft.Win32;
@@ -14,6 +15,7 @@ namespace dreampick_music;
 
 public class AccountPageVm : INotifyPropertyChanged
 {
+
     public AccountVm Account => AccountVm.Instance;
     
     
@@ -25,10 +27,21 @@ public class AccountPageVm : INotifyPropertyChanged
     private string changePassword = "";
     private string verifyPassword = "";
 
+
+    private bool artistIsSet = false;
     private bool changePasswordVisible = false;
     private bool verifyPasswordVisible = false;
 
 
+    public bool ArtistIsSet
+    {
+        get => artistIsSet;
+        set
+        {
+            artistIsSet = value;
+            OnPropertyChanged(nameof(ArtistIsSet));
+        }
+    }
     public BitmapImage ChangeAvatar
     {
         get => changeAvatar;
@@ -187,7 +200,7 @@ public class AccountPageVm : INotifyPropertyChanged
         userId = null;
     }
     
-    public ButtonCommand NavigateSubsctibersCommand
+    public ButtonCommand NavigateSubscribersCommand
     {
         get
         {
@@ -195,7 +208,7 @@ public class AccountPageVm : INotifyPropertyChanged
             {
                 if (o is string id && NavigationVm.Instance.Navigation is NavigationService service)
                 {
-                    service.Navigate(new Subscribers(id));
+                    service.Navigate(new UserCollection(id));
                 }
             });
         }
@@ -209,37 +222,52 @@ public class AccountPageVm : INotifyPropertyChanged
             {
                 if (o is string id && NavigationVm.Instance.Navigation is NavigationService service)
                 {
-                    service.Navigate(new Subsctiptions(id));
+                    service.Navigate(new UserCollection(id));
                 }
             });
         }
     }
     
     
-    
-    public ButtonCommand ChangeEmailCommand => new ButtonCommand(o =>
-    {
-        Account.TryChangeProperty(PersonPropertyChangeType.Email, ChangeEmail, VerifyPassword);
-    }, o => Account.AccountPerson is not null && Account.AccountPerson.IsCompleted &&  !string.IsNullOrEmpty(ChangeEmail) && ChangeEmail != Account.AccountPerson.Result.Email);
-    public ButtonCommand ChangeNameCommand => new ButtonCommand(o =>
-    {
-        Account.TryChangeProperty(PersonPropertyChangeType.Username, ChangeName, VerifyPassword);
-    }, o => Account.AccountPerson is not null && Account.AccountPerson.IsCompleted  && !string.IsNullOrEmpty(ChangeName) && ChangeName != Account.AccountPerson.Result.Name );
-    public ButtonCommand ChangePasswordCommand => new ButtonCommand(o =>
-    {
-        Account.TryChangeProperty(PersonPropertyChangeType.Password, Utils.HashPassword(ChangePassword), VerifyPassword);
-    }, o => Account.AccountPerson is not null && Account.AccountPerson.IsCompleted &&  !string.IsNullOrEmpty(ChangePassword));
+    //TODO validation for changes
 
-    public ButtonCommand SwitchArtistModeCommand => new ButtonCommand(o =>
-    {
-        Account.TryChangeProperty(PersonPropertyChangeType.IsArtist, !Account.IsArtist, VerifyPassword);
-    }, o => Account.AccountPerson is not null && Account.AccountPerson.IsCompleted );
-    
-    public ButtonCommand ChangeAvatarCommand => new ButtonCommand(o =>
-    {
-        Account.TryChangeProperty(PersonPropertyChangeType.Image, ChangeAvatar, VerifyPassword);
-    }, o => Account.AccountPerson is not null && Account.AccountPerson.IsCompleted && ChangeAvatar != Account.AccountPerson.Result.Image );
 
+    public ButtonCommand SwitchArtistCommand => new ButtonCommand(o =>
+    {
+        ArtistIsSet = !ArtistIsSet;
+    });
+
+    public ButtonCommand SaveChangesCommand => new ButtonCommand(o =>
+    {
+        UpdateAccountData();
+
+    });
+
+    private async Task UpdateAccountData()
+    {
+        var hashedPassword = "";
+        var newAccount = new User()
+        {
+            CreatedOn = Account.AccountPerson.CreatedOn,
+            Email = ChangeEmail,
+            Follows = Account.AccountPerson.Follows,
+            Subscribers = Account.AccountPerson.Subscribers,
+            Posts = Account.AccountPerson.Posts,
+            LikedPosts = Account.AccountPerson.LikedPosts,
+            Playlists = Account.AccountPerson.Playlists,
+            OwnedPlaylists = Account.AccountPerson.OwnedPlaylists,
+            Username = ChangeName,
+            IsArtist = ArtistIsSet,
+            Tracks = Account.AccountPerson.Tracks,
+            Id = Account.AccountPerson.Id,
+            Image = Utils.GetByteArrayFromImage(ChangeAvatar),
+        };
+        
+        
+        var a= await Account.TryUpdate(Account.AccountPerson.Id, Utils.HashPassword(VerifyPassword), newAccount, ChangePassword);
+
+        if (a) Account.AccountPerson = newAccount;
+    }
 
 
     public ButtonCommand SetChangePasswordVisible => new ButtonCommand(o =>
@@ -285,7 +313,10 @@ public class AccountPageVm : INotifyPropertyChanged
 
     private async Task<ObservableCollection<PostVm>> LoadPostList()
     {
-        var postsAsync = await PostDAO.Instance.UserCollectionAsync(userId);
+
+        var userRepository = new UserRepository();
+        
+        var postsAsync = await userRepository.GetUserPosts(AccountVm.Instance.AccountPerson.Id);
 
         return new ObservableCollection<PostVm>(
             postsAsync.Select(p => new PostVm() { Post = p} )
@@ -296,13 +327,15 @@ public class AccountPageVm : INotifyPropertyChanged
 
     private void LoadData()
     {
-        SubscribersCount = new NotifyTaskCompletion<int>(UserDAO.Instance.SubscribersCountAsync(userId));
-        SubscriptionsCount = new NotifyTaskCompletion<int>(UserDAO.Instance.SubscriptionsCountAsync(userId));
+
+        var db = new UserRepository();
+        SubscribersCount = new NotifyTaskCompletion<int>(db.GetSubscribersCount(AccountVm.Instance.AccountPerson.Id));
+        SubscriptionsCount = new NotifyTaskCompletion<int>(db.GetFollowersCount(AccountVm.Instance.AccountPerson.Id));
         UserPosts = new NotifyTaskCompletion<ObservableCollection<PostVm>>(LoadPostList());
 
-        ChangeName = Account.AccountPerson.Result.Name;
-        ChangeEmail = Account.AccountPerson.Result.Email;
-        ChangeAvatar = Account.AccountPerson.Result.Image;
+        ChangeName = Account.AccountPerson.Username;
+        ChangeEmail = Account.AccountPerson.Email;
+        if(Account.AccountPerson.Image != null) ChangeAvatar = Utils.GetBitmapImage(Account.AccountPerson.Image);
         ChangePassword = "";
     }
 
@@ -315,7 +348,7 @@ public class AccountPageVm : INotifyPropertyChanged
 
     public AccountPageVm()
     {
-        UserId = Account.AccountPerson.Result.ID;
+        UserId = Account.AccountPerson.Id;
     }
     
     

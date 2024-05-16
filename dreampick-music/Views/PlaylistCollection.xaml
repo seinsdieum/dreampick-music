@@ -53,7 +53,7 @@
                         <Grid Margin="5">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseDown">
-                                    <b:InvokeCommandAction CommandParameter="{Binding ID}"
+                                    <b:InvokeCommandAction CommandParameter="{Binding Id}"
                                                            Command="{Binding NavigateAlbumCommand , ElementName=VmContext}">
                                     </b:InvokeCommandAction>
                                 </b:EventTrigger>
@@ -73,7 +73,7 @@
                             <Border Padding="{DynamicResource Padding}">
                                 <StackPanel VerticalAlignment="Bottom">
                                     <Label Foreground="White" Content="{Binding Name}"></Label>
-                                    <Label Foreground="White" Content="{Binding Author.Name}"></Label>
+                                    <Label Foreground="White" Content="{Binding User.Username}"></Label>
                                 </StackPanel>
                             </Border>
                         </Grid>

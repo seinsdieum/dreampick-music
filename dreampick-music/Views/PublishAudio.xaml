@@ -144,6 +144,16 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    
+                    <ListView Margin="10,0,0,0" Style="{DynamicResource PostView}"
+                              ItemsSource="{Binding AlbumErrors}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Style="{DynamicResource P}" Text="{Binding }"></TextBlock>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    
                     <DockPanel>
                         <Button FontWeight="{DynamicResource ParagraphWeight}" Width="80" Margin="0,0,20,0" Command="{Binding PublishCommand}">publish</Button>
 
@@ -164,6 +174,18 @@
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseDown">
                                     <b:InvokeCommandAction Command="{Binding AddTrackCommand}"></b:InvokeCommandAction>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </fa:FontAwesome>
+                        
+                        
+                        <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                        FontSize="{DynamicResource Header1}" Icon="Refresh"
+                                        Margin="0,0,20,0"
+                                        VerticalAlignment="Center">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseDown">
+                                    <b:InvokeCommandAction Command="{Binding RecheckValidation}"></b:InvokeCommandAction>
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </fa:FontAwesome>

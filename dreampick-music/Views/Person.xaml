@@ -33,7 +33,7 @@
                         </i:Interaction.Triggers>
                     </fa:FontAwesome>
 
-                    <Label Style="{DynamicResource H1}" Content="{Binding User.Result.Name}"></Label>
+                    <Label Style="{DynamicResource H1}" Content="{Binding User.Result.Username}"></Label>
 
                 </DockPanel>
 
@@ -82,7 +82,7 @@
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseDown">
                                         <i:InvokeCommandAction Command="{Binding NavigateSubsctibersCommand}"
-                                                               CommandParameter="{Binding User.Result.ID}">
+                                                               CommandParameter="{Binding User.Result.Id}">
                                         </i:InvokeCommandAction>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
@@ -96,7 +96,7 @@
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseDown">
                                         <i:InvokeCommandAction Command="{Binding NavigateSubscriptionsCommand}"
-                                                               CommandParameter="{Binding User.Result.ID}">
+                                                               CommandParameter="{Binding User.Result.Id}">
                                         </i:InvokeCommandAction>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
@@ -174,7 +174,7 @@
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseDown">
                                                         <i:InvokeCommandAction
-                                                            CommandParameter="{Binding Post.PostPlaylist.ID}"
+                                                            CommandParameter="{Binding Post.Playlist.Id}"
                                                             Command="{Binding NavigatePlaylistCommand , ElementName=VmContext }">
                                                         </i:InvokeCommandAction>
                                                     </i:EventTrigger>
@@ -198,7 +198,7 @@
                                                         <Image
                                                             Width="100"
                                                             Height="100"
-                                                            Source="{Binding Post.PostPlaylist.Image}">
+                                                            Source="{Binding Post.Playlist.Image}">
                                                             <Image.OpacityMask>
                                                                 <VisualBrush>
                                                                     <VisualBrush.Visual>
@@ -215,7 +215,7 @@
                                                     <StackPanel>
                                                         <Label
                                                             Style="{DynamicResource H2}"
-                                                            Content="{Binding Post.PostPlaylist.Name}">
+                                                            Content="{Binding Post.Playlist.Name}">
 
                                                         </Label>
                                                     </StackPanel>
@@ -226,7 +226,7 @@
                                                 Padding="{DynamicResource Padding}"
                                                 Margin="{DynamicResource BottomPadding}">
                                                 <TextBlock TextWrapping="Wrap" Style="{DynamicResource P}"
-                                                           Text="{Binding Post.Description}">
+                                                           Text="{Binding Post.Text}">
                                                 </TextBlock>
                                             </Border>
                                             <Border Padding="{DynamicResource Padding}"
@@ -261,13 +261,13 @@
 
                                                         <Label
                                                             Margin="0,0,10,0"
-                                                            Content="{Binding Post.Likes}">
+                                                            Content="{Binding Post.Likes.Count}">
 
                                                             <i:Interaction.Triggers>
                                                                 <i:EventTrigger EventName="MouseDown">
                                                                     <i:InvokeCommandAction
                                                                         Command="{Binding NavigatePostLikesCommand , ElementName=VmContext}"
-                                                                        CommandParameter="{Binding Post.ID}">
+                                                                        CommandParameter="{Binding Post.Id}">
                                                                     </i:InvokeCommandAction>
                                                                 </i:EventTrigger>
                                                             </i:Interaction.Triggers>
@@ -275,14 +275,6 @@
                                                         </Label>
                                                     </DockPanel>
                                                     <Grid>
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="MouseDown">
-                                                                <i:InvokeCommandAction
-                                                                    Command="{Binding NavigateUserCommand ,ElementName=VmContext}"
-                                                                    CommandParameter="{Binding  Post.PostAuthor.ID}">
-                                                                </i:InvokeCommandAction>
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                                                             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -294,20 +286,10 @@
                                                                Height="{DynamicResource Paragraph}"
                                                                Source="{DynamicResource ImgPlay}">
                                                         </Image>
-                                                        <Image VerticalAlignment="Center"
-                                                               Width="{DynamicResource Paragraph}"
-                                                               Height="{DynamicResource Paragraph}"
-                                                               Source="{Binding Post.PostAuthor.Image}">
-
-                                                        </Image>
-                                                        <Label VerticalAlignment="Center" Grid.Column="1"
-                                                               Foreground="{DynamicResource DarkenForeBrush}"
-                                                               Content="{Binding Post.PostAuthor.Name}">
-                                                        </Label>
 
                                                     </Grid>
                                                     <Label Foreground="{DynamicResource DarkenForeBrush}"
-                                                           Content="{Binding Post.PublicationDate, Converter={StaticResource DateTimeToStampStringConverter}}">
+                                                           Content="{Binding Post.CreatedOn, Converter={StaticResource DateTimeToStampStringConverter}}">
                                                     </Label>
                                                 </DockPanel>
                                             </Border>

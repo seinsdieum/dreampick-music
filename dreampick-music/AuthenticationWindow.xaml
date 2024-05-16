@@ -34,160 +34,178 @@
                 </Button>
             </DockPanel>
             
-             <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}" Margin="0,100,0,0" Visibility="{Binding Account.AccountPerson.IsNotCompleted, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}" FontSize="150" Icon="CircleOutlineNotch" Spin="True"></fa:FontAwesome> 
-             <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}" Margin="0,100,0,0" Visibility="{Binding Account.AuthenticationInProcess, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}" FontSize="150" Icon="CircleOutlineNotch" Spin="True"></fa:FontAwesome> 
-            
-             
-             
-            <StackPanel Visibility="{Binding Account.AuthenticationInProcess, Converter={StaticResource StatementVisibilityConverterInversed}}">
-                <TabControl Visibility="{Binding Account.IsAuthorized, Converter={StaticResource StatementVisibilityConverterInversed}}" >
-                <TabControl.Resources>
-                    <Style TargetType="TabPanel">
-                        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                    </Style>
-                </TabControl.Resources>
-                <TabItem HorizontalAlignment="Center" Header="Sign in">
-                    <StackPanel Style="{DynamicResource StackRoot}">
-                        <Border ClipToBounds="True">
-                            <Grid Height="350">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                </Grid.RowDefinitions>
+            <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}" Margin="0,100,0,0"
+                            Visibility="{Binding Account.AuthenticationInProcess, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}"
+                            FontSize="150" Icon="CircleOutlineNotch" Spin="True">
+            </fa:FontAwesome>
 
-                                <StackPanel Grid.Row="0" Margin="{DynamicResource BottomPadding}">
-                                    <Grid Margin="{DynamicResource BottomPadding}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Label VerticalAlignment="Center" Content="Login"></Label>
-                                        <TextBox Grid.Column="1" Background="{DynamicResource SecondBrush}"
-                                                 Text="{Binding LoginUsername }">
-                                        </TextBox>
-                                    </Grid>
-                                    <Grid Margin="{DynamicResource BottomPadding}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Label VerticalAlignment="Center" Content="Password"></Label>
-                                        <Grid Grid.Column="1">
 
-                                            <components:BindablePasswordBox
-                                                Visibility="{Binding PasswordNotVisible, Converter={StaticResource StatementVisibilityConverter}}"
-                                                Password="{Binding LoginPassword}" />
-                                            <TextBox
-                                                Visibility="{Binding PasswordVisible, Converter={StaticResource StatementVisibilityConverter}}"
-                                                Text="{Binding LoginPassword}">
+            <StackPanel
+                Visibility="{Binding Account.AuthenticationInProcess, Converter={StaticResource StatementVisibilityConverterInversed}}">
+                <TabControl
+                    Visibility="{Binding Account.IsAuthorized, Converter={StaticResource StatementVisibilityConverterInversed}}">
+                    <TabControl.Resources>
+                        <Style TargetType="TabPanel">
+                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                        </Style>
+                    </TabControl.Resources>
+                    <TabItem HorizontalAlignment="Center" Header="Sign in">
+                        <StackPanel Style="{DynamicResource StackRoot}">
+                            <Border ClipToBounds="True">
+                                <Grid Height="350">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0" Margin="{DynamicResource BottomPadding}">
+                                        <Grid Margin="{DynamicResource BottomPadding}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Label VerticalAlignment="Center" Content="Login"></Label>
+                                            <TextBox Grid.Column="1" Background="{DynamicResource SecondBrush}"
+                                                     Text="{Binding LoginUsername }">
                                             </TextBox>
-
-                                            <DockPanel HorizontalAlignment="Right">
-                                                <ToggleButton Command="{Binding SetPasswordVisible}" Padding="10,5"
-                                                              Style="{DynamicResource FieldToggleButton}">
-                                                    <ToggleButton.Content>
-                                                        <fa:FontAwesome Icon="Eye"></fa:FontAwesome>
-                                                    </ToggleButton.Content>
-                                                </ToggleButton>
-
-                                            </DockPanel>
                                         </Grid>
-                                    </Grid>
-                                    <Label Visibility="{Binding Account.IsAuthorizedWhenTried, Converter={StaticResource StatementVisibilityConverterInversed}}" Content="wrong username, pass"></Label>
-                                </StackPanel>
+                                        <Grid Margin="{DynamicResource BottomPadding}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Label VerticalAlignment="Center" Content="Password"></Label>
+                                            <Grid Grid.Column="1">
 
-                                <Button Cursor="Hand" Grid.Row="1" Width="200" BorderThickness="1"
-                                        Style="{DynamicResource ControlButton}"
-                                        Command="{Binding TryLogin}"
-                                        >
-                                    Sign in
-                                </Button>
-                            </Grid>
-                        </Border>
+                                                <components:BindablePasswordBox
+                                                    Visibility="{Binding PasswordNotVisible, Converter={StaticResource StatementVisibilityConverter}}"
+                                                    Password="{Binding LoginPassword}" />
+                                                <TextBox
+                                                    Visibility="{Binding PasswordVisible, Converter={StaticResource StatementVisibilityConverter}}"
+                                                    Text="{Binding LoginPassword}">
+                                                </TextBox>
 
-                    </StackPanel>
-                </TabItem>
-                <TabItem HorizontalAlignment="Center" Header="Sign up">
-                    <StackPanel Style="{DynamicResource StackRoot}">
-                        <Border ClipToBounds="True">
-                            <Grid Height="350">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                </Grid.RowDefinitions>
+                                                <DockPanel HorizontalAlignment="Right">
+                                                    <ToggleButton Command="{Binding SetPasswordVisible}" Padding="10,5"
+                                                                  Style="{DynamicResource FieldToggleButton}">
+                                                        <ToggleButton.Content>
+                                                            <fa:FontAwesome Icon="Eye"></fa:FontAwesome>
+                                                        </ToggleButton.Content>
+                                                    </ToggleButton>
 
-                                <StackPanel Grid.Row="0" Margin="{DynamicResource BottomPadding}">
-                                    <Grid Margin="{DynamicResource BottomPadding}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Label VerticalAlignment="Center" Content="Username"></Label>
-                                        <TextBox Grid.Column="1" Background="{DynamicResource SecondBrush}"
-                                                 Text="{Binding RegName }">
-                                        </TextBox>
-                                    </Grid>
-                                    <Grid Margin="{DynamicResource BottomPadding}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Label VerticalAlignment="Center" Content="Email"></Label>
-                                        <TextBox Name="EmailBox" Grid.Column="1"
-                                                 Background="{DynamicResource SecondBrush}">
-                                            <TextBox.Text>
-                                                <Binding Path="RegEmail">
-                                                    <Binding.ValidationRules>
-                                                        <validationRules:EmailValidationRule />
-                                                    </Binding.ValidationRules>
-                                                </Binding>
-                                            </TextBox.Text>
-                                        </TextBox>
-                                    </Grid>
-                                    <Grid Margin="{DynamicResource BottomPadding}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Label VerticalAlignment="Center" Content="Password"></Label>
-                                        <Grid Grid.Column="1">
-
-                                            <components:BindablePasswordBox
-                                                Visibility="{Binding PasswordNotVisible, Converter={StaticResource StatementVisibilityConverter}}"
-                                                Password="{Binding RegPassword}" />
-                                            <TextBox
-                                                Visibility="{Binding PasswordVisible, Converter={StaticResource StatementVisibilityConverter}}"
-                                                Text="{Binding RegPassword}" />
-
-
-                                            <DockPanel HorizontalAlignment="Right">
-                                                <ToggleButton Command="{Binding SetPasswordVisible}" Padding="10,5"
-                                                              Style="{DynamicResource FieldToggleButton}">
-                                                    <ToggleButton.Content>
-                                                        <fa:FontAwesome Icon="Eye"></fa:FontAwesome>
-                                                    </ToggleButton.Content>
-                                                </ToggleButton>
-
-                                            </DockPanel>
+                                                </DockPanel>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                </StackPanel>
-                                <ListView ItemsSource="{Binding RegValidationErrors}" Grid.Row="1">
-                                    
-                                </ListView>
+                                        <Label
+                                            Visibility="{Binding Account.IsAuthorizedWhenTried, Converter={StaticResource StatementVisibilityConverterInversed}}"
+                                            Content="wrong username, pass">
+                                        </Label>
+                                        <ListView Style="{DynamicResource PostView}"
+                                                  ItemsSource="{Binding LoginErrors}">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Style="{DynamicResource P}" Text="{Binding }"></TextBlock>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </StackPanel>
 
-                                <Button Command="{Binding TryRegister}" Cursor="Hand" Grid.Row="2" Width="200"
-                                        BorderThickness="1"
-                                        Style="{DynamicResource ControlButton}">
-                                    Register
-                                </Button>
-                            </Grid>
-                        </Border>
+                                    <Button Cursor="Hand" Grid.Row="1" Width="200" BorderThickness="1"
+                                            Style="{DynamicResource ControlButton}"
+                                            Command="{Binding TryLogin}">
+                                        Sign in
+                                    </Button>
+                                </Grid>
+                            </Border>
 
-                    </StackPanel>
-                </TabItem>
-            </TabControl>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem HorizontalAlignment="Center" Header="Sign up">
+                        <StackPanel Style="{DynamicResource StackRoot}">
+                            <Border ClipToBounds="True">
+                                <Grid Height="350">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0" Margin="{DynamicResource BottomPadding}">
+                                        <Grid Margin="{DynamicResource BottomPadding}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Label VerticalAlignment="Center" Content="Username"></Label>
+                                            <TextBox Grid.Column="1" Background="{DynamicResource SecondBrush}"
+                                                     Text="{Binding RegName }">
+                                            </TextBox>
+                                        </Grid>
+                                        <Grid Margin="{DynamicResource BottomPadding}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Label VerticalAlignment="Center" Content="Email"></Label>
+                                            <TextBox Name="EmailBox" Grid.Column="1"
+                                                     Background="{DynamicResource SecondBrush}">
+                                                <TextBox.Text>
+                                                    <Binding Path="RegEmail">
+                                                        <Binding.ValidationRules>
+                                                            <validationRules:EmailValidationRule />
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </Grid>
+                                        <Grid Margin="{DynamicResource BottomPadding}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Label VerticalAlignment="Center" Content="Password"></Label>
+                                            <Grid Grid.Column="1">
+
+                                                <components:BindablePasswordBox
+                                                    Visibility="{Binding PasswordNotVisible, Converter={StaticResource StatementVisibilityConverter}}"
+                                                    Password="{Binding RegPassword}" />
+                                                <TextBox
+                                                    Visibility="{Binding PasswordVisible, Converter={StaticResource StatementVisibilityConverter}}"
+                                                    Text="{Binding RegPassword}" />
+
+
+                                                <DockPanel HorizontalAlignment="Right">
+                                                    <ToggleButton Command="{Binding SetPasswordVisible}" Padding="10,5"
+                                                                  Style="{DynamicResource FieldToggleButton}">
+                                                        <ToggleButton.Content>
+                                                            <fa:FontAwesome Icon="Eye"></fa:FontAwesome>
+                                                        </ToggleButton.Content>
+                                                    </ToggleButton>
+
+                                                </DockPanel>
+                                            </Grid>
+                                        </Grid>
+                                    </StackPanel>
+                                    <ListView Grid.Row="1" Style="{DynamicResource PostView}"
+                                              ItemsSource="{Binding RegErrors}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Style="{DynamicResource P}" Text="{Binding }"></TextBlock>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                    <Button Command="{Binding TryRegister}" Cursor="Hand" Grid.Row="2" Width="200"
+                                            BorderThickness="1"
+                                            Style="{DynamicResource ControlButton}">
+                                        Register
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
             </StackPanel>
         </StackPanel>
     </Border>

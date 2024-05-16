@@ -12,7 +12,7 @@ public class SongShuffleIconConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
 
-        return value is true ? FontAwesomeIcon.Random : FontAwesomeIcon.Strikethrough;
+        return value is true ? FontAwesomeIcon.Random : FontAwesomeIcon.SortNumericAsc;
     }
      
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

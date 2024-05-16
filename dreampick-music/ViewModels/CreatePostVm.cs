@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using dreampick_music.DB;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using dreampick_music.Views;
 
@@ -14,15 +12,19 @@ namespace dreampick_music;
 
 public class CreatePostVm : HistoryVm
 {
-    public string fieldText = "";
+    private PostRepository postRepo = new();
+    private PlaylistRepository playlistRepo = new();
+
+
+    private string fieldText = "";
 
 
     private NotifyTaskCompletion<bool> uploadSuccess;
-    
-    private NotifyTaskCompletion<Playlist> selectedPlaylist;
+
+    private NotifyTaskCompletion<DbContexts.Playlist> selectedPlaylist;
 
     [UndoRedo]
-    public NotifyTaskCompletion<Playlist> SelectedPlaylist
+    public NotifyTaskCompletion<DbContexts.Playlist> SelectedPlaylist
     {
         get => selectedPlaylist;
         set => Set(ref selectedPlaylist, value);
@@ -30,10 +32,7 @@ public class CreatePostVm : HistoryVm
 
     public NotifyTaskCompletion<bool> UploadSuccess
     {
-        get
-        {
-            return uploadSuccess;
-        }
+        get { return uploadSuccess; }
         set
         {
             uploadSuccess = value;
@@ -41,72 +40,63 @@ public class CreatePostVm : HistoryVm
         }
     }
 
-    private ObservableCollection<string> tags = new ObservableCollection<string>()
-    {
-        "#music",
-        "#text"
-    };
-
-    [UndoRedo]
-    public ObservableCollection<string> Tags
-    {
-        get { return tags; }
-        set { Set(ref tags, value); }
-    }
 
     [UndoRedo]
     public string FieldText
     {
         get { return fieldText; }
-        set { Set(ref fieldText, value); }
+        set => Set(ref fieldText, value);
     }
 
-    public ButtonCommand AddTagsCommand
+
+    private async Task<bool> PublishPost()
     {
-        get { return new ButtonCommand((o => { Tags.Add("lalala"); })); }
-    }
+        postRepo.Add(new DbContexts.Post()
+        {
+            Id = Utils.GenerateRandomString(10),
+            
+            Playlist = SelectedPlaylist is not null && SelectedPlaylist.Result is not null
+                ? SelectedPlaylist.Result
+                : null,
+            Text = FieldText,
+            CreatedOn = DateTime.Now,
+            UserId = AccountVm.Instance.AccountPerson.Id
+        });
 
+
+        return true;
+    }
 
     public ButtonCommand PublishCommand => new ButtonCommand(o =>
     {
         if (string.IsNullOrEmpty(FieldText)) return;
-        
-        var post = new Post(Utils.GenerateRandomString(10), FieldText)
-        {
-            PostAuthor = AccountVm.Instance.AccountPerson.Result,
-            PostPlaylist = SelectedPlaylist is not null && SelectedPlaylist.Result is not null ? SelectedPlaylist.Result : null
-        };
-        UploadSuccess = new NotifyTaskCompletion<bool>(PostDAO.Instance.AddAsync(post));
+
+        UploadSuccess = new NotifyTaskCompletion<bool>(PublishPost());
 
         FieldText = "";
-
     }, o => !string.IsNullOrEmpty(FieldText));
 
     private void SelectPlaylist(string id)
     {
-        SelectedPlaylist = new NotifyTaskCompletion<Playlist>(PlaylistDAO.Instance.InfoAsync(id));
+        SelectedPlaylist = new NotifyTaskCompletion<DbContexts.Playlist>(playlistRepo.GetById(id));
     }
-    
+
     public ButtonCommand NavigatePlaylistSelection => new ButtonCommand(o =>
     {
         var window = new SelectionDialog(new PlaylistCollection(PlaylistCollectionType.Related, "", (o1 =>
         {
             if (o1 is not string id) return;
-            
-            
+
+
             SelectPlaylist(id);
         })))
         {
             Topmost = true
         };
         window.ShowDialog();
-        
     });
 
-    public ButtonCommand RemovePlaylistCommand => new ButtonCommand(o =>
-    {
-        SelectedPlaylist = null;
-    });
+    public ButtonCommand RemovePlaylistCommand => new ButtonCommand(o => { SelectedPlaylist = null; });
 
     public ButtonCommand BackCommand => new ButtonCommand(o =>
     {
@@ -116,7 +106,6 @@ public class CreatePostVm : HistoryVm
     private void DestroyObjects()
     {
         FieldText = "";
-        Tags = null;
         UploadSuccess = null;
     }
 }

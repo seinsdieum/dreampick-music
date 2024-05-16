@@ -1,7 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Navigation;
-using dreampick_music.DB;
+using dreampick_music.DbContexts;
+using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using dreampick_music.Views;
 
@@ -9,6 +12,7 @@ namespace dreampick_music;
 
 public class PlaylistCollectionVm : SelectedBase, INotifyPropertyChanged
 {
+
 
     private PlaylistCollectionType referenceType = PlaylistCollectionType.NoType;
     
@@ -29,9 +33,9 @@ public class PlaylistCollectionVm : SelectedBase, INotifyPropertyChanged
         }
     }
 
-    private NotifyTaskCompletion<ObservableCollection<Playlist>> collection;
+    private NotifyTaskCompletion<IEnumerable<Playlist>> collection;
 
-    public NotifyTaskCompletion<ObservableCollection<Playlist>> Collection
+    public NotifyTaskCompletion<IEnumerable<Playlist>> Collection
     {
         get => collection;
         set
@@ -43,15 +47,16 @@ public class PlaylistCollectionVm : SelectedBase, INotifyPropertyChanged
 
     private void LoadData()
     {
+        var playlistRepository = new PlaylistRepository();
+        
         switch (referenceType)
         {
             case PlaylistCollectionType.Related:
-                Collection = new NotifyTaskCompletion<ObservableCollection<Playlist>>(
-                    PlaylistDAO.Instance.RelatedAsync(AccountVm.Instance.AccountPerson.Result.ID));
+                Collection = new NotifyTaskCompletion<IEnumerable<Playlist>>(playlistRepository.GetByUserId(AccountVm.Instance.AccountPerson.Id));
                 break;
             case PlaylistCollectionType.Latest:
-                Collection = new NotifyTaskCompletion<ObservableCollection<Playlist>>(
-                    PlaylistDAO.Instance.CollectionAsync());
+                Collection = new NotifyTaskCompletion<IEnumerable<Playlist>>(
+                    playlistRepository.GetAll());
                 break;
             case PlaylistCollectionType.Picks:
             case PlaylistCollectionType.NoType:

@@ -12,7 +12,7 @@ public class AudioPlayerModel
     
     public static AudioPlayerModel Instance = new AudioPlayerModel();
 
-    public Playlist GeneratePlaylist(string id,string name, ObservableCollection<Track> tracks, Person author,string description = "", BitmapImage image = null)
+    /*public Playlist GeneratePlaylist(string id,string name, ObservableCollection<Track> tracks, Person author,string description = "", BitmapImage image = null)
     {
         var playlist = new Playlist()
         {
@@ -25,16 +25,16 @@ public class AudioPlayerModel
         };
 
         return playlist;
-    }
+    }*/
 
-    public int GetQueueIndex(Playlist playlist, string trackID)
+    public int GetQueueIndex(DbContexts.Playlist playlist, string trackID)
     {
-        var index = playlist.Tracks.IndexOf(playlist.Tracks.Single(track => track.ID == trackID));
+        var index = playlist.Tracks.IndexOf(playlist.Tracks.Single(track => track.Id == trackID));
 
         return index == -1 ? 0 : index;
     }
 
-    public Playlist RandomizePlaylist(Playlist p)
+    /*public Playlist RandomizePlaylist(Playlist p)
     {
         var rand = new Random();
         for (int i = 0; i < p.Tracks.Count; i++)
@@ -59,6 +59,6 @@ public class AudioPlayerModel
             Type = p.Type,
             
         };
-    }
+    }*/
     
 }
