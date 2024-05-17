@@ -9,10 +9,13 @@
         xmlns:components="clr-namespace:PasswordBoxMVVM.Components"
         xmlns:validationRules="clr-namespace:dreampick_music.ValidationRules"
         mc:Ignorable="d"
-        Title="AuthenticationWindow"
+        Title="{DynamicResource LAppName}"
+
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
+        Icon="Icon.ico"
+
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         MaxHeight="500" MaxWidth="600"
@@ -49,7 +52,7 @@
                             <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                         </Style>
                     </TabControl.Resources>
-                    <TabItem HorizontalAlignment="Center" Header="Sign in">
+                    <TabItem HorizontalAlignment="Center" Header="{DynamicResource LSignIn}">
                         <StackPanel Style="{DynamicResource StackRoot}">
                             <Border ClipToBounds="True">
                                 <Grid Height="350">
@@ -64,7 +67,7 @@
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Label VerticalAlignment="Center" Content="Login"></Label>
+                                            <Label VerticalAlignment="Center" Content="{DynamicResource LUsername}"></Label>
                                             <TextBox Grid.Column="1" Background="{DynamicResource SecondBrush}"
                                                      Text="{Binding LoginUsername }">
                                             </TextBox>
@@ -74,7 +77,7 @@
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Label VerticalAlignment="Center" Content="Password"></Label>
+                                            <Label VerticalAlignment="Center" Content="{DynamicResource LPassword}"></Label>
                                             <Grid Grid.Column="1">
 
                                                 <components:BindablePasswordBox
@@ -98,7 +101,7 @@
                                         </Grid>
                                         <Label
                                             Visibility="{Binding Account.IsAuthorizedWhenTried, Converter={StaticResource StatementVisibilityConverterInversed}}"
-                                            Content="wrong username, pass">
+                                            Content="{DynamicResource LWrongSignIn}">
                                         </Label>
                                         <ListView Style="{DynamicResource PostView}"
                                                   ItemsSource="{Binding LoginErrors}">
@@ -113,7 +116,8 @@
                                     <Button Cursor="Hand" Grid.Row="1" Width="200" BorderThickness="1"
                                             Style="{DynamicResource ControlButton}"
                                             Command="{Binding TryLogin}">
-                                        Sign in
+                                        <Label Content="{DynamicResource LSignIn}"></Label>
+
                                     </Button>
                                 </Grid>
                             </Border>
@@ -136,7 +140,7 @@
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Label VerticalAlignment="Center" Content="Username"></Label>
+                                            <Label VerticalAlignment="Center" Content="{DynamicResource LUsername}"></Label>
                                             <TextBox Grid.Column="1" Background="{DynamicResource SecondBrush}"
                                                      Text="{Binding RegName }">
                                             </TextBox>
@@ -163,7 +167,7 @@
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Label VerticalAlignment="Center" Content="Password"></Label>
+                                            <Label VerticalAlignment="Center" Content="{DynamicResource LPassword}"></Label>
                                             <Grid Grid.Column="1">
 
                                                 <components:BindablePasswordBox
@@ -198,7 +202,7 @@
                                     <Button Command="{Binding TryRegister}" Cursor="Hand" Grid.Row="2" Width="200"
                                             BorderThickness="1"
                                             Style="{DynamicResource ControlButton}">
-                                        Register
+                                        <Label Content="{DynamicResource LRegister}"></Label>
                                     </Button>
                                 </Grid>
                             </Border>

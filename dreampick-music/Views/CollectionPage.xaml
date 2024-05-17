@@ -19,6 +19,18 @@
                        Content="{DynamicResource LCollection}">
                 </Label>
 
+
+                <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                                FontSize="{DynamicResource Header1}" Icon="Plus"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="MouseDown">
+                            <b:InvokeCommandAction Command="{Binding NavigatePlaylistCreationCommand}"></b:InvokeCommandAction>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                </fa:FontAwesome>
+
                 <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                                 FontSize="{DynamicResource Header1}" Icon="Refresh"
                                 Margin="0,0,10,0"
@@ -44,10 +56,12 @@
                                             FontSize="{DynamicResource Header2}"
                                             Foreground="{DynamicResource DarkenForeBrush}" Icon="Music">
                             </fa:FontAwesome>
-                            <TextBlock Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
+                            <TextBlock
+                                Text="{DynamicResource LTracks}"
+                                Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
                                        TextTrimming="CharacterEllipsis" Foreground="{DynamicResource DarkenForeBrush}"
                                        VerticalAlignment="Center">
-                                tracks
+                                
                             </TextBlock>
                         </DockPanel>
                     </Button>
@@ -57,10 +71,11 @@
                                             FontSize="{DynamicResource Header2}"
                                             Foreground="{DynamicResource DarkenForeBrush}" Icon="List">
                             </fa:FontAwesome>
-                            <TextBlock Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
+                            <TextBlock
+                                Text="{DynamicResource LPlaylists}"
+                                Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
                                        TextTrimming="CharacterEllipsis" Foreground="{DynamicResource DarkenForeBrush}"
                                        VerticalAlignment="Center">
-                                albums
                             </TextBlock>
                         </DockPanel>
                     </Button>
@@ -70,42 +85,21 @@
                                             FontSize="{DynamicResource Header2}"
                                             Foreground="{DynamicResource DarkenForeBrush}" Icon="Feed">
                             </fa:FontAwesome>
-                            <TextBlock Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
+                            <TextBlock 
+                                Text="{DynamicResource LRecommends}"
+                                Margin="10,0,0,0" FontWeight="{DynamicResource ParagraphWeight}"
                                        TextTrimming="CharacterEllipsis" Foreground="{DynamicResource DarkenForeBrush}"
                                        VerticalAlignment="Center">
-                                recommended
+                                
                             </TextBlock>
                         </DockPanel>
                     </Button>
                 </Grid>
             </Border>
-            
-            
-                <Button
-                    Cursor="Hand"
-                    HorizontalAlignment="Left"
-                    Command="{Binding NavigateLastReleasesCommand}">
-                    <Grid>
-                    
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" ></ColumnDefinition>
-                            <ColumnDefinition  Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                    
-                        <StackPanel Margin="0,0,20,0" HorizontalAlignment="Left"  VerticalAlignment="Center">
-                            <Label >last releases</Label>
-                            <Label Foreground="{DynamicResource DarkenForeBrush}">check all</Label>
-                        </StackPanel>
-                        <fa:FontAwesome 
-                            HorizontalAlignment="Right"
-                            Grid.Column="1" VerticalAlignment="Center" 
-                            FontSize="{DynamicResource Header2}"
-                            Foreground="{DynamicResource DarkenForeBrush}" Icon="LocationArrow">
-                        </fa:FontAwesome>
-                    </Grid>
-                </Button>
-            
-            
+
+            <Label Style="{DynamicResource H2}" Content="{DynamicResource LLastReleases}"></Label>
+
+
             <!--<fa:FontAwesome
                 Foreground="{DynamicResource DarkenForeBrush}"
                 FontSize="150"
@@ -116,49 +110,52 @@
                 FallbackValue=Collapsed
                 }" />-->
 
-            <StackPanel
-                
-                >
+            <StackPanel>
                 <!--Visibility="{Binding Albums.IsSuccessfullyCompleted, 
                 Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}"-->
-                <ItemsControl ItemsSource="{Binding Albums}" >
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="5">
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="MouseDown">
-                                    <b:InvokeCommandAction CommandParameter="{Binding Id}"
-                                                           Command="{Binding NavigateAlbumCommand , ElementName=VmContext}">
-                                    </b:InvokeCommandAction>
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                            <Grid.OpacityMask>
-                                <VisualBrush>
-                                    <VisualBrush.Visual>
-                                        <Border Width="200" Height="200" CornerRadius="{DynamicResource Radius}"
-                                                Background="Black">
-                                        </Border>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Grid.OpacityMask>
+                <ItemsControl ItemsSource="{Binding Albums}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="5">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="MouseDown">
+                                        <b:InvokeCommandAction CommandParameter="{Binding }"
+                                                               Command="{Binding NavigateAlbumCommand , ElementName=VmContext}">
+                                        </b:InvokeCommandAction>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                                <Grid.OpacityMask>
+                                    <VisualBrush>
+                                        <VisualBrush.Visual>
+                                            <Border Width="200" Height="200" CornerRadius="{DynamicResource Radius}"
+                                                    Background="Black">
+                                            </Border>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Grid.OpacityMask>
 
-                            <Image Source="{Binding Image}" Width="200" Height="200"></Image>
-                            <Border Width="200" Height="200" Background="{DynamicResource DarkenBottomGradient}"></Border>
-                            <Border Padding="{DynamicResource Padding}">
-                                <StackPanel VerticalAlignment="Bottom">
-                                    <Label Foreground="White" Content="{Binding Name}"></Label>
-                                    <Label Foreground="White" Content="{Binding User.Username}"></Label>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                                <Image Source="{Binding Image}" Width="200" Height="200"></Image>
+                                <Border Width="200" Height="200" Background="{DynamicResource DarkenBottomGradient}"></Border>
+                                <Border Padding="{DynamicResource Padding}">
+                                    <StackPanel VerticalAlignment="Bottom">
+                                        <Label Foreground="White" Content="{Binding Name}"></Label>
+                                        <Label Foreground="White" Content="{Binding User.Username}"></Label>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <Button Command="{Binding NavigateLastReleasesCommand}" HorizontalAlignment="Left">
+                    <Label Content="{DynamicResource LSeeAll}"></Label>
+                </Button>
+
             </StackPanel>
 
         </StackPanel>

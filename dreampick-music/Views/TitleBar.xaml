@@ -20,10 +20,10 @@
             
             <StackPanel  Orientation="Horizontal"  Visibility="{DynamicResource SetNewTitleBar}">
                 <Image Cursor="Hand" MouseDown="Icon_MouseDown" Margin="10,10, 0,0" Height="{DynamicResource Icon}" Source="{DynamicResource ImgApp}"/>
-                <StackPanel Style="{DynamicResource StackRoot}" Visibility="{Binding Account.IsArtist, Converter={StaticResource StatementVisibilityConverterInversed}}">
+                <StackPanel Style="{DynamicResource StackRoot}" Visibility="{Binding Account.IsArtist.AccountPerson.IsArtist, Converter={StaticResource StatementVisibilityConverterInversed}}">
                     <Label  Margin="10,10,0,0" Style="{DynamicResource Name}">dreampick</Label>
                 </StackPanel>
-                <StackPanel Style="{DynamicResource StackRoot}" Visibility="{Binding Account.IsArtist, Converter={StaticResource StatementVisibilityConverter}}">
+                <StackPanel Style="{DynamicResource StackRoot}" Visibility="{Binding Account.IsArtist.AccountPerson.IsArtist, Converter={StaticResource StatementVisibilityConverter}}">
                     <Label Margin="10,5,0,-5" Style="{DynamicResource H2}">dreampick</Label>
                     <Label Foreground="{DynamicResource DarkenForeBrush}" Margin="10,-5,0,0" Style="{DynamicResource H2}">creator</Label>
                 </StackPanel>
@@ -40,10 +40,10 @@
                 <Border Background="Transparent"  Visibility="{DynamicResource SetDefaultTitleBar}" MouseDown="UIElement_OnMouseDown">
                     <StackPanel Margin="0,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
                         <Image Cursor="Hand" MouseDown="Icon_MouseDown" Margin="10,10, 0,0" Height="{DynamicResource Icon}" Source="{DynamicResource ImgApp}"/>
-                        <StackPanel Style="{DynamicResource StackRoot}" Visibility="{Binding Account.IsArtist, Converter={StaticResource StatementVisibilityConverterInversed}}">
+                        <StackPanel Style="{DynamicResource StackRoot}" Visibility="{Binding Account.AccountPerson.IsArtist, Converter={StaticResource StatementVisibilityConverterInversed}}">
                             <Label  Margin="10,10,0,0" Style="{DynamicResource Name}">dreampick</Label>
                         </StackPanel>
-                        <StackPanel Style="{DynamicResource StackRoot}" Visibility="{Binding Account.IsArtist, Converter={StaticResource StatementVisibilityConverter}}">
+                        <StackPanel Style="{DynamicResource StackRoot}" Visibility="{Binding Account.AccountPerson.IsArtist, Converter={StaticResource StatementVisibilityConverter}}">
                             <Label Margin="10,5,0,-5" Style="{DynamicResource H2}">dreampick</Label>
                             <Label Foreground="{DynamicResource DarkenForeBrush}" Margin="10,-5,0,0" Style="{DynamicResource H2}">creator</Label>
                         </StackPanel>

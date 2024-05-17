@@ -34,6 +34,7 @@ public class PlaylistRepository : IPlaylistRepository
                 .ToListAsync()
             ;
     }
+    
 
     public async Task<IEnumerable<Playlist>> GetByUserId(string userId)
     {
@@ -59,6 +60,7 @@ public class PlaylistRepository : IPlaylistRepository
                 .AsNoTracking()
             .Include(p => p.User)
             .Take(n)
+                .Where(p => !p.IsUserPlaylist)
             .ToListAsync()
             ;
     }
@@ -69,9 +71,29 @@ public class PlaylistRepository : IPlaylistRepository
         await using var context = new ApplicationContext();
         
         
+        
         await context.PlaylistsSet.AddAsync(entity);
 
         await context.SaveChangesAsync();
+    }
+
+    public async void AddCustom(Playlist entity, ICollection<string> tracksId, string userId)
+    {
+        await using var context = new ApplicationContext();
+
+        await context.PlaylistsSet.AddAsync(entity);
+
+        foreach (var id in tracksId)
+        {
+            var a = await context.TracksSet.FirstOrDefaultAsync(t => t.Id == id);
+            if(a != null) entity.UserAddedTracks.Add(a);
+        }
+
+        var user = await context.UsersSet.FirstOrDefaultAsync(u => u.Id == userId);
+        entity.User = user;
+
+        await context.SaveChangesAsync();
+
     }
 
     public async Task Update(Playlist entity)
@@ -92,6 +114,7 @@ public class PlaylistRepository : IPlaylistRepository
             /*await context.SaveChangesAsync();*/
 
             var e = await context.PlaylistsSet.FirstOrDefaultAsync(p => p.Id == entity.Id);
+            
 
             e.Name = entity.Name;
             e.Description = entity.Description;
@@ -103,6 +126,37 @@ public class PlaylistRepository : IPlaylistRepository
             context.Entry(entity).Property(p => p.Description).IsModified = true;
             context.Entry(entity).Property(p => p.Image).IsModified = true;
             context.Entry(entity).Property(p => p.Genre).IsModified = true;*/
+
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show($"{e.Message}");
+        }
+    }
+    
+    
+    public async Task UpdateCustom(Playlist entity, List<string> tracksId)
+    {
+        try
+        {
+
+            await using var context = new ApplicationContext();
+            
+
+            var e = await context.PlaylistsSet.Include(p => p.UserAddedTracks).FirstOrDefaultAsync(p => p.Id == entity.Id);
+            
+            e.UserAddedTracks.RemoveRange(0, e.UserAddedTracks.Count);
+            
+            foreach (var id in tracksId)
+            {
+                var a = await context.TracksSet.FirstOrDefaultAsync(t => t.Id == id);
+                if(a != null) e.UserAddedTracks.Add(a);
+            }
+
+            e.Name = entity.Name;
+            e.Description = entity.Description;
+            e.Image = entity.Image;
 
             await context.SaveChangesAsync();
         }
@@ -205,6 +259,7 @@ public class PlaylistRepository : IPlaylistRepository
         var a = await context.PlaylistsSet
             .AsNoTracking()
             .Include(p => p.User)
+            .Where(p => !p.IsUserPlaylist)
             .ToListAsync();
 
         return a.GetRange(0, n);
@@ -230,7 +285,47 @@ public class PlaylistRepository : IPlaylistRepository
         return await context.PlaylistsSet.Include(p => p.User)
             .AsNoTracking()
             .OrderByDescending(p => p.CreatedOn)
-            .Where(p => p.User.Id == artistId)
+            .Where(p => p.User.Id == artistId && !p.IsUserPlaylist)
             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Playlist>> GetAllCustomByUserId(string userId)
+    {
+        await using var context = new ApplicationContext();
+        return await context.PlaylistsSet
+            .AsNoTracking()
+            .Include(p => p.UserAddedTracks)
+            .Include(p => p.Likes)
+            .Include(p => p.User)
+            .Where(p => p.Likes.Any(u => u.Id == userId))
+            .ToListAsync()
+            ;
+    }
+
+    public async Task<IEnumerable<Playlist>> GetOwnCustomByUserId(string userId)
+    {
+        await using var context = new ApplicationContext();
+        return await context.PlaylistsSet
+                .Include(p => p.UserAddedTracks)
+                .ThenInclude(t => t.Playlist)
+                .ThenInclude(t => t.User)
+                .Include(p => p.Likes)
+                .Include(p => p.User)
+                .Where(p => p.User.Id == userId && p.IsUserPlaylist)
+                .ToListAsync()
+            ;
+    }
+    
+    public async Task<Playlist> GetCustomById(string id)
+    {
+        await using var context = new ApplicationContext();
+        return await context.PlaylistsSet
+            .AsNoTracking()
+            .Include(p => p.UserAddedTracks)
+            .ThenInclude(t => t.Playlist)
+            .ThenInclude(t => t.User)
+            .Include(p => p.Likes)
+            .Include(p => p.User)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 }

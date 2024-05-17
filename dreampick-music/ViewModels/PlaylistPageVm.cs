@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 using System.Windows.Navigation;
 using dreampick_music.DbRepositories;
 using dreampick_music.Models;
-using dreampick_music.Views;
 
 namespace dreampick_music;
 
-public class AlbumPageVm : INotifyPropertyChanged
+public class PlaylistPageVm : INotifyPropertyChanged
 {
-    #region VmContext
 
+    #region VmContext
+    
+    
     public ButtonCommand BackCommand => new ButtonCommand((o =>
     {
         NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
@@ -23,34 +24,11 @@ public class AlbumPageVm : INotifyPropertyChanged
         Album = null;
         albumid = null;
     }
+    
+    
 
     #endregion
 
-
-
-    private bool isCurrentOwned;
-
-    public bool IsCurrentOwned
-    {
-        get => isCurrentOwned;
-        set
-        {
-            isCurrentOwned = value;
-            OnPropertyChanged(nameof(IsCurrentOwned));
-        }
-    }
-
-    private bool isCustom;
-
-    public bool IsCustom
-    {
-        get => isCustom;
-        set
-        {
-            isCustom = value;
-            OnPropertyChanged(nameof(IsCustom));
-        }
-    }
 
     private PlaylistRepository playlistRepo = new PlaylistRepository();
 
@@ -80,16 +58,6 @@ public class AlbumPageVm : INotifyPropertyChanged
         }
     }
 
-    public ButtonCommand NavigatePlaylistEditing => new ButtonCommand(o =>
-    {
-        NavigationVm.Instance.Navigate(new PlaylistEditPage(albumid));
-    });
-
-    public ButtonCommand NavigateArtistCommand => new ButtonCommand(o =>
-    {
-        if(Album.IsSuccessfullyCompleted) NavigationVm.Instance.Navigate(new Person(Album.Result.User.Id));
-    });
-
 
     public string AlbumId
     {
@@ -99,8 +67,9 @@ public class AlbumPageVm : INotifyPropertyChanged
             LoadAlbum();
         }
     }
-
+    
     public PlayerVm Player => PlayerVm.Instance;
+
 
 
     public NotifyTaskCompletion<ObservableCollection<TrackListenVm>> Tracks
@@ -126,32 +95,22 @@ public class AlbumPageVm : INotifyPropertyChanged
 
     private async Task<ObservableCollection<TrackListenVm>> GetTracks()
     {
-        IsSubscribed =
-            new NotifyTaskCompletion<bool>(playlistRepo.GetIsLiked(albumid, AccountVm.Instance.AccountPerson.Id));
+        IsSubscribed = new NotifyTaskCompletion<bool>(playlistRepo.GetIsLiked(albumid, AccountVm.Instance.AccountPerson.Id));
 
         // TODO
         RelationsCount = new NotifyTaskCompletion<int>(playlistRepo.GetLikesCount(albumid));
-        Album = new NotifyTaskCompletion<DbContexts.Playlist>((isCustom
-            ? playlistRepo.GetCustomById(albumid)
-            : playlistRepo.GetById(albumid)));
-        
+        Album = new NotifyTaskCompletion<DbContexts.Playlist>(playlistRepo.GetById(albumid));
 
         var res = await Album.Task;
-
-        IsCurrentOwned = isCustom && Album.Result.User.Id == AccountVm.Instance.AccountPerson.Id;
-
+        
 
         return new ObservableCollection<TrackListenVm>(
-            isCustom
-                ? res.UserAddedTracks.Select(t => new TrackListenVm()
-                {
-                    Track = t
-                })
-                : res.Tracks.Select(t => new TrackListenVm()
-                {
-                    Track = t
-                })
+            res.Tracks.Select(t => new TrackListenVm()
+            {
+                Track = t
+            })
         );
+
     }
 
     private async Task<bool> SwitchUserRelation(bool isSubbed)
@@ -160,17 +119,15 @@ public class AlbumPageVm : INotifyPropertyChanged
 
         Task a;
 
-        a = isSubbed
-            ? repo.RemoveLike(albumid, AccountVm.Instance.AccountPerson.Id)
-            : repo.AddLike(albumid, AccountVm.Instance.AccountPerson.Id);
+        a = isSubbed ? repo.RemoveLike(albumid, AccountVm.Instance.AccountPerson.Id) : repo.AddLike(albumid, AccountVm.Instance.AccountPerson.Id);
 
         await a;
 
         if (a.IsFaulted) return isSubbed;
-
+        
         return !isSubbed;
     }
-
+    
 
     private void LoadAlbum()
     {

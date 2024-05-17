@@ -66,7 +66,7 @@
                     Background="{DynamicResource SecondBrush}">
                 <StackPanel>
                     <fa:FontAwesome Margin="0,100,0,0"
-                                    Visibility="{Binding UploadSuccess.IsCompleted, Converter={StaticResource StatementVisibilityConverterInversed}, FallbackValue=Collapsed}"
+                                    Visibility="{Binding UploadSuccess.IsSuccessfullyCompleted, Converter={StaticResource StatementVisibilityConverterInversed}, FallbackValue=Collapsed}"
                                     Foreground="{DynamicResource DarkenForeBrush}"
                                     Icon="CircleOutlineNotch"
                                     FontSize="150"
@@ -115,7 +115,7 @@
                                                    Text="{Binding SelectedPlaylist.Result.Name}">
                                         </TextBlock>
                                         <TextBlock Style="{DynamicResource LinkedP}"
-                                                   Text="{Binding SelectedPlaylist.Result.Author.Name}">
+                                                   Text="{Binding SelectedPlaylist.Result.User.Username}">
                                         </TextBlock>
                                     </StackPanel>
                                     <fa:FontAwesome
@@ -144,7 +144,7 @@
                         <DockPanel>
                             <Button FontWeight="{DynamicResource HeaderWeight}" Width="80" Margin="0,0,10,0"
                                     Command="{Binding PublishCommand}">
-                                publish
+                                <Label Content="{DynamicResource LPublish}"></Label>
                             </Button>
                             <fa:FontAwesome
                                 HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"

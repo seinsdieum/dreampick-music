@@ -2,14 +2,13 @@
 
 namespace dreampick_music.Views;
 
-public partial class AlbumPage : Page
+public partial class PlaylistPage : Page
 {
-    public AlbumPage(string id, bool isCustom = false)
+    public PlaylistPage(string id)
     {
         InitializeComponent();
         if (DataContext is AlbumPageVm vm)
         {
-            vm.IsCustom = isCustom;
             vm.AlbumId = id;
         }
     }

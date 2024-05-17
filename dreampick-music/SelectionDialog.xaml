@@ -8,6 +8,7 @@
         Title="SelectionDialog"
         WindowStyle="None"
         AllowsTransparency="True"
+        Icon="Icon.ico"
         Background="Transparent"
         Width="500"
         Height="600"
@@ -23,7 +24,9 @@
             <Frame VerticalAlignment="Stretch" Margin="0,0,0,10" Name="SelectionFrame">
         
             </Frame>
-            <Button Grid.Row="1" HorizontalAlignment="Left" Click="ButtonBase_OnClick">cancel choice</Button>
+            <Button Grid.Row="1" HorizontalAlignment="Left" Click="ButtonBase_OnClick">
+                <Label Content="{DynamicResource LReturn}"></Label>
+            </Button>
         </Grid>
             
     </Border>

@@ -3,31 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using dreampick_music.DbContexts;
 using dreampick_music.DbRepositories;
 using dreampick_music.Models;
+using dreampick_music.Views;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualBasic.Devices;
 using Microsoft.Win32;
 
 namespace dreampick_music;
 
-public class PublishAudioVm : HistoryVm, INotifyDataErrorInfo
+public class PlaylistEditPageVm : HistoryVm, INotifyDataErrorInfo
 {
 
-
-    private string albumName;
+    private string referenceId;
+    
+        private string albumName;
 
     private string albumDescription;
-    private ObservableCollection<TrackVm> tracks = new ObservableCollection<TrackVm>();
+    private ObservableCollection<Track> tracks = new ObservableCollection<Track>();
 
-    private Uri imageSource;
+    private BitmapImage imageSource;
+
+    public string ReferenceId
+    {
+        get => referenceId;
+        set
+        {
+            referenceId = value;
+            OnPropertyChanged(nameof(ReferenceId));
+            LoadPlaylist();
+        }
+    }
 
     [UndoRedo]
     public string AlbumName
@@ -55,18 +63,18 @@ public class PublishAudioVm : HistoryVm, INotifyDataErrorInfo
     
 
     [UndoRedo]
-    public Uri ImageSource
+    public BitmapImage ImageSource
     {
         get => imageSource;
         set
-        { Set(ref imageSource, value);
+        { 
+            Set(ref imageSource, value);
             ValidateAlbum();
-
         }
     }
 
     [UndoRedo]
-    public ObservableCollection<TrackVm> Tracks
+    public ObservableCollection<Track> Tracks
     {
         get => tracks;
         set
@@ -85,34 +93,59 @@ public class PublishAudioVm : HistoryVm, INotifyDataErrorInfo
         if (result != true) return;
 
         string path = dialog.FileName;
-        ImageSource = new Uri(path, UriKind.Absolute);
+        ImageSource = new BitmapImage(new Uri(path, UriKind.Absolute));
     }));
+
+    private async void AddTrack(string id)
+    {
+        var repo = new TrackRepository();
+        var tracks = Tracks;
+
+        var t = await repo.GetById(id);
+        tracks.Add(t);
+        
+        Set(ref this.tracks, tracks);
+    } 
 
     public ButtonCommand AddTrackCommand => new ButtonCommand((o =>
     {
-        var tracks = Tracks;
-        tracks.Add(new TrackVm(AccountVm.Instance.AccountPerson.Id, Utils.GenerateRandomString(10)));
-        Set(ref this.tracks, tracks);
+        
+        WindowModel.OpenRelatedTracksSelectionDialog(new TrackCollectionPage(TrackCollectionType.Liked, "", (o1 =>
+        {
+            if (o1 is not string id) return;
+            AddTrack(id);
+        })));
     }));
-
-    public ButtonCommand PlayQueueCommand => new ButtonCommand((o =>
-    {
-        if (o is not string id) return;
-        var tracksPlaylist = CreatePlaylist();
-        PlayerVm.Instance.PlayNewQueue(tracksPlaylist, id);
-    }));
+    
     
     public ButtonCommand RemoveTrackCommand => new ButtonCommand(o =>
     {
         if (o is string id)
         {
-            Tracks.Remove(Tracks.Single(track => track.TrackId == id));
+            var tracks = Tracks;
+            tracks.Remove(Tracks.Single(track => track.Id == id));
+            Set(ref this.tracks, tracks);
         }
     });
+
+    private void UpdatePlaylist()
+    {
+        var repo = new PlaylistRepository();
+        
+        var playlist = CreatePlaylist();
+        
+        if(Tracks.Count <= 0) return;
+        
+        repo.UpdateCustom(playlist, Tracks.Select(t => t.Id).ToList());
+        
+        NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
+        
+    }
     
     public ButtonCommand PublishCommand => new ButtonCommand((o =>
     {
-        PublishPlaylist();
+        if(string.IsNullOrEmpty(referenceId)) PublishPlaylist();
+        else UpdatePlaylist();
     }), o => !HasErrors && errorsChecked);
 
     public ButtonCommand BackCommand => new ButtonCommand((o =>
@@ -124,75 +157,20 @@ public class PublishAudioVm : HistoryVm, INotifyDataErrorInfo
     {
         // TODO implement
     }
-
-
-    private List<Track> VmToTracks(Playlist tracksPlaylist)
-    {
-        return tracks
-            .Where(track => track.SourceIsLoaded && !string.IsNullOrEmpty(track.Name))
-            .Select(track => new Track()
-            {
-                Name = track.Name,
-                Source = track.Source,
-                Playlist = tracksPlaylist,
-                Id = track.TrackId,
-                CreatedOn = DateTime.Now
-            }).ToList();
-    }
     
-    private List<Track> VmToTracks(Playlist tracksPlaylist, out bool hasProblems)
-    {
-        var t = tracks
-            .Where(track => track.SourceIsLoaded && !string.IsNullOrEmpty(track.Name))
-            .Select(track => new Track()
-            {
-                Name = track.Name,
-                Source = track.Source,
-                Playlist = tracksPlaylist,
-                Id = track.TrackId,
-                CreatedOn = DateTime.Now
-            }).ToList();
-
-        hasProblems = (t.Count < tracks.Count);
-        
-        
-        return t;
-    }
 
     private Playlist CreatePlaylist()
     {
         var playlist = new Playlist()
         {
+            Id = string.IsNullOrEmpty(referenceId) ? Utils.GenerateRandomString(10) : referenceId,
             Name = AlbumName,
-            Image = ImageSource is null ? null : Utils.GetByteArrayFromImage(new BitmapImage(ImageSource)),
-            User = AccountVm.Instance.AccountPerson,
+            Image = ImageSource is null ? null : Utils.GetByteArrayFromImage(ImageSource),
             Description = AlbumDescription,
             CreatedOn = DateTime.Now,
+            IsUserPlaylist = true,
+            UserAddedTracks = new List<Track>()
         };
-        playlist.Tracks = new List<Track>(VmToTracks(playlist));
-        return playlist;
-    }
-    
-    private Playlist CreatePlaylist(out bool hasProblems)
-    {
-        
-        ValidateAlbum();
-        if (HasErrors)
-        {
-            hasProblems = true;
-            return null;
-        }
-        
-        var playlist = new Playlist()
-        {
-            Id = Utils.GenerateRandomString(10),
-            Name = AlbumName,
-            Image = ImageSource is null ? null : Utils.GetByteArrayFromImage(new BitmapImage(ImageSource)),
-            UserId = AccountVm.Instance.AccountPerson.Id,
-            Description = AlbumDescription,
-            CreatedOn = DateTime.Now,
-        };
-        playlist.Tracks = new List<Track>(VmToTracks(playlist, out hasProblems));
         return playlist;
     }
     
@@ -201,13 +179,29 @@ public class PublishAudioVm : HistoryVm, INotifyDataErrorInfo
     {
         var playlistRepository = new PlaylistRepository();
         
-        var playlist = CreatePlaylist(out var hasProblems);
+        var playlist = CreatePlaylist();
         
-        if(hasProblems) return;
+        if(Tracks.Count <= 0) return;
         
-        playlistRepository.Add(playlist);
+        
+        playlistRepository.AddCustom(playlist, Tracks.Select(t => t.Id).ToList(), AccountVm.Instance.AccountPerson.Id);
         
         NavigationVm.Instance.ClearNavigateBack(DestroyObjects);
+
+    }
+
+    private async void LoadPlaylist()
+    {
+        if (string.IsNullOrEmpty(referenceId)) return;
+
+        var repo = new PlaylistRepository();
+
+        var a = await repo.GetCustomById(referenceId);
+
+        Tracks = new ObservableCollection<Track>(a.UserAddedTracks);
+        AlbumName = a.Name;
+        AlbumDescription = a.Description;
+        if(a.Image != null) ImageSource = Utils.GetBitmapImage(a.Image);
 
     }
 
@@ -238,25 +232,9 @@ public class PublishAudioVm : HistoryVm, INotifyDataErrorInfo
         ClearErrors(nameof(Tracks));
         if(string.IsNullOrEmpty(albumName)) AddError(nameof(AlbumName), Utils.GetLocalizedName("LNameEmpty"));
         if(string.IsNullOrEmpty(albumDescription)) AddError(nameof(AlbumDescription), Utils.GetLocalizedName("LDescriptionEmpty"));
-        if(imageSource is not Uri ) AddError(nameof(ImageSource), Utils.GetLocalizedName("LImageNotLoaded"));
+        if(imageSource is not BitmapImage ) AddError(nameof(ImageSource), Utils.GetLocalizedName("LImageNotLoaded"));
         
         if(tracks.IsNullOrEmpty()) AddError(nameof(Tracks), Utils.GetLocalizedName("LTracklistEmpty"));
-        else
-        {
-            for (var i = 0; i < tracks.Count; i++)
-            {
-                if (string.IsNullOrEmpty(tracks[i].Name))
-                {
-                    AddError(nameof(Tracks), Utils.GetLocalizedName("LTrack") + " " + (i+1) + " " + Utils.GetLocalizedName("LHasNoName"));
-                    continue;
-                }
-
-                if (!tracks[i].SourceIsLoaded)
-                {
-                    AddError(nameof(Tracks), Utils.GetLocalizedName("LTrack") + " " + (i+1) + " " + Utils.GetLocalizedName("LHasNoSource"));
-                }
-            }
-        }
 
         errorsChecked = true;
         NotifyPropertyChanged(nameof(AlbumErrors));
@@ -304,5 +282,4 @@ public class PublishAudioVm : HistoryVm, INotifyDataErrorInfo
     public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
 
     #endregion
-    
 }

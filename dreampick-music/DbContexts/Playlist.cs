@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Windows.Forms.VisualStyles;
 
 namespace dreampick_music.DbContexts;
 
@@ -32,4 +33,8 @@ public class Playlist
     public List<User> Likes { get; set; } = new List<User>();
 
     public List<Post> MentionedPosts { get; set; } = new List<Post>();
+
+    public bool IsUserPlaylist { get; set; } = false;
+    
+    public List<Track>? UserAddedTracks { get; set; }
 }

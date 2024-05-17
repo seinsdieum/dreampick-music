@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -13,7 +16,7 @@ using Microsoft.Win32;
 
 namespace dreampick_music;
 
-public class AccountPageVm : INotifyPropertyChanged
+public class AccountPageVm : INotifyPropertyChanged, INotifyDataErrorInfo
 {
 
     public AccountVm Account => AccountVm.Instance;
@@ -40,6 +43,7 @@ public class AccountPageVm : INotifyPropertyChanged
         {
             artistIsSet = value;
             OnPropertyChanged(nameof(ArtistIsSet));
+            ValidateInfo();
         }
     }
     public BitmapImage ChangeAvatar
@@ -49,6 +53,8 @@ public class AccountPageVm : INotifyPropertyChanged
         {
             changeAvatar = value;
             OnPropertyChanged(nameof(ChangeAvatar));
+            ValidateInfo();
+
         }
     }
     public string ChangeName
@@ -58,6 +64,8 @@ public class AccountPageVm : INotifyPropertyChanged
         {
             changeName = value;
             OnPropertyChanged(nameof(ChangeName));
+            ValidateInfo();
+
         }
     }
     
@@ -68,6 +76,8 @@ public class AccountPageVm : INotifyPropertyChanged
         {
             changeEmail = value;
             OnPropertyChanged(nameof(ChangeEmail));
+            ValidateInfo();
+
         }
     }
     
@@ -78,6 +88,8 @@ public class AccountPageVm : INotifyPropertyChanged
         {
             changePassword = value;
             OnPropertyChanged(nameof(ChangePassword));
+            ValidateInfo();
+
         }
     }
     
@@ -87,7 +99,8 @@ public class AccountPageVm : INotifyPropertyChanged
         set
         {
             verifyPassword = value;
-            OnPropertyChanged(nameof(VerifyPassword));
+            OnPropertyChanged(nameof(VerifyPassword));            ValidateInfo();
+
         }
     }
 
@@ -241,7 +254,7 @@ public class AccountPageVm : INotifyPropertyChanged
     {
         UpdateAccountData();
 
-    });
+    }, o => accountErrorsChecked && !HasErrors);
 
     private async Task UpdateAccountData()
     {
@@ -358,4 +371,104 @@ public class AccountPageVm : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
+
+
+
+    private Dictionary<string, List<string>> accountErrors = new();
+    
+    public List<string> AccountErrors => accountErrors.SelectMany(item => item.Value).ToList();
+    private bool accountErrorsChecked = false;
+
+    public IEnumerable GetErrors(string? propertyName)
+    {
+        throw new NotImplementedException();
+    }
+    
+    
+    private void OnErrorsChanged(string propertyName)
+    {
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+    }
+
+    private void ValidateInfo()
+    {
+        ValidateName();
+        ValidateEmail();
+        ValidatePassword();
+        ValidateVerifyPassword();
+        ValidateImage();
+
+        accountErrorsChecked = true;
+        
+        OnPropertyChanged(nameof(AccountErrors));
+    }
+    
+    private void ValidateImage()
+    {
+        ClearErrors(nameof(ChangeAvatar));
+
+        
+        if(ChangeAvatar is not BitmapImage) AddError(nameof(ChangeAvatar), Utils.GetLocalizedName("LMustAvatar"));
+    }
+
+    private void ValidateName()
+    {
+        ClearErrors(nameof(ChangeName));
+        var regex = new Regex("^[a-zA-Z_](?!.*?\\.{2})[\\w.]{1,28}[\\w]$");
+
+        
+        if(string.IsNullOrEmpty(ChangeName) || !regex.IsMatch(ChangeName)) AddError(nameof(ChangeName), Utils.GetLocalizedName("LNameInvalid"));
+    }
+
+    private void ValidateEmail()
+    {
+        ClearErrors(nameof(ChangeEmail));
+        var regex = new Regex("^\\S+@\\S+\\.\\S+$");
+        
+        if(string.IsNullOrEmpty(ChangeEmail) || !regex.IsMatch(ChangeEmail)) AddError(nameof(ChangeEmail), Utils.GetLocalizedName("LEmailInvalid"));
+    }
+
+    private void ValidatePassword()
+    {
+        ClearErrors(nameof(ChangePassword));
+        var regex = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,16}$");
+        
+        if(!regex.IsMatch(ChangePassword)) AddError(nameof(ChangePassword), Utils.GetLocalizedName("LPasswordMustContain"));
+    }
+
+    
+    private void ValidateVerifyPassword()
+    {
+        ClearErrors(nameof(VerifyPassword));
+        
+        if(string.IsNullOrEmpty(VerifyPassword)) AddError(nameof(VerifyPassword), Utils.GetLocalizedName("LMustVerifyPassword"));
+        
+    }
+
+    private void AddError(string propertyName, string error)
+    {
+        
+        
+        if (!accountErrors.ContainsKey(propertyName))
+            accountErrors[propertyName] = new List<string>();
+
+        if (!accountErrors[propertyName].Contains(error))
+        {
+            accountErrors[propertyName].Add(error);
+            OnErrorsChanged(propertyName);
+        }
+    }
+
+    private void ClearErrors(string propertyName)
+    {
+        if (accountErrors.ContainsKey(propertyName))
+        {
+            accountErrors.Remove(propertyName);
+            OnErrorsChanged(propertyName);
+        }
+    }
+    
+
+    public bool HasErrors { get; }
+    public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 }

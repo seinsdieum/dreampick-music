@@ -133,19 +133,19 @@ public class MainVm : INotifyPropertyChanged
                             service.Navigate(feedPage ??= new Feed());
                         }
                     },
-                    "ImgQueue"),
+                    "ImgFeed"),
                 new SingleChoice("LSettings", () =>
                     {
                         if (NavigationVm.Instance.Navigation is NavigationService service)
                             service.Navigate(settingsPage ??= new Settings());
                     },
-                    "ImgQueue"),
-                new SingleChoice("LMissing", () =>
+                    "ImgSettings"),
+                new SingleChoice("LPublishAudio", () =>
                     {
                         if (NavigationVm.Instance.Navigation is NavigationService service)
                             service.Navigate(artistAlbums ??= new ArtistAlbums());
                     },
-                    "ImgQueue"),
+                    "ImgArtist"),
                 
             };
         }
@@ -165,13 +165,13 @@ public class MainVm : INotifyPropertyChanged
                             service.Navigate(feedPage ??= new Feed());
                         }
                     },
-                    "ImgQueue"),
+                    "ImgFeed"),
                 new SingleChoice("LSettings", () =>
                     {
                         if (NavigationVm.Instance.Navigation is NavigationService service)
                             service.Navigate(settingsPage ??= new Settings());
                     },
-                    "ImgQueue"),
+                    "ImgSettings"),
                 
             };
     }

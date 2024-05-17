@@ -12,9 +12,10 @@
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="CanResize"
+        Icon="Icon.ico"
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow"
-        Height="650" Width="1000"
+        Title="{DynamicResource LAppName}"
+        Height="750" Width="1100"
         MinHeight="500" MinWidth="600"
         Name="Wndw">
 
@@ -176,7 +177,7 @@
                                         <local:CommandControl Cursor="Hand" Command="{Binding ChoiceAction}">
                                             <WrapPanel VerticalAlignment="Center" Orientation="Horizontal">
                                                 <Border Margin="10,10,0,10">
-                                                    <Image Cursor="Hand" Stretch="UniformToFill"
+                                                    <Image Cursor="Hand" Stretch="Uniform"
                                                            Width="{DynamicResource Icon}"
                                                            Height="{DynamicResource Icon}"
                                                            Source="{Binding IconSource}"

@@ -1,4 +1,7 @@
-﻿namespace dreampick_music.Models;
+﻿using System.Windows;
+using dreampick_music.Views;
+
+namespace dreampick_music.Models;
 
 public class WindowModel
 {
@@ -31,8 +34,27 @@ public class WindowModel
         window.Close();
     }
 
-    public static void ShowDialogWindow()
+    public static void OpenRelatedPlaylistsSelectionDialog(PlaylistCollection selectionPage)
     {
+        if (!selectionPage.VmContext.IsSelection) return;
         
+        var window = new SelectionDialog(selectionPage)
+        {
+            Topmost = true,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen
+        };
+        window.ShowDialog();
+    }
+    
+    public static void OpenRelatedTracksSelectionDialog(TrackCollectionPage selectionPage)
+    {
+        if (!selectionPage.VmContext.IsSelection) return;
+        
+        var window = new SelectionDialog(selectionPage)
+        {
+            Topmost = true,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen
+        };
+        window.ShowDialog();
     }
 }

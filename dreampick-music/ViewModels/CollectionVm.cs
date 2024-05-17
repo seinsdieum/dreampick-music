@@ -31,9 +31,9 @@ public class CollectionVm : INotifyPropertyChanged
 
     public ButtonCommand NavigateAlbumCommand => new ButtonCommand((o =>
     {
-        if (o is string id && NavigationVm.Instance.Navigation is NavigationService service)
+        if (o is Playlist p && NavigationVm.Instance.Navigation is NavigationService service)
         {
-            service.Navigate(new AlbumPage(id));
+            service.Navigate(new AlbumPage(p.Id, p.IsUserPlaylist));
         }
     }));
 
@@ -41,6 +41,11 @@ public class CollectionVm : INotifyPropertyChanged
     {
         RefreshContent();
     }));
+
+    public ButtonCommand NavigatePlaylistCreationCommand => new ButtonCommand(o =>
+    {
+        NavigationVm.Instance.Navigate(new PlaylistEditPage());
+    });
 
     public ButtonCommand NavigateLikedTracksCommand => new ButtonCommand(o =>
     {

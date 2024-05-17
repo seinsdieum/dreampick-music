@@ -17,8 +17,71 @@
     <system:String x:Key="LCreatePost" >Create post</system:String>
     <system:String x:Key="LAccount" >Account</system:String>
     <system:String x:Key="LSettings" >Settings</system:String>
-    <system:String x:Key="LPublishAudio" >Publish Album</system:String>
+    <system:String x:Key="LPublishAudio" >Creative Panel</system:String>
+    <system:String x:Key="LSignIn" >Sign In</system:String>
+    <system:String x:Key="LRegister" >Sign Up</system:String>
+    <system:String x:Key="LUsername" >Username</system:String>
+    <system:String x:Key="LPassword" >Password</system:String>
+    <system:String x:Key="LVerificationPassword" >Verification Password</system:String>
+    <system:String x:Key="LWrongSignIn" >Wrong username or password</system:String>
 
+    <system:String x:Key="LNameEmpty" >Name is empty</system:String>
+    <system:String x:Key="LPasswordEmpty" >Empty password</system:String>
+    <system:String x:Key="LEmailInvalid" >Invalid email</system:String>
+    <system:String x:Key="LNameInvalid" >Invalid name</system:String>
+    <system:String x:Key="LNameExisting" >Username existing already</system:String>
+    <system:String x:Key="LPasswordMustContain" >Password must contain 8-16 letters in latina, at least one capital and one digit</system:String>
+    <system:String x:Key="LWithPlaylist" >With playlist</system:String>
+    
+    
+    
+    
+    
+    
+
+    <system:String x:Key="LName" >Name</system:String>
+    <system:String x:Key="LDescription" >Description</system:String>
+    <system:String x:Key="LTracks" >Tracks</system:String>
+    <system:String x:Key="LUsers" >Users</system:String>
+    <system:String x:Key="LRecommends" >Recommends</system:String>
+    <system:String x:Key="LMustVerifyPassword" >Verify your password to change account data</system:String>
+    <system:String x:Key="LAgo" >Ago</system:String>
+    <system:String x:Key="LRecently" >Recently</system:String>
+    <system:String x:Key="LReturn" >Return</system:String>
+    <system:String x:Key="LPublish" >Publish</system:String>
+    <system:String x:Key="LPlaylist" >Playlist</system:String>
+    <system:String x:Key="LListeners" >listeners</system:String>
+    <system:String x:Key="LSub" >Subscribe</system:String>
+    <system:String x:Key="LUnsub" >Unsubscribe</system:String>
+    <system:String x:Key="LChangeData" >Change data</system:String>
+    <system:String x:Key="LImage" >Image</system:String>
+    <system:String x:Key="LBecomeAr" >Switch to Artist Mode</system:String>
+    <system:String x:Key="LBecomeUs" >Switch to User Mode</system:String>
+    <system:String x:Key="LPassVerify" >Verify Password</system:String>
+    <system:String x:Key="LSave" >Save</system:String>
+    <system:String x:Key="LSeeAll" >See All</system:String>
+    <system:String x:Key="LLastReleases" >Last Releases</system:String>
+    <system:String x:Key="LAdd" >Add</system:String>
+    <system:String x:Key="LRemove" >Remove</system:String>
+    <system:String x:Key="LLoad" >Load</system:String>
+    <system:String x:Key="LMustAvatar" >You should load an avatar to update your profile</system:String>
+    <system:String x:Key="LDescriptionEmpty" >Description is empty</system:String>
+    <system:String x:Key="LImageNotLoaded" >Image is not loaded</system:String>
+    <system:String x:Key="LTracklistEmpty" >Tracklist is empty</system:String>
+    <system:String x:Key="LHasNoName" >has no name</system:String>
+    <system:String x:Key="LHasNoSource" >has no source</system:String>
+    <system:String x:Key="LTrack" >Track</system:String>
+
+    
+    
+    <system:String x:Key="LDays" >days</system:String>
+    <system:String x:Key="LHours" >hours</system:String>
+    <system:String x:Key="LMinutes" >minutes</system:String>
+    <system:String x:Key="LSeconds" >seconds</system:String>
+
+
+    
+    
     
     <system:String x:Key="LTheme" >Theme Color</system:String>
     <system:String x:Key="LLight" >Light</system:String>
@@ -48,6 +111,7 @@
     <system:String x:Key="LSubscribes" >Subscribes: </system:String>
     <system:String x:Key="LAlbum" >Album</system:String>
     <system:String x:Key="LLatestNew" >Latest</system:String>
+    <system:String x:Key="LAppName" >Dreampick Music</system:String>
     
     
     

@@ -182,8 +182,11 @@ public class PlayerVm : INotifyPropertyChanged
             return;
         }
 
-
-        if (queuePlay.Tracks.Count <= 0) return;
+        if (queuePlay.IsUserPlaylist && queuePlay.UserAddedTracks.Count > 0)
+        {
+            queuePlay.Tracks = queuePlay.UserAddedTracks;
+        }
+        else if (queuePlay.Tracks.Count <= 0) return;
 
         Queue = queuePlay;
         CurrentIndex = AudioPlayerModel.Instance.GetQueueIndex(queuePlay, trackId);

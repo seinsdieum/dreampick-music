@@ -25,5 +25,8 @@ public class Track
     
 
     public List<User> Likes { get; set; }
+    
+
+    public List<Playlist>? MentionedPlaylists { get; set; } 
 
 }

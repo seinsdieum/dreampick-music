@@ -43,7 +43,8 @@ public class PostRepository : IPostRepository
                     Text = p.Text,
                     CreatedOn = p.CreatedOn,
                     UserId = p.UserId,
-                    Playlist = p.Playlist
+                    Playlist = p.Playlist,
+                    
                 }).AsNoTracking()
                 .OrderByDescending(p => p.CreatedOn)
                 .ToListAsync();
@@ -60,17 +61,7 @@ public class PostRepository : IPostRepository
     {
         using var context = new ApplicationContext();
 
-        var pl =  context.PlaylistsSet.Find(entity.Playlist.Id);
-
-        var post = new Post()
-        {
-            Id = entity.Id,
-            UserId = entity.UserId,
-            Text = entity.Text,
-            CreatedOn = entity.CreatedOn,
-            Playlist = pl
-        };
-
+        
         try
         {
             context.PostsSet.Add(entity);

@@ -6,9 +6,10 @@ using System.Data;
 using System.Formats.Tar;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using dreampick_music.Models;
+using Application = System.Windows.Application;
 
 
 // main
@@ -85,6 +86,7 @@ namespace dreampick_music
 
         public App()
         {
+            
         }
         
     }

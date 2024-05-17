@@ -25,7 +25,7 @@
                     </b:EventTrigger>
                 </b:Interaction.Triggers>
             </fa:FontAwesome>
-            <Label Style="{DynamicResource H1}" >users</Label>
+            <Label Style="{DynamicResource H1}" Content="{DynamicResource LUsers}"></Label>
 
         </DockPanel>
             
@@ -34,6 +34,8 @@
                             Foreground="{DynamicResource DarkenForeBrush}" Icon="CircleOutlineNotch" Spin="True">
             </fa:FontAwesome>
             <Label Content="{Binding Collection.Exception.Message}"></Label>
+            
+            
             
         <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Collection.Result}">
             <ListView.ItemTemplate>

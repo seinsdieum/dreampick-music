@@ -10,9 +10,61 @@ using dreampick_music.Models;
 
 namespace dreampick_music;
 
-public class TrackCollectionVm : INotifyPropertyChanged
+public class TrackCollectionVm : SelectedBase, INotifyPropertyChanged
 {
 
+
+    private string textSearch = "";
+
+    public string TextSearch
+    {
+        get => textSearch;
+        set
+        {
+            textSearch = value;
+            OnPropertyChanged(nameof(TextSearch));
+            SearchResults();
+        }
+    }
+
+    private Func<TrackListenVm, bool> TextSearchCriteria => 
+        vm => string.IsNullOrEmpty(textSearch) || vm.Track.Name.ToLower().Contains(textSearch) || vm.Track.Playlist.Name.ToLower().Contains(textSearch)
+        || vm.Track.Playlist.User.Username.ToLower().Contains(textSearch) || (vm.Track.Playlist.User.Username + " " + vm.Track.Name).ToLower().Contains(textSearch);
+
+
+    private ObservableCollection<TrackListenVm> GetSearchResults(List<Func<TrackListenVm, bool>> criterias)
+    {
+        if (Tracks?.Result is null) return new ObservableCollection<TrackListenVm>();
+
+        return new ObservableCollection<TrackListenVm>(Tracks.Result.Where(x => criterias.All(c => c.Invoke(x))));
+    }
+
+    private void SearchResults()
+    {
+        var list = new List<Func<TrackListenVm, bool>>();
+        list.Add(TextSearchCriteria);
+
+        VisibleTracks = GetSearchResults(list);
+        
+        CollectionPlaylist = new Playlist()
+        {
+            Tracks = VisibleTracks.Select(t => t.Track).ToList(),
+        };
+
+    }
+
+    public ObservableCollection<TrackListenVm> VisibleTracks
+    {
+        get => visibleTracks;
+        set
+        {
+            visibleTracks = value;
+            OnPropertyChanged(nameof(VisibleTracks));
+        }
+    }
+
+    private ObservableCollection<TrackListenVm> visibleTracks = new ObservableCollection<TrackListenVm>();
+    
     
     public ButtonCommand BackCommand => new ButtonCommand((o =>
     {
@@ -45,6 +97,7 @@ public class TrackCollectionVm : INotifyPropertyChanged
         {
             referenceId = value;
             Tracks = new NotifyTaskCompletion<ObservableCollection<TrackListenVm>>(LoadTracks());
+            OnPropertyChanged(nameof(IsSelection));
         }
     }
 
@@ -106,11 +159,15 @@ public class TrackCollectionVm : INotifyPropertyChanged
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        
 
         trackss = new ObservableCollection<TrackListenVm>(simpleTracks.Select(t => new TrackListenVm
         {
             Track = t
         }));
+
+        VisibleTracks = trackss;
+        
 
         CollectionPlaylist = new Playlist()
         {
@@ -120,6 +177,12 @@ public class TrackCollectionVm : INotifyPropertyChanged
         return trackss;
 
     }
+
+    public ButtonCommand TrySelectCommand => new ButtonCommand(o =>
+    {
+        if(!IsSelection) return;
+        if(o is string id) SelectionCommand.Execute(o);
+    });
 
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };

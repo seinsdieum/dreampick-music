@@ -62,7 +62,7 @@
                                     <ColumnDefinition Width="3*"></ColumnDefinition>
                                     <ColumnDefinition Width="5*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <Label VerticalAlignment="Center">name</Label>
+                                <Label VerticalAlignment="Center" Content="{DynamicResource LName}"></Label>
                                 <TextBox Grid.Column="1"
                                     Text="{Binding AlbumName}">
                                 </TextBox>
@@ -72,7 +72,7 @@
                                     <ColumnDefinition Width="3*"></ColumnDefinition>
                                     <ColumnDefinition Width="5*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <Label>description</Label>
+                                <Label Content="{DynamicResource LDescription}"></Label>
 
                                 <TextBox Grid.Column="1"
                                          MinHeight="100"
@@ -155,7 +155,9 @@
                     </ListView>
                     
                     <DockPanel>
-                        <Button FontWeight="{DynamicResource ParagraphWeight}" Width="80" Margin="0,0,20,0" Command="{Binding PublishCommand}">publish</Button>
+                        <Button  Width="80" Margin="0,0,20,0" Command="{Binding PublishCommand}">
+                            <Label Content="{DynamicResource LPublish}"></Label>
+                        </Button>
 
                         <fa:FontAwesome HorizontalAlignment="Left" Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                                         FontSize="{DynamicResource Header1}" Icon="Image"

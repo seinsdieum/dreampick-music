@@ -18,10 +18,6 @@ public partial class PlaylistCollection : Page
                 vm.IsSelection = true;
                 vm.AddOnObjectSelected(selected);
             }
-            else
-            {
-                MessageBox.Show("no");
-            }
             
             vm.ReferenceType = type;
             vm.ReferenceId = referenceId;

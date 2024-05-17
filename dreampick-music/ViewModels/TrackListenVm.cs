@@ -35,6 +35,12 @@ public class TrackListenVm : INotifyPropertyChanged
             LoadTrackInfo();
         }
     }
+    
+    public ButtonCommand NavigateArtistCommand => new ButtonCommand(o =>
+    {
+        NavigationVm.Instance.Navigate(new Person(Track.Playlist.User.Id));
+    });
+
 
     public NotifyTaskCompletion<bool> LikeIsSet
     {

@@ -22,6 +22,7 @@ public class Post
 
     public DateTime CreatedOn { get; set; }
     
+    public string? PlaylistId { get; set; }
     public Playlist? Playlist { get; set; }
     
 }

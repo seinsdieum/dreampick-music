@@ -26,6 +26,8 @@
       <Content Include="TestAudio\track.mp3" />
       <None Remove="Assets\Icons\play_arrow_FILL1_wght400_GRAD0_opsz24.svg" />
       <Resource Include="Assets\Icons\Play.svg" />
+      <None Remove="DreamPick Logo.ico" />
+      <Resource Include="Icon.ico" />
     </ItemGroup>
 
     <ItemGroup>

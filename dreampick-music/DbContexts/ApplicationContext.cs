@@ -17,6 +17,8 @@ public class ApplicationContext : DbContext
     public DbSet<TrackLikeRelation> TrackLikes => Set<TrackLikeRelation>();
     public DbSet<PlaylistLikeRelation> PlaylistLikes => Set<PlaylistLikeRelation>();
 
+    public DbSet<UserPlaylistTracks> CustomPlaylistTracks => Set<UserPlaylistTracks>();
+
     public ApplicationContext()
     {
         //Database.EnsureDeleted();
@@ -101,6 +103,30 @@ public class ApplicationContext : DbContext
                 });
         
         
+        // user playlists m2m
+        modelBuilder.Entity<Playlist>()
+            .HasMany(u => u.UserAddedTracks)
+            .WithMany(p => p.MentionedPlaylists)
+            .UsingEntity<UserPlaylistTracks>(
+                j => j
+                    .HasOne(pu => pu.UserTrack)
+                    .WithMany()
+                    .HasForeignKey(pu => pu.UserTrackId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                ,
+                j => j
+                    .HasOne(pu => pu.UserPlaylist)
+                    .WithMany()
+                    .HasForeignKey(pu => pu.UserPlaylistId)
+                    .OnDelete(DeleteBehavior.ClientCascade)
+
+                ,
+                j =>
+                {
+                    j.HasKey(pu => new { pu.UserTrackId, pu.UserPlaylistId });
+                });
+        
+        
         // AUTO-GENERATED MANY-TO-MANY DO NOT TOUCH
         /*modelBuilder.Entity<User>()
             .HasMany(u => u.Tracks)
@@ -149,10 +175,11 @@ public class ApplicationContext : DbContext
  
         
 
-        modelBuilder.Entity<Post>()
-            .HasOne(p => p.Playlist)
-            .WithMany(p => p.MentionedPosts)
-            .OnDelete(DeleteBehavior.NoAction)
+        modelBuilder.Entity<Playlist>()
+            .HasMany(p => p.MentionedPosts)
+            .WithOne(p => p.Playlist)
+            .HasForeignKey(p => p.PlaylistId)
+            .OnDelete(DeleteBehavior.Cascade)
             ;
 
 
@@ -169,6 +196,13 @@ public class ApplicationContext : DbContext
             .WithOne(p => p.User)
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade)
+            ;
+        
+        modelBuilder.Entity<Post>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.Posts)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.ClientCascade)
             ;
         
 

@@ -22,6 +22,9 @@ public interface IPlaylistRepository : IRepositoryAsync<Playlist>
     Task<IEnumerable<Playlist>> GetAllByGenre(Genre genre);
 
     Task<IEnumerable<Playlist>> GetAllByArtist(string artistId);
+    Task<IEnumerable<Playlist>> GetAllCustomByUserId(string userId);
+    Task<IEnumerable<Playlist>> GetOwnCustomByUserId(string userId);
+    Task<Playlist> GetCustomById(string userId);
     Task<IEnumerable<Playlist>> GetByUserId(string userId);
     
 

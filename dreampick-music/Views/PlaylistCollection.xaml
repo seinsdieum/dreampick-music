@@ -16,7 +16,11 @@
         <StackPanel Margin="5,0,15,0" Style="{DynamicResource StackRoot}">
             <DockPanel Margin="5,0,0,15">
 
-                <fa:FontAwesome Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
+                <fa:FontAwesome
+                    Visibility="{Binding IsSelection, 
+                    Converter={StaticResource StatementVisibilityConverterInversed}, 
+                    FallbackValue=Collapsed}"
+                    Cursor="Hand" Foreground="{DynamicResource DarkenForeBrush}"
                                 FontSize="{DynamicResource Header1}" Icon="ArrowLeft"
                                 Margin="0,0,10,0"
                                 VerticalAlignment="Center">
@@ -27,7 +31,7 @@
                     </b:Interaction.Triggers>
                 </fa:FontAwesome>
 
-                <Label Style="{DynamicResource H1}" Content="noname_playlist_collection"></Label>
+                <Label Style="{DynamicResource H1}" Content="{DynamicResource LPlaylists}"></Label>
 
             </DockPanel>
             
@@ -47,13 +51,27 @@
                 FallbackValue=Collapsed
                 }" 
                 >
-                <ItemsControl ItemsSource="{Binding Collection.Result}" >
+                
+                <Grid >
+                    <Border Grid.Column="0"  Margin="0,0,10,0" Background="{DynamicResource SecondBrush}" CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource PaddingInner}">
+                        <DockPanel>
+                            <Button Margin="0,0,5,0" >
+                                <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}" FontSize="{DynamicResource Header2}" Icon="Search">
+                                </fa:FontAwesome>
+                            </Button>
+                            <TextBox FontWeight="{DynamicResource ParagraphWeight}" Text="{Binding SearchString}"></TextBox>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+                
+                
+                <ItemsControl ItemsSource="{Binding VisiblePlaylists}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="5">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseDown">
-                                    <b:InvokeCommandAction CommandParameter="{Binding Id}"
+                                    <b:InvokeCommandAction CommandParameter="{Binding }"
                                                            Command="{Binding NavigateAlbumCommand , ElementName=VmContext}">
                                     </b:InvokeCommandAction>
                                 </b:EventTrigger>

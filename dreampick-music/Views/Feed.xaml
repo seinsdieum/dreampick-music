@@ -58,7 +58,31 @@
             
             
 
-            <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Posts.Result}">
+            <StackPanel Visibility="{Binding Posts.IsCompleted}">
+                
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0"  Margin="0,0,10,0" Background="{DynamicResource SecondBrush}" CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource PaddingInner}">
+                        <DockPanel>
+                            <Button Command="{Binding SearchCommand}" Margin="0,0,5,0" >
+                                <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}" FontSize="{DynamicResource Header2}" Icon="Search">
+                                </fa:FontAwesome>
+                            </Button>
+                            <TextBox FontWeight="{DynamicResource ParagraphWeight}" Text="{Binding SearchString}"></TextBox>
+                        </DockPanel>
+                    </Border>
+                    <ToggleButton IsChecked="{Binding SearchWithPlaylist}" Grid.Column="1" FontWeight="{DynamicResource ParagraphWeight}" Style="{DynamicResource FieldToggleButton}">
+                        <TextBlock Style="{DynamicResource P}"  Text="{DynamicResource LWithPlaylist}"></TextBlock>
+                    </ToggleButton>
+                </Grid>
+                
+                
+                
+                
+                <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding VisiblePosts}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Style="{DynamicResource StackRoot}">
@@ -79,7 +103,7 @@
                                         
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="MouseDown">
-                                                <i:InvokeCommandAction CommandParameter="{Binding Post.Playlist.Id}" Command="{Binding NavigatePlaylistCommand , ElementName=VmContext }"></i:InvokeCommandAction>
+                                                <i:InvokeCommandAction CommandParameter="{Binding Post.Playlist}" Command="{Binding NavigatePlaylistCommand , ElementName=VmContext }"></i:InvokeCommandAction>
                                             </i:EventTrigger>
                                             
                                         </i:Interaction.Triggers>
@@ -228,6 +252,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            </StackPanel>
 
 
         </StackPanel>

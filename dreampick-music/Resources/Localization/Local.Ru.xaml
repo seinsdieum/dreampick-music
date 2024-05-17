@@ -15,7 +15,69 @@
     <system:String x:Key="LCreatePost" >Создать пост</system:String>
     <system:String x:Key="LAccount" >Аккаунт</system:String>
     <system:String x:Key="LSettings" >Настройки</system:String>
-    <system:String x:Key="LPublishAudio" >Опубликовать альбом</system:String>
+    <system:String x:Key="LPublishAudio" >Творческая панель</system:String>
+    <system:String x:Key="LSignIn" >Вход</system:String>
+    <system:String x:Key="LRegister" >Регистрация</system:String>
+    <system:String x:Key="LUsername" >Имя пользователя</system:String>
+    <system:String x:Key="LPassword" >Пароль</system:String>
+    <system:String x:Key="LVerificationPassword" >Пароль подтверждения</system:String>
+    <system:String x:Key="LWrongSignIn" >Неправильное имя пользователя или пароль</system:String>
+    
+    
+    <system:String x:Key="LNameEmpty" >Пустое имя</system:String>
+    <system:String x:Key="LPasswordEmpty" >Пустой пароль</system:String>
+    <system:String x:Key="LEmailInvalid" >Неправильный Email</system:String>
+    <system:String x:Key="LNameInvalid" >Неправильное имя</system:String>
+    <system:String x:Key="LNameExisting" >Такой пользователь уже есть</system:String>
+    <system:String x:Key="LPasswordMustContain" >Пароль должен 8-16 символов латинскими буквами, одну заглавную букву и одну цифру</system:String>
+    
+    <system:String x:Key="LWithPlaylist" >С плейлистом</system:String>
+    
+    
+    
+        <system:String x:Key="LName" >Название</system:String>
+    <system:String x:Key="LDescription" >Описание</system:String>
+    <system:String x:Key="LTracks" >Треки</system:String>
+    <system:String x:Key="LUsers" >Пользователи</system:String>
+    <system:String x:Key="LRecommends" >Рекомендации</system:String>
+    <system:String x:Key="LMustVerifyPassword" >Подтвердите свой пароль для изменения данных</system:String>
+    <system:String x:Key="LAgo" >назад</system:String>
+    <system:String x:Key="LRecently" >Недавно</system:String>
+    <system:String x:Key="LReturn" >Вернуться</system:String>
+    <system:String x:Key="LPublish" >Опубликовать</system:String>
+    <system:String x:Key="LPlaylist" >Плейлист</system:String>
+    <system:String x:Key="LListeners" >слушателей</system:String>
+    <system:String x:Key="LSub" >Подписаться</system:String>
+    <system:String x:Key="LUnsub" >Отписаться</system:String>
+    <system:String x:Key="LChangeData" >Изменить данные</system:String>
+    <system:String x:Key="LImage" >Изображение</system:String>
+    <system:String x:Key="LBecomeAr" >Переключиться на артиста</system:String>
+    <system:String x:Key="LBecomeUs" >Переключиться на пользователя</system:String>
+    <system:String x:Key="LPassVerify" >Пароль подтверждения</system:String>
+    <system:String x:Key="LSave" >Сохранить</system:String>
+    <system:String x:Key="LSeeAll" >Увидеть все</system:String>
+    <system:String x:Key="LLastReleases" >Последние релизы</system:String>
+    <system:String x:Key="LAdd" >Добавить</system:String>
+    <system:String x:Key="LRemove" >Удалить</system:String>
+    <system:String x:Key="LLoad" >Загрузить</system:String>
+    <system:String x:Key="LMustAvatar" >Вы должны загрузить аватар для изменения профиля</system:String>
+    <system:String x:Key="LDescriptionEmpty" >Пустое описание</system:String>
+    <system:String x:Key="LImageNotLoaded" >Изображение не загружено</system:String>
+    <system:String x:Key="LTracklistEmpty" >Пустой треклист</system:String>
+    <system:String x:Key="LHasNoName" >не имеет названия</system:String>
+    <system:String x:Key="LHasNoSource" >не имеет источника</system:String>
+    <system:String x:Key="LTrack" >Трек</system:String>
+    
+    <system:String x:Key="LAppName" >Dreampick Музыка</system:String>
+
+    
+    <system:String x:Key="LDays" >дней</system:String>
+    <system:String x:Key="LHours" >часов</system:String>
+    <system:String x:Key="LMinutes" >минут</system:String>
+    <system:String x:Key="LSeconds" >секунд</system:String>
+
+
+
     
     <system:String x:Key="LTheme" >Цвет темы</system:String>
     <system:String x:Key="LLight" >Светлый</system:String>

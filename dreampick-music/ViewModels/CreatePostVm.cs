@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using dreampick_music.DbRepositories;
 using dreampick_music.Models;
@@ -55,12 +56,13 @@ public class CreatePostVm : HistoryVm
         {
             Id = Utils.GenerateRandomString(10),
             
-            Playlist = SelectedPlaylist is not null && SelectedPlaylist.Result is not null
-                ? SelectedPlaylist.Result
+            PlaylistId = SelectedPlaylist is not null && SelectedPlaylist.Result is not null
+                ? SelectedPlaylist.Result.Id
                 : null,
             Text = FieldText,
             CreatedOn = DateTime.Now,
-            UserId = AccountVm.Instance.AccountPerson.Id
+            UserId = AccountVm.Instance.AccountPerson.Id,
+            
         });
 
 
@@ -83,17 +85,12 @@ public class CreatePostVm : HistoryVm
 
     public ButtonCommand NavigatePlaylistSelection => new ButtonCommand(o =>
     {
-        var window = new SelectionDialog(new PlaylistCollection(PlaylistCollectionType.Related, "", (o1 =>
+        
+        WindowModel.OpenRelatedPlaylistsSelectionDialog(new PlaylistCollection(PlaylistCollectionType.Related, "", (o1 =>
         {
             if (o1 is not string id) return;
-
-
             SelectPlaylist(id);
-        })))
-        {
-            Topmost = true
-        };
-        window.ShowDialog();
+        })));
     });
 
     public ButtonCommand RemovePlaylistCommand => new ButtonCommand(o => { SelectedPlaylist = null; });

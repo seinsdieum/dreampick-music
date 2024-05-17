@@ -113,7 +113,6 @@
             </StackPanel>
 
             <TabControl>
-                <TabItem Header="{DynamicResource LPlaylists}"></TabItem>
                 <TabItem Header="{DynamicResource LFeed}">
                     <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding UserPosts.Result}">
                         <ListView.ItemTemplate>
@@ -262,34 +261,31 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </TabItem>
-                <TabItem Header="change data">
+                <TabItem Header="{DynamicResource LChangeData}">
                     <StackPanel Style="{DynamicResource StackRoot}">
                         <Border Padding="{DynamicResource Padding}" Background="{DynamicResource SecondBrush}"
                                 CornerRadius="{DynamicResource Radius}">
                             <StackPanel>
-                                <Label Style="{DynamicResource InvalidParagraph}" Margin="{DynamicResource BottomPadding}"
-                                    Visibility="{Binding Account.IsAuthorizedWhenTried, 
-                    Converter={StaticResource StatementVisibilityConverterInversed}}">
 
-                                    changes not saved wrong pass
-                                </Label>
-                                
+
                                 <Grid Margin="{DynamicResource BottomPadding}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <Label>avatar</Label>
-                                    
-                                    <Button Margin="0,0,10,0" Grid.Column="1" Command="{Binding LoadAvatarCommand}">load new</Button>
+                                    <Label Content="{DynamicResource LImage}"></Label>
+
+                                    <Button Margin="0,0,10,0" Grid.Column="1" Command="{Binding LoadAvatarCommand}">
+                                        <Label Content="{DynamicResource LLoad}"></Label>
+                                    </Button>
                                 </Grid>
-                                
+
                                 <Grid Margin="{DynamicResource BottomPadding}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <Label>name</Label>
+                                    <Label Content="{DynamicResource LName}"></Label>
                                     <TextBox Margin="0,0,10,0" Grid.Column="1" Text="{Binding ChangeName}"></TextBox>
                                 </Grid>
 
@@ -298,7 +294,7 @@
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <Label>email</Label>
+                                    <Label Content="Email"></Label>
 
                                     <TextBox Margin="0,0,10,0" Grid.Column="1" Text="{Binding ChangeEmail}"></TextBox>
                                 </Grid>
@@ -308,22 +304,23 @@
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <Label>pass</Label>
+                                    <Label Content="{DynamicResource LPassword}"></Label>
 
                                     <Grid Margin="0,0,10,0" Grid.Column="1">
                                         <TextBox
                                             Visibility="{Binding ChangePasswordVisible,
                                             Converter={StaticResource StatementVisibilityConverter}}"
-                                            Grid.Column="1" Text="{Binding ChangePassword}"></TextBox>
-                                        <components:BindablePasswordBox 
+                                            Grid.Column="1" Text="{Binding ChangePassword}">
+                                        </TextBox>
+                                        <components:BindablePasswordBox
                                             Grid.Column="1"
                                             Visibility="{Binding ChangePasswordVisible,
                                             Converter={StaticResource StatementVisibilityConverterInversed}}"
                                             Password="{Binding ChangePassword}">
                                         </components:BindablePasswordBox>
                                         <DockPanel HorizontalAlignment="Right">
-                                            <ToggleButton 
-                                                
+                                            <ToggleButton
+
                                                 Command="{Binding SetChangePasswordVisible}" Padding="10,5"
                                                 Style="{DynamicResource FieldToggleButton}">
                                                 <ToggleButton.Content>
@@ -341,25 +338,23 @@
                                         <ColumnDefinition></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
 
-                                    <Label>creator mode</Label>
+                                    <Label Content="{DynamicResource LPublishAudio}"></Label>
 
                                     <StackPanel Grid.Column="1">
                                         <ToggleButton Command="{Binding SwitchArtistCommand}"
-                                                      Style="{DynamicResource FieldToggleButton}"
-                                                      
-                                                      >
-                                           <StackPanel>
-                                               <Label
-                                                   Visibility="{Binding ArtistIsSet, Converter={StaticResource StatementVisibilityConverterInversed}}"
-                                               >
-                                                   become artist
-                                               </Label>
-                                               <Label
-                                                   Visibility="{Binding ArtistIsSet, Converter={StaticResource StatementVisibilityConverter}}"
-                                               >
-                                                   artist
-                                               </Label>
-                                           </StackPanel>
+                                                      Style="{DynamicResource FieldToggleButton}">
+                                            <StackPanel>
+                                                <Label
+                                                    Content="{DynamicResource LBecomeAr}"
+                                                    Visibility="{Binding ArtistIsSet, Converter={StaticResource StatementVisibilityConverterInversed}}">
+                                                    
+                                                </Label>
+                                                <Label
+                                                    Content="{DynamicResource LBecomeUs}"
+
+                                                    Visibility="{Binding ArtistIsSet, Converter={StaticResource StatementVisibilityConverter}}">
+                                                </Label>
+                                            </StackPanel>
                                         </ToggleButton>
 
                                     </StackPanel>
@@ -370,23 +365,24 @@
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                         <ColumnDefinition Width="4*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <Label>verify pass</Label>
+                                    <Label Content="{DynamicResource LPassVerify}"> </Label>
                                     <Grid Grid.Column="1">
                                         <TextBox
                                             Visibility="{Binding VerifyPasswordVisible,
                                             Converter={StaticResource StatementVisibilityConverter}}"
-                                            Grid.Column="1" Text="{Binding VerifyPassword}"></TextBox>
-                                        <components:BindablePasswordBox 
+                                            Grid.Column="1" Text="{Binding VerifyPassword}">
+                                        </TextBox>
+                                        <components:BindablePasswordBox
                                             Grid.Column="1"
                                             Visibility="{Binding VerifyPasswordVisible,
                                             Converter={StaticResource StatementVisibilityConverterInversed}}"
                                             Password="{Binding VerifyPassword}">
                                         </components:BindablePasswordBox>
                                         <DockPanel HorizontalAlignment="Right">
-                                            <ToggleButton 
-                                                
+                                            <ToggleButton
+
                                                 Command="{Binding SetVerifyPasswordVisible}" Padding="10,5"
-                                                          Style="{DynamicResource FieldToggleButton}">
+                                                Style="{DynamicResource FieldToggleButton}">
                                                 <ToggleButton.Content>
                                                     <fa:FontAwesome Icon="Eye"></fa:FontAwesome>
                                                 </ToggleButton.Content>
@@ -395,14 +391,37 @@
                                         </DockPanel>
                                     </Grid>
                                 </Grid>
-                                
+
+
+                                <ListView Margin="10,0,0,0" Style="{DynamicResource PostView}"
+                                          ItemsSource="{Binding AccountErrors}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Style="{DynamicResource P}" Text="{Binding }"></TextBlock>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+
+                                <Label 
+                                    Content="{DynamicResource LWrongSignIn}"
+                                    Style="{DynamicResource InvalidParagraph}"
+                                       Margin="{DynamicResource BottomPadding}"
+                                       Visibility="{Binding Account.IsAuthorizedWhenTried, 
+                                       Converter={StaticResource StatementVisibilityConverterInversed}}">
+
+                                    
+                                </Label>
+
+
                                 <Grid Margin="{DynamicResource BottomPadding}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="3*"></ColumnDefinition>
                                         <ColumnDefinition Width="4*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                     <Grid Grid.Column="1">
-                                        <Button Command="{Binding SaveChangesCommand}">save</Button>
+                                        <Button Command="{Binding SaveChangesCommand}">
+                                            <Label Content="{DynamicResource LSave}"></Label>
+                                        </Button>
                                     </Grid>
                                 </Grid>
 

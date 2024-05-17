@@ -136,14 +136,15 @@
                         <Label
                             Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverterInversed}}"
                             HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                            sub
+                            VerticalAlignment="Center"
+                            Content="{DynamicResource LSub}">
+
                         </Label>
                         <Label
                             Visibility="{Binding IsSubscribed.Result, Converter={StaticResource StatementVisibilityConverter}}"
                             HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                            subbed
+                            VerticalAlignment="Center"
+                            Content="{DynamicResource LUnsub}">
                         </Label>
                     </DockPanel>
                 </Button>
@@ -151,7 +152,57 @@
 
 
             <TabControl>
-                <TabItem Header="{DynamicResource LPlaylists}"></TabItem>
+                <TabItem Header="{DynamicResource LPlaylists}">
+
+                    <StackPanel
+                        Style="{DynamicResource StackRoot}"><!--
+                Visibility="{Binding Albums.IsSuccessfullyCompleted, Converter={StaticResource StatementVisibilityConverter}, FallbackValue=Collapsed}"
+                -->
+                        <ItemsControl ItemsSource="{Binding Albums.Result}" Margin="0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="5">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseDown">
+                                                <i:InvokeCommandAction CommandParameter="{Binding }"
+                                                                       Command="{Binding NavigateAlbumCommand , ElementName=VmContext}">
+                                                </i:InvokeCommandAction>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <Grid.OpacityMask>
+                                            <VisualBrush>
+                                                <VisualBrush.Visual>
+                                                    <Border Width="200" Height="200"
+                                                            CornerRadius="{DynamicResource Radius}"
+                                                            Background="Black">
+                                                    </Border>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Grid.OpacityMask>
+
+                                        <Image Source="{Binding Image}" Width="200" Height="200"></Image>
+                                        <Border Width="200" Height="200"
+                                                Background="{DynamicResource DarkenBottomGradient}">
+                                        </Border>
+                                        <Border Padding="{DynamicResource Padding}">
+                                            <StackPanel VerticalAlignment="Bottom">
+                                                <Label Foreground="White" Content="{Binding Name}"></Label>
+                                                <Label Foreground="White" Content="{Binding User.Username}"></Label>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
+
+
+                </TabItem>
                 <TabItem Header="{DynamicResource LFeed}">
                     <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding UserPosts.Result}">
                         <ListView.ItemTemplate>

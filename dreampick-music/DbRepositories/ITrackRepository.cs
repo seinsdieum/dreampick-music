@@ -14,7 +14,9 @@ public interface ITrackRepository : IRepositoryAsync<Track>
     Task RemoveLike(string trackId, string userId);
 
     Task<ICollection<Track>> GetByUserId(string userId);
+    //Task<ICollection<Track>> GetByCustomPlaylistId(string );
     
     Task<DbContexts.Track> GetRandomByUserId(string userId);
 
+    
 }

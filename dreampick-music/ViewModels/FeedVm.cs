@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
+using dreampick_music.DbContexts;
 using dreampick_music.DbRepositories;
 using dreampick_music.Models;
 using dreampick_music.Views;
@@ -11,12 +14,64 @@ namespace dreampick_music;
 
 public class FeedVm : INotifyPropertyChanged
 {
-    private bool postsLoaded = false;
+
+
+    private string searchString = "";
+
+    private bool searchWithPlaylist = false;
+
+    public bool SearchWithPlaylist
+    {
+        get => searchWithPlaylist;
+        set
+        {
+            searchWithPlaylist = value;
+            OnPropertyChanged(nameof(SearchWithPlaylist));
+            SearchPosts();
+        }
+    }
+
+    public string SearchString
+    {
+        get => searchString;
+        set
+        {
+            searchString = value;
+            OnPropertyChanged(nameof(SearchString));
+            SearchPosts();
+        }
+    }
+    
+    
+
+    private Func<PostVm, bool> TextSearchCriteria
+        =>
+            vm => string.IsNullOrEmpty(searchString) || vm.Post.Text.Contains(searchString) || vm.Post.User.Username.Contains(searchString) ||
+                  (vm.Post.Playlist != null && vm.Post.Playlist.Name.Contains(searchString));
+
+    private Func<PostVm, bool> OnlyPlaylistSearchCriteria
+        =>
+            vm => vm.Post.Playlist != null;
+    
+    
 
 
     private NotifyTaskCompletion<ObservableCollection<PostVm>> posts;
-    
 
+
+    private ObservableCollection<PostVm> visiblePosts = new ObservableCollection<PostVm>();
+
+    public ObservableCollection<PostVm> VisiblePosts
+    {
+        get => visiblePosts;
+        set
+        {
+            visiblePosts = value;
+            OnPropertyChanged(nameof(VisiblePosts));
+        }
+    }
+    
+    
     public NotifyTaskCompletion<ObservableCollection<PostVm>> Posts
     {
         get
@@ -47,12 +102,41 @@ public class FeedVm : INotifyPropertyChanged
     {
         var postRepository = new PostRepository();
         var postsAsync = await postRepository.GetAll();
+        
+        var p =  new ObservableCollection<PostVm>(
+            postsAsync.Select(p => new PostVm() { Post = p} )
+        );
+
+        VisiblePosts = p;
 
         return new ObservableCollection<PostVm>(
             postsAsync.Select(p => new PostVm() { Post = p} )
         );
 
     }
+
+    private ObservableCollection<PostVm> SearchPosts(List<Func<PostVm, bool>> postCriterias)
+    {
+        if (Posts is null || !Posts.IsCompleted) return new ObservableCollection<PostVm>();
+        
+        return new ObservableCollection<PostVm>(Posts.Result.Where(x => postCriterias.All(p => p.Invoke(x))));
+    }
+
+
+    private void SearchPosts()
+    {
+        var list = new List<Func<PostVm, bool>>();
+        
+        if(searchWithPlaylist) list.Add(OnlyPlaylistSearchCriteria);
+        list.Add(TextSearchCriteria);
+
+        VisiblePosts = SearchPosts(list);
+    }
+
+    public ButtonCommand SearchCommand => new ButtonCommand(o =>
+    {
+        SearchPosts();
+    });
 
 
     private void LoadPostsAsync()
@@ -65,9 +149,10 @@ public class FeedVm : INotifyPropertyChanged
     
     public ButtonCommand NavigatePlaylistCommand => new ButtonCommand(o =>
     {
-        if (o is string id)
+        if (o is Playlist p)
         {
-            NavigationVm.Instance.Navigate(new AlbumPage(id));
+            
+            NavigationVm.Instance.Navigate(new AlbumPage(p.Id, p.IsUserPlaylist));
         }
     });
     

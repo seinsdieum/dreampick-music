@@ -6,7 +6,7 @@ public class SelectedBase
 {
     
 
-    public bool IsSelection = false;
+    public bool IsSelection { get; set; } = false;
     private Action selectedHandler = (() => {});
 
     private Action<object> objectSelected = ((o) => { });

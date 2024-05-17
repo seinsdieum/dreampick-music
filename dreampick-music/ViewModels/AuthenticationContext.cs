@@ -91,20 +91,20 @@ public class AuthenticationContext : INotifyPropertyChanged, INotifyDataErrorInf
     {
         var regex = new Regex("^[a-zA-Z_](?!.*?\\.{2})[\\w.]{1,28}[\\w]$");
 
-        if (string.IsNullOrEmpty(RegName)) AddRegisterError(nameof(RegName), "name empty");
+        if (string.IsNullOrEmpty(RegName)) AddRegisterError(nameof(RegName), Utils.GetLocalizedName("LNameEmpty"));
         else if (!regex.IsMatch(RegName)) AddRegisterError(nameof(RegName), "name not valid");
     }
 
     private void ValidateLoginName()
     {
         ClearLoginErrors(nameof(LoginUsername));
-        if(string.IsNullOrEmpty(loginUsername)) AddLoginError(nameof(LoginUsername), "username empty");
+        if(string.IsNullOrEmpty(loginUsername)) AddLoginError(nameof(LoginUsername), Utils.GetLocalizedName("LNameEmpty"));
     }
 
     private void ValidateLoginPassword()
     {
         ClearLoginErrors(nameof(LoginPassword));
-        if(string.IsNullOrEmpty(loginPassword)) AddLoginError(nameof(LoginPassword), "password empty");
+        if(string.IsNullOrEmpty(loginPassword)) AddLoginError(nameof(LoginPassword), Utils.GetLocalizedName("LPasswordMustContain"));
     }
 
     private void ValidateLoginForm()
@@ -146,8 +146,8 @@ public class AuthenticationContext : INotifyPropertyChanged, INotifyDataErrorInf
         
         ClearRegisterErrors(nameof(RegEmail));
         
-        if(string.IsNullOrEmpty(RegEmail)) AddRegisterError(nameof(RegEmail), "email empty");
-        if(!regex.IsMatch(RegEmail)) AddRegisterError(nameof(RegEmail), "email not valid");
+        if(string.IsNullOrEmpty(RegEmail)) AddRegisterError(nameof(RegEmail), Utils.GetLocalizedName("LEmailInvalid"));
+        if(!regex.IsMatch(RegEmail)) AddRegisterError(nameof(RegEmail), Utils.GetLocalizedName("LEmailInvalid"));
         
     }
 
@@ -159,7 +159,7 @@ public class AuthenticationContext : INotifyPropertyChanged, INotifyDataErrorInf
         
         var regex = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,16}$");
         if(!regex.IsMatch(RegPassword)) AddRegisterError(nameof(RegPassword), 
-            "password must contain at least 8 characters, one digit, one big latin letter and small latin letter");
+            Utils.GetLocalizedName("LPasswordMustContain"));
     }
 
     private void ValidateExistingUsername()
@@ -169,7 +169,7 @@ public class AuthenticationContext : INotifyPropertyChanged, INotifyDataErrorInf
 
         a.Wait();
         
-        if(a.Result) AddRegisterError(nameof(RegName), "Username Existing Already");
+        if(a.Result) AddRegisterError(nameof(RegName), Utils.GetLocalizedName("LNameExisting"));
 
     }
     
@@ -202,11 +202,11 @@ public class AuthenticationContext : INotifyPropertyChanged, INotifyDataErrorInf
         var accountRepository = new AccountRepository();
 
         var regex = new Regex("^[a-zA-Z_](?!.*?\\.{2})[\\w.]{1,28}[\\w]$");
-        if (!(RegName.Length > 3 && regex.IsMatch(RegName))) return (false, "Username not valid");
+        if (!(RegName.Length > 3 && regex.IsMatch(RegName))) return (false, Utils.GetLocalizedName("LNameInvalid"));
 
         var a = await accountRepository.Exists(RegName);
 
-        return a ? (false, "Username is existing already") : (true, "");
+        return a ? (false, Utils.GetLocalizedName("LNameExisting")) : (true, "");
     }
 
     private async Task CheckRegister()
@@ -218,7 +218,7 @@ public class AuthenticationContext : INotifyPropertyChanged, INotifyDataErrorInf
 
         if (!isCheck)
         {
-            AddRegisterError(nameof(RegName), "name existing already");
+            AddRegisterError(nameof(RegName), Utils.GetLocalizedName("LNameExisting"));
             OnPropertyChanged(nameof(RegErrors));
             return;
         }

@@ -289,24 +289,24 @@ public class EditAlbumVm : HistoryVm, INotifyDataErrorInfo
         ClearErrors(nameof(AlbumDescription));
         ClearErrors(nameof(ImageSource));
         ClearErrors(nameof(Tracks));
-        if(string.IsNullOrEmpty(albumName)) AddError(nameof(AlbumName), "album name is empty");
-        if(string.IsNullOrEmpty(albumDescription)) AddError(nameof(AlbumDescription), "album description is empty");
-        if(imageSource is not BitmapImage ) AddError(nameof(ImageSource), "album image not loaded");
+        if(string.IsNullOrEmpty(albumName)) AddError(nameof(AlbumName), Utils.GetLocalizedName("LNameEmpty"));
+        if(string.IsNullOrEmpty(albumDescription)) AddError(nameof(AlbumDescription), Utils.GetLocalizedName("LDescriptionEmpty"));
+        if(imageSource is not BitmapImage ) AddError(nameof(ImageSource), Utils.GetLocalizedName("LImageNotLoaded"));
         
-        if(tracks.IsNullOrEmpty()) AddError(nameof(Tracks), "tracklist is empty");
+        if(tracks.IsNullOrEmpty()) AddError(nameof(Tracks), Utils.GetLocalizedName("LTracklistEmpty"));
         else
         {
             for (var i = 0; i < tracks.Count; i++)
             {
                 if (string.IsNullOrEmpty(tracks[i].Name))
                 {
-                    AddError(nameof(Tracks), "track " + (i+1) + " has no name");
+                    AddError(nameof(Tracks), Utils.GetLocalizedName("LTrack") + " " + (i+1) + " " + Utils.GetLocalizedName("LHasNoName"));
                     continue;
                 }
 
                 if (!tracks[i].SourceIsLoaded)
                 {
-                    AddError(nameof(Tracks), "track " + $"\"{tracks[i].Name}\"" + " has no source");
+                    AddError(nameof(Tracks), Utils.GetLocalizedName("LTrack") + " " + (i+1) + " " + Utils.GetLocalizedName("LHasNoSource"));
                 }
             }
         }

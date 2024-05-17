@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -93,6 +94,18 @@ public class PersonVm : INotifyPropertyChanged
         }
     }
 
+    private NotifyTaskCompletion<IEnumerable<Playlist>> albums;
+
+    public NotifyTaskCompletion<IEnumerable<Playlist>> Albums
+    {
+        get => albums;
+        set
+        {
+            albums = value;
+            OnPropertyChanged(nameof(Albums));
+        }
+    }
+
 
 
 
@@ -145,6 +158,14 @@ public class PersonVm : INotifyPropertyChanged
         var old = IsSubscribed.Result;
         IsSubscribed = new NotifyTaskCompletion<bool>(Subscribe(old));
     });
+
+    public ButtonCommand NavigateAlbumCommand => new ButtonCommand(o =>
+    {
+        if (o is Playlist p)
+        {
+            NavigationVm.Instance.Navigate(new AlbumPage(p.Id, p.IsUserPlaylist));
+        }
+    });
     
     public ButtonCommand NavigatePlaylistCommand => new ButtonCommand(o =>
     {
@@ -173,14 +194,18 @@ public class PersonVm : INotifyPropertyChanged
         );
 
     }
+    
 
-    private void LoadUserAsync()
+    private async void LoadUserAsync()
     {
         
         var userRepository = new UserRepository();
-
-        
+        var repo = new PlaylistRepository();
         User = new NotifyTaskCompletion<User>(userRepository.GetById(userId));
+
+        await User.Task;
+        Albums = new NotifyTaskCompletion<IEnumerable<Playlist>>((User.Result.IsArtist ? repo.GetAllByArtist(userId) : repo.GetOwnCustomByUserId(userId)));
+        
         UserPosts = new NotifyTaskCompletion<ObservableCollection<PostVm>>(LoadPostList());
         SubscribersCount = new NotifyTaskCompletion<int>(userRepository.GetSubscribersCount(userId));
         SubscriptionsCount = new NotifyTaskCompletion<int>(userRepository.GetFollowersCount(userId));

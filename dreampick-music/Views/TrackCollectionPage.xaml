@@ -27,7 +27,7 @@
                     </b:Interaction.Triggers>
                 </fa:FontAwesome>
 
-                <Label Style="{DynamicResource H1}" Content="noname_tracks_collection"></Label>
+                <Label Style="{DynamicResource H1}" Content="{DynamicResource LTracks}"></Label>
 
             </DockPanel>
             
@@ -49,15 +49,38 @@
                 FallbackValue=Collapsed
                 }"
                 >
-                <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding Tracks.Result}">
+                
+                <Grid >
+
+                    <Border Grid.Column="0"  Margin="0,0,10,0" Background="{DynamicResource SecondBrush}" CornerRadius="{DynamicResource Radius}" Padding="{DynamicResource PaddingInner}">
+                        <DockPanel>
+                            <Button Margin="0,0,5,0" >
+                                <fa:FontAwesome Foreground="{DynamicResource DarkenForeBrush}" FontSize="{DynamicResource Header2}" Icon="Search">
+                                </fa:FontAwesome>
+                            </Button>
+                            <TextBox FontWeight="{DynamicResource ParagraphWeight}" Text="{Binding TextSearch}"></TextBox>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+                
+                
+                
+                
+                <ListView Style="{DynamicResource PostView}" ItemsSource="{Binding VisibleTracks}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
 
                         <Border
+                            
                             Style="{Binding IsPlaying, Converter={StaticResource ThirdToSecondColorConverter}, FallbackValue=Transparent}"
                             CornerRadius="{DynamicResource Radius}"
                             Padding="{DynamicResource PaddingInner}">
 
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseDown">
+                                    <b:InvokeCommandAction CommandParameter="{Binding Track.Id}" Command="{Binding TrySelectCommand, ElementName=VmContext}"></b:InvokeCommandAction>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
 
                             <StackPanel Margin="5,5,5,5">
 
@@ -121,6 +144,11 @@
                                             <TextBlock Margin="5,0,0,0" Foreground="{DynamicResource DarkenForeBrush}"
                                                        Style="{DynamicResource LinkedP}"
                                                        Text="{Binding Track.Playlist.User.Username}">
+                                                <b:Interaction.Triggers>
+                                                    <b:EventTrigger EventName="MouseDown">
+                                                        <b:InvokeCommandAction Command="{Binding NavigateArtistCommand}"></b:InvokeCommandAction>
+                                                    </b:EventTrigger>
+                                                </b:Interaction.Triggers>
                                             </TextBlock>
                                         </StackPanel>
                                     </DockPanel>

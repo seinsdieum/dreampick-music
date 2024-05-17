@@ -19,31 +19,34 @@ public class DateTimeToStampStringConverter : IValueConverter
         int intSeconds = ts.Seconds;
 
         if (intDays > 0)
-            return string.Format("{0} days ago", intDays);
+            return $"{intDays} " + Utils.GetLocalizedName("LDays") + " " + Utils.GetLocalizedName("LAgo") ;
 
         if (intHours > 0)
-            return string.Format("{0} hours ago", intHours);
+            return $"{intDays} " + Utils.GetLocalizedName("LHours") + " " + Utils.GetLocalizedName("LAgo") ;
+
 
         if (intMinutes > 0)
-            return string.Format("{0} minutes ago", intMinutes);
+            return $"{intDays} " + Utils.GetLocalizedName("LMinutes") + " " + Utils.GetLocalizedName("LAgo") ;
+
 
         if (intSeconds > 0)
-            return string.Format("{0} seconds ago", intSeconds);
+            return Utils.GetLocalizedName("LRecently")  ;
+
 
         // let's handle future times..just in case
         if (intDays < 0)
-            return string.Format("in {0} days", Math.Abs(intDays));
+            return Utils.GetLocalizedName("LRecently")  ;
 
         if (intHours < 0)
-            return string.Format("in {0} hours", Math.Abs(intHours));
+            return Utils.GetLocalizedName("LRecently")  ;
 
         if (intMinutes < 0)
-            return string.Format("in {0} minutes", Math.Abs(intMinutes));
+            return Utils.GetLocalizedName("LRecently")  ;
 
         if (intSeconds < 0)
-            return string.Format("in {0} seconds", Math.Abs(intSeconds));
+            return Utils.GetLocalizedName("LRecently")  ;
 
-        return "a bit";
+        return Utils.GetLocalizedName("LRecently")  ;
     }
      
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
